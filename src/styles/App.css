@@ -1,0 +1,21 @@
+.App {
+  text-align: center;
+}
+
+.SideBar {
+  width: 20%;
+  height: 100%;
+  text-align: left;
+  float: left;
+}
+
+.PageHeader {
+  height: 30px;
+  background-color: gold;
+}
+
+.Text {
+  text-align: left;
+  width: 80%;
+  float: right;
+}
