@@ -1,6 +1,8 @@
 import './styles/App.css';
+import indexCss from './styles/index.css';
 import React, { useRef } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
+
 
 
 const example_json = require("./data/example.json");
@@ -44,26 +46,69 @@ function App() {
       </header>
     )
   }
+
+  const text = () => {
+    let text = ""
+    example_json.forEach(function(value) {
+      let anonimized_text = value.text
+      let anonimization = ""
+      let substituion = ""
+      value.entities.forEach(function(entitie) {
+        if (entitie[0] === "ORG") {
+          let substituion = "Substitute ORG"
+          anonimization = "<font color=red><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
+          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
+        }
+        if (entitie[0] === "PER") {
+          let substituion = "Substitute PER"
+          anonimization = "<font color=green><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
+          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
+        }
+        if (entitie[0] === "DAT") {
+          let substituion = "Substitute DAT"
+          anonimization = "<font color=brown><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
+          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
+        }
+        if (entitie[0] === "LOC") {
+          let substituion = "Substitute LOC"
+          anonimization = "<font color=blue><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
+          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
+        }
+      })
+      text += '<p>' + anonimized_text + '</p>'
+    })
+    
+    console.log(text)
+    return text
+  }
   
-  function Text() {
+  function EditorBox() {
+    const editorRef = useRef(null);
+    const log = () => {
+      if (editorRef.current) {
+        console.log(editorRef.current.getContent());
+      }
+    };
     return (
       <>
-        <Editor
+        <Editor className="Text"
           onInit={(evt, editor) => editorRef.current = editor}
-          initialValue="<p>This is the initial content of the editor.</p>"
+          initialValue={text()}
           init={{
-            height: 500,
+            content_css: false,
+            content_style : indexCss,
             menubar: false,
             plugins: [
               'advlist autolink lists link image charmap print preview anchor',
               'searchreplace visualblocks code fullscreen',
-              'insertdatetime media table paste code help wordcount'
+              'insertdatetime media table paste code help wordcount',
+              'autoresize',
+              'importcss'
             ],
             toolbar: 'undo redo | formatselect | ' +
             'bold italic backcolor | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
             'removeformat | help',
-            content_style: 'body { font-family:Helvetica,Arial,sans-serif; font-size:14px }'
           }}
         />
         <button onClick={log}>Log editor content</button>
@@ -128,7 +173,7 @@ function App() {
 
       {SideBar()}
 
-      {Text()}
+      {EditorBox()}
 
     </div>
   );
