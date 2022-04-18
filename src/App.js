@@ -21,7 +21,10 @@ function App() {
   const editorRef = useRef(null);
   const log = () => {
     if (editorRef.current) {
-      console.log(editorRef.current.getContent());
+      //console.log(editorRef.current.getContent());
+      let test = editorRef.current.selection.select(editorRef.current.dom.select('s')[0])
+      console.log(test)
+      test.scrollIntoView({behavior: "instant", block: "center", inline: "nearest"});
     }
   };
 
@@ -83,12 +86,7 @@ function App() {
   }
   
   function EditorBox() {
-    const editorRef = useRef(null);
-    const log = () => {
-      if (editorRef.current) {
-        console.log(editorRef.current.getContent());
-      }
-    };
+
     return (
       <>
         <Editor className="Text"
