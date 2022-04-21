@@ -1,8 +1,9 @@
 import './styles/App.css';
 import indexCss from './styles/index.css';
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Editor } from '@tinymce/tinymce-react';
 
+import Sidebar from './components/sidebar';
 
 
 const example_json = require("./data/example.json");
@@ -15,10 +16,9 @@ let allEntities = {
   LOC: {}
 }
 
-
-
 function App() {
   const editorRef = useRef(null);
+  
   const log = () => {
     if (editorRef.current) {
       //console.log(editorRef.current.getContent());
@@ -28,9 +28,17 @@ function App() {
     }
   };
 
-  function SideBar() {
+  function Side() {
     getAllEntities()
 
+    return (
+      <div className='SideBar'>
+        <Sidebar
+        />
+  
+      </div>
+    )
+ 
     return (
       <div className='SideBar'>
         -----ORGS:----
@@ -81,7 +89,7 @@ function App() {
       text += '<p>' + anonimized_text + '</p>'
     })
     
-    console.log(text)
+    //console.log(text)
     return text
   }
   
@@ -169,7 +177,7 @@ function App() {
     <div className="App">
       {Header()}
 
-      {SideBar()}
+      {Side()}
 
       {EditorBox()}
 
