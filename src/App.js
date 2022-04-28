@@ -9,12 +9,82 @@ import Sidebar from './components/sidebar';
 const example_json = require("./data/example.json");
 
 // Dictionary of entities by type, that is a dictionary of entitie name whose key is a list occurences of entitie
-let allEntities = {
-  ORG: {},
-  PER: {},
-  DAT: {},
-  LOC: {}
-}
+let allEntities = [
+  {
+    id: "ORG",
+    label: "Organizacoes",
+    expanded: true,
+    children: []
+  },
+  {
+    id: "PER",
+    label: "Pessoas",
+    expanded: true,
+    children: []
+  },
+  {
+    id: "DAT",
+    label: "Datas",
+    expanded: true,
+    children: []
+  },
+  {
+    id: "LOC",
+    label: "Localizacoes",
+    expanded: true,
+    children: []
+  }
+]
+
+const allMenuItems = [
+  {
+    id: "accordion",
+    label: "Accordion",
+    expanded: true,
+    children: [
+      {
+        id: "accordion-basic",
+        label: "Basic",
+        expanded: true,
+        children: [
+          {
+            id: "accordion-basic-default",
+            label: "Default",
+            data: {Test: "Default"},
+          },
+          {
+            id: "accordion-basic-expanded",
+            label: "Expanded"
+          }
+        ]
+      },
+      {
+        id: "accordion-rich",
+        label: "Rich",
+        children: [
+          {
+            id: "accordion-rich-default",
+            label: "Default"
+          },
+          {
+            id: "accordion-rich-expanded",
+            label: "Expanded"
+          }
+        ]
+      }
+    ]
+  },
+  {
+    id: "button",
+    label: "Button",
+    children: [
+      {
+        id: "button-default",
+        label: "Default"
+      }
+    ]
+  }
+];
 
 function App() {
   const editorRef = useRef(null);
@@ -33,7 +103,7 @@ function App() {
 
     return (
       <div className='SideBar'>
-        <Sidebar
+        <Sidebar allMenuItems={allEntities}
         />
   
       </div>
@@ -97,76 +167,143 @@ function App() {
 
     return (
       <>
-        <Editor className="Text"
+        <Editor tinymceScriptSrc="http://localhost:3000/tinymce/js/tinymce/tinymce.min.js"
           onInit={(evt, editor) => editorRef.current = editor}
           initialValue={text()}
           init={{
-            content_css: false,
-            content_style : indexCss,
-            menubar: false,
+            toolbar_sticky: true,
+            menubar: 'tools',
             plugins: [
               'advlist autolink lists link image charmap print preview anchor',
               'searchreplace visualblocks code fullscreen',
               'insertdatetime media table paste code help wordcount',
               'autoresize',
-              'importcss'
+              'importcss',
+              'example',
+              'code'
             ],
             toolbar: 'undo redo | formatselect | ' +
             'bold italic backcolor | alignleft aligncenter ' +
             'alignright alignjustify | bullist numlist outdent indent | ' +
-            'removeformat | help',
+            'removeformat | help | code | example',
           }}
         />
         <button onClick={log}>Log editor content</button>
       </>
     )
   }
-  
+
+  function createChild (entitie) {
+    let new_child = {
+      id: entitie[3],
+      label: entitie[3],
+      expanded: true,
+      children: [
+        {
+          id: entitie[2],
+          label: entitie[2],
+          data: entitie
+        }
+      ]
+    }
+    return new_child
+  }
+
   
   function getAllEntities() {
     
     example_json.forEach(function (value) {
       value.entities.forEach(function (entitie) {
+
+        let found = false
+
         // Divide entities per type
         if (entitie[0] === "ORG") {
-          // If first time seeing this entitie
-          if (allEntities.ORG[entitie[3]] === undefined) {
-            allEntities.ORG[entitie[3]] = [entitie]
-          }
-          else {
-            allEntities.ORG[entitie[3]].push(entitie)
+
+          allEntities[0].children.forEach(function (child) {
+            // If entitie has been found before
+            if (child.id === entitie[3]) {
+              found = true
+              // Add entitie to children of child
+              child.children.push( {
+                id: entitie[2],
+                label: entitie[2],
+              })
+            }
+          })
+      
+          // If entitie has not been found before
+          if (found === false) {
+            // Create new child and add entitie to that child's children
+            let new_child = createChild(entitie) 
+            allEntities[0].children.push(new_child)
           }
         }
         if (entitie[0] === "PER") {
-          // If first time seeing this entitie
-          if (allEntities.PER[entitie[3]] === undefined) {
-            allEntities.PER[entitie[3]] = [entitie]
-          }
-          else {
-            allEntities.PER[entitie[3]].push(entitie)
+
+          allEntities[1].children.forEach(function (child) {
+            // If entitie has been found before
+            if (child.id === entitie[3]) {
+              found = true
+              // Add entitie to children of child
+              child.children.push( {
+                id: entitie[2],
+                label: entitie[2],
+              })
+            }
+          })
+      
+          // If entitie has not been found before
+          if (found === false) {
+            // Create new child and add entitie to that child's children
+            let new_child = createChild(entitie)
+            allEntities[1].children.push(new_child)
           }
         }
         if (entitie[0] === "DAT") {
-          // If first time seeing this entitie
-          if (allEntities.DAT[entitie[3]] === undefined) {
-            allEntities.DAT[entitie[3]] = [entitie]
-          }
-          else {
-            allEntities.DAT[entitie[3]].push(entitie)
+
+          allEntities[2].children.forEach(function (child) {
+            // If entitie has been found before
+            if (child.id === entitie[3]) {
+              found = true
+              // Add entitie to children of child
+              child.children.push( {
+                id: entitie[2],
+                label: entitie[2],
+              })
+            }
+          })
+      
+          // If entitie has not been found before
+          if (found === false) {
+            // Create new child and add entitie to that child's children
+            let new_child = createChild(entitie)
+            allEntities[2].children.push(new_child)
           }
         }
         if (entitie[0] === "LOC") {
-          // If first time seeing this entitie
-          if (allEntities.LOC[entitie[3]] === undefined) {
-            allEntities.LOC[entitie[3]] = [entitie]
-          }
-          else {
-            allEntities.LOC[entitie[3]].push(entitie)
+          
+          allEntities[3].children.forEach(function (child) {
+            // If entitie has been found before
+            if (child.id === entitie[3]) {
+              found = true
+              // Add entitie to children of child
+              child.children.push( {
+                id: entitie[2],
+                label: entitie[2],
+              })
+            }
+          })
+      
+          // If entitie has not been found before
+          if (found === false) {
+            // Create new child and add entitie to that child's children
+            let new_child = createChild(entitie)
+            allEntities[3].children.push(new_child)
           }
         }
       })
     })
-    return allEntities
   }
   
   const Word = (props) => {

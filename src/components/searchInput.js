@@ -29,7 +29,7 @@ export default class SearchInput extends Component {
         <TextInput
           type="search"
           size="small"
-          placeholder="Search stories..."
+          placeholder="Procura de entidades..."
           plain={true}
           {...this.props}
         />

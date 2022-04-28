@@ -7,55 +7,6 @@ import { Dislike } from "grommet-icons";
 import SearchInput from "./searchInput";
 import NestedMenu from "./nestedMenu";
 
-const allMenuItems = [
-  {
-    id: "accordion",
-    label: "Accordion",
-    expanded: true,
-    children: [
-      {
-        id: "accordion-basic",
-        label: "Basic",
-        expanded: true,
-        children: [
-          {
-            id: "accordion-basic-default",
-            label: "Default",
-            data: {Test: "Default"},
-          },
-          {
-            id: "accordion-basic-expanded",
-            label: "Expanded"
-          }
-        ]
-      },
-      {
-        id: "accordion-rich",
-        label: "Rich",
-        children: [
-          {
-            id: "accordion-rich-default",
-            label: "Default"
-          },
-          {
-            id: "accordion-rich-expanded",
-            label: "Expanded"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: "button",
-    label: "Button",
-    children: [
-      {
-        id: "button-default",
-        label: "Default"
-      }
-    ]
-  }
-];
 
 const filterItems = (items, query) => {
   if (query.length) {
@@ -78,18 +29,19 @@ const filterItems = (items, query) => {
 };
 
 export default class Sidebar extends Component {
-  static = {
+    allMenuItems  = this.props.allMenuItems
+    static = {
     onItemSelect: PropTypes.func.isRequired
   };
   state = {
     activeItem: undefined,
     searchQuery: "",
-    menuItems: allMenuItems
+    menuItems: this.allMenuItems
   };
   renderNoMatch = () => (
     <Box pad={{ top: "medium" }} align="center" justify="center" gap="small">
       <Dislike size="large" />
-      <Text size="small">No story matching this query.</Text>
+      <Text size="small">Nenhuma entidade encontrada</Text>
     </Box>
   );
   render() {
@@ -101,10 +53,10 @@ export default class Sidebar extends Component {
           flex={false}
           tag="header"
           pad={{ horizontal: "small" }}
-          background={{ color: "brand", dark: false }}
+          background={{ color: "gold", dark: false }}
           elevation="xsmall"
         >
-          <Heading level={3}>Storybook</Heading>
+          <Heading level={3}>Entidades</Heading>
         </Box>
         <Box flex={false} pad="small">
           <SearchInput
@@ -112,7 +64,7 @@ export default class Sidebar extends Component {
             onChange={({ target: { value: searchQuery } }) =>
               this.setState({
                 searchQuery,
-                menuItems: filterItems(allMenuItems, searchQuery)
+                menuItems: filterItems(this.allMenuItems, searchQuery)
               })
             }
           />
