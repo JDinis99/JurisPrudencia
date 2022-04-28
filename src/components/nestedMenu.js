@@ -119,7 +119,7 @@ export default class NestedMenu extends Component {
     const { expandAll, expandedItems } = this.state;
     const { children, id, label } = item;
     const isExpanded = expandedItems.includes(id);
-    console.log(expandAll);
+    //console.log(expandAll);
     const open = typeof expandAll !== "undefined" ? expandAll : isExpanded;
 
     const itemId = `item_${id}_${level}`;

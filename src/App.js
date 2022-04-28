@@ -36,55 +36,120 @@ let allEntities = [
   }
 ]
 
-const allMenuItems = [
-  {
-    id: "accordion",
-    label: "Accordion",
+function createChild (entitie) {
+  let new_child = {
+    id: entitie[3],
+    label: entitie[3],
     expanded: true,
     children: [
       {
-        id: "accordion-basic",
-        label: "Basic",
-        expanded: true,
-        children: [
-          {
-            id: "accordion-basic-default",
-            label: "Default",
-            data: {Test: "Default"},
-          },
-          {
-            id: "accordion-basic-expanded",
-            label: "Expanded"
-          }
-        ]
-      },
-      {
-        id: "accordion-rich",
-        label: "Rich",
-        children: [
-          {
-            id: "accordion-rich-default",
-            label: "Default"
-          },
-          {
-            id: "accordion-rich-expanded",
-            label: "Expanded"
-          }
-        ]
-      }
-    ]
-  },
-  {
-    id: "button",
-    label: "Button",
-    children: [
-      {
-        id: "button-default",
-        label: "Default"
+        id: entitie[1].toString(),
+        label: entitie[1].toString(),
+        data: entitie
       }
     ]
   }
-];
+  return new_child
+}
+
+function getAllEntities() {
+  console.log("Chamando")
+  
+  example_json.forEach(function (value) {
+    value.entities.forEach(function (entitie) {
+
+      let found = false
+
+      // Divide entities per type
+      if (entitie[0] === "ORG") {
+
+        allEntities[0].children.forEach(function (child) {
+          // If entitie has been found before
+          if (child.id === entitie[3]) {
+            found = true
+            // Add entitie to children of child
+            child.children.push( {
+              id: entitie[1].toString(),
+              label: entitie[1].toString(),
+            })
+          }
+        })
+    
+        // If entitie has not been found before
+        if (found === false) {
+          // Create new child and add entitie to that child's children
+          let new_child = createChild(entitie) 
+          allEntities[0].children.push(new_child)
+        }
+      }
+      if (entitie[0] === "PER") {
+
+        allEntities[1].children.forEach(function (child) {
+          // If entitie has been found before
+          if (child.id === entitie[3]) {
+            found = true
+            // Add entitie to children of child
+            child.children.push( {
+              id: entitie[1].toString(),
+              label: entitie[1].toString(),
+            })
+          }
+        })
+    
+        // If entitie has not been found before
+        if (found === false) {
+          // Create new child and add entitie to that child's children
+          let new_child = createChild(entitie)
+          allEntities[1].children.push(new_child)
+        }
+      }
+      if (entitie[0] === "DAT") {
+
+        allEntities[2].children.forEach(function (child) {
+          // If entitie has been found before
+          if (child.id === entitie[3]) {
+            found = true
+            // Add entitie to children of child
+            child.children.push( {
+              id: entitie[1].toString(),
+              label: entitie[1].toString(),
+            })
+          }
+        })
+    
+        // If entitie has not been found before
+        if (found === false) {
+          // Create new child and add entitie to that child's children
+          let new_child = createChild(entitie)
+          allEntities[2].children.push(new_child)
+        }
+      }
+      if (entitie[0] === "LOC") {
+        
+        allEntities[3].children.forEach(function (child) {
+          // If entitie has been found before
+          if (child.id === entitie[3]) {
+            found = true
+            // Add entitie to children of child
+            child.children.push( {
+              id: entitie[1].toString(),
+              label: entitie[1].toString(),
+            })
+          }
+        })
+    
+        // If entitie has not been found before
+        if (found === false) {
+          // Create new child and add entitie to that child's children
+          let new_child = createChild(entitie)
+          allEntities[3].children.push(new_child)
+        }
+      }
+    })
+  })
+}
+
+getAllEntities()
 
 function App() {
   const editorRef = useRef(null);
@@ -99,22 +164,11 @@ function App() {
   };
 
   function Side() {
-    getAllEntities()
 
     return (
       <div className='SideBar'>
         <Sidebar allMenuItems={allEntities}
         />
-  
-      </div>
-    )
- 
-    return (
-      <div className='SideBar'>
-        -----ORGS:----
-        {Object.keys(allEntities.ORG).map((key, index) => (
-          <Word word={key}/>
-        ))}
   
       </div>
     )
@@ -191,119 +245,6 @@ function App() {
         <button onClick={log}>Log editor content</button>
       </>
     )
-  }
-
-  function createChild (entitie) {
-    let new_child = {
-      id: entitie[3],
-      label: entitie[3],
-      expanded: true,
-      children: [
-        {
-          id: entitie[2],
-          label: entitie[2],
-          data: entitie
-        }
-      ]
-    }
-    return new_child
-  }
-
-  
-  function getAllEntities() {
-    
-    example_json.forEach(function (value) {
-      value.entities.forEach(function (entitie) {
-
-        let found = false
-
-        // Divide entities per type
-        if (entitie[0] === "ORG") {
-
-          allEntities[0].children.forEach(function (child) {
-            // If entitie has been found before
-            if (child.id === entitie[3]) {
-              found = true
-              // Add entitie to children of child
-              child.children.push( {
-                id: entitie[2],
-                label: entitie[2],
-              })
-            }
-          })
-      
-          // If entitie has not been found before
-          if (found === false) {
-            // Create new child and add entitie to that child's children
-            let new_child = createChild(entitie) 
-            allEntities[0].children.push(new_child)
-          }
-        }
-        if (entitie[0] === "PER") {
-
-          allEntities[1].children.forEach(function (child) {
-            // If entitie has been found before
-            if (child.id === entitie[3]) {
-              found = true
-              // Add entitie to children of child
-              child.children.push( {
-                id: entitie[2],
-                label: entitie[2],
-              })
-            }
-          })
-      
-          // If entitie has not been found before
-          if (found === false) {
-            // Create new child and add entitie to that child's children
-            let new_child = createChild(entitie)
-            allEntities[1].children.push(new_child)
-          }
-        }
-        if (entitie[0] === "DAT") {
-
-          allEntities[2].children.forEach(function (child) {
-            // If entitie has been found before
-            if (child.id === entitie[3]) {
-              found = true
-              // Add entitie to children of child
-              child.children.push( {
-                id: entitie[2],
-                label: entitie[2],
-              })
-            }
-          })
-      
-          // If entitie has not been found before
-          if (found === false) {
-            // Create new child and add entitie to that child's children
-            let new_child = createChild(entitie)
-            allEntities[2].children.push(new_child)
-          }
-        }
-        if (entitie[0] === "LOC") {
-          
-          allEntities[3].children.forEach(function (child) {
-            // If entitie has been found before
-            if (child.id === entitie[3]) {
-              found = true
-              // Add entitie to children of child
-              child.children.push( {
-                id: entitie[2],
-                label: entitie[2],
-              })
-            }
-          })
-      
-          // If entitie has not been found before
-          if (found === false) {
-            // Create new child and add entitie to that child's children
-            let new_child = createChild(entitie)
-            allEntities[3].children.push(new_child)
-          }
-        }
-      })
-    })
   }
   
   const Word = (props) => {

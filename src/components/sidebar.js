@@ -9,6 +9,7 @@ import NestedMenu from "./nestedMenu";
 
 
 const filterItems = (items, query) => {
+  console.log("Query: ", query)
   if (query.length) {
     return JSON.parse(JSON.stringify(items)).filter(item => {
       const { children, label } = item;
@@ -79,7 +80,7 @@ export default class Sidebar extends Component {
                 onSelect={activeItem => {
                   this.setState({ activeItem });
                   //onItemSelect(activeItem.id);
-                  console.log("activeItem: ", activeItem)
+                  //console.log("activeItem: ", activeItem)
                 }}
               />
             ) : (
