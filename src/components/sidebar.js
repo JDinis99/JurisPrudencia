@@ -1,3 +1,5 @@
+import '../styles/App.css';
+
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 
@@ -50,26 +52,28 @@ export default class Sidebar extends Component {
     const { onItemSelect } = this.props;
     return (
       <Box width="medium" background="light-2" elevation="small">
-        <Box
-          flex={false}
-          tag="header"
-          pad={{ horizontal: "small" }}
-          background={{ color: "gold", dark: false }}
-          elevation="xsmall"
-        >
-          <Heading level={3}>Entidades</Heading>
-        </Box>
-        <Box flex={false} pad="small">
-          <SearchInput
-            value={searchQuery}
-            onChange={({ target: { value: searchQuery } }) =>
-              this.setState({
-                searchQuery,
-                menuItems: filterItems(this.allMenuItems, searchQuery)
-              })
-            }
-          />
-        </Box>
+        <div className='SideHeader' >
+          <Box
+            flex={false}
+            tag="header"
+            pad={{ horizontal: "small" }}
+            background={{ color: "gold", dark: false }}
+            elevation="xsmall"
+          >
+            <Heading level={3}>Entidades</Heading>
+          </Box>
+          <Box flex={false} pad="small">
+            <SearchInput
+              value={searchQuery}
+              onChange={({ target: { value: searchQuery } }) =>
+                this.setState({
+                  searchQuery,
+                  menuItems: filterItems(this.allMenuItems, searchQuery)
+                })
+              }
+            />
+          </Box>
+        </div>
         <Box flex={true} overflow="auto">
           <Box flex={false}>
             {menuItems.length > 0 ? (

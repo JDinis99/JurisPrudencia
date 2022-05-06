@@ -1,3 +1,5 @@
+import '../styles/App.css';
+
 import React, { Component, Fragment } from "react";
 import { findDOMNode } from "react-dom";
 import { Anchor, Box, Button, Keyboard, Text } from "grommet";
