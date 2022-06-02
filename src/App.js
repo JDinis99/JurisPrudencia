@@ -309,25 +309,15 @@ function App() {
     let text = ""
     let final_entities = []
 
-    //let test = " Supremo Tribunal de Justiça  t\t\t\t\t\t\t\t\t\t\t\t\t\t5.ª Secção Criminal  Proc. n.º 129/21.1YRCBR  Extradição   *  Acordam, em Conferência, na 5.ª Secção do Supremo Tribunal de Justiça.              I - Pedido de extradição e termos subsequentes  1. O Ministério Público"
-    let test = "Supremo Tribunal de Justiça"
-    console.log(test.split(" "))
-
-    let text_counter = null
     // Counter for words not characters
     let counter = 0
     example_json.forEach(function(value) {
-      // console.log("Counter so far: ", counter)
-      // console.log("Iteration's text: ", value.text)
-      // console.log("Iteration's lenght: ", value.text.split(" ").length)
 
       value.entities.forEach(function(entitie) {
         let type = entitie[0]
         let tmp_str = value.text.slice(0, entitie[1])
 
-        let split = value.text.split(entitie[3])
-
-        let start = counter + split[0].split(" ").length
+        let start = counter + tmp_str.split(" ").length
         let end = start + entitie[3].split(" ").length
 
         let final_entitie = {
@@ -336,7 +326,6 @@ function App() {
           tag: type
         }
 
-        //console.log(final_entitie)
         final_entities.push(final_entitie)
       })
       if (value.text === "") {
@@ -349,13 +338,9 @@ function App() {
       }
 
   })
-    
-    console.log(final_entities[0])
-    //console.log(text)
 
     if (anom === null) {
       setAnom({
-        //value: [],
         value: final_entities,
         tag: "PER"
       })
@@ -421,7 +406,6 @@ function App() {
 
   return (
     <div className="App">
-      let text = anomText()
       {Header()}
 
       {Side()}
