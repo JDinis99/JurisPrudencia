@@ -27,6 +27,6 @@
   text-align: left;
   width: 80%;
   float: right;
-  white-space: pre-line;
+  white-space: pre-wrap;
 }
 

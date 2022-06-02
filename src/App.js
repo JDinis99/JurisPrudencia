@@ -159,6 +159,7 @@ function getAllEntities() {
 function App() {
   const editorRef = useRef(null);
   const [mode, setMode] = useState("Doccano")
+  const [anom_test, setAnomText] = useState(null)
   const [anom, setAnom] = useState(null)
   const last_index = useRef(0)
   const [menuStyle, setMenuStyle] = useState({
@@ -169,9 +170,11 @@ function App() {
 
   useEffect(() => {
     getAllEntities()
+    setAnomText(anomText())
   }, [])
 
   const handleNewEntitie = (value, p) => {
+    console.log(value[value.length - 1])
     // TODO: Update ALL Entitites based on new value
     setMenuStyle({
       left: p.left,
@@ -305,8 +308,14 @@ function App() {
   const anomText = () => {
     let text = ""
     let final_entities = []
+
+    //let test = " Supremo Tribunal de Justiça  t\t\t\t\t\t\t\t\t\t\t\t\t\t5.ª Secção Criminal  Proc. n.º 129/21.1YRCBR  Extradição   *  Acordam, em Conferência, na 5.ª Secção do Supremo Tribunal de Justiça.              I - Pedido de extradição e termos subsequentes  1. O Ministério Público"
+    let test = "Supremo Tribunal de Justiça"
+    console.log(test.split(" "))
+
+    let text_counter = null
     // Counter for words not characters
-    let counter = -1
+    let counter = 0
     example_json.forEach(function(value) {
       // console.log("Counter so far: ", counter)
       // console.log("Iteration's text: ", value.text)
@@ -314,6 +323,8 @@ function App() {
 
       value.entities.forEach(function(entitie) {
         let type = entitie[0]
+        let tmp_str = value.text.slice(0, entitie[1])
+
         let split = value.text.split(entitie[3])
 
         let start = counter + split[0].split(" ").length
@@ -327,22 +338,25 @@ function App() {
 
         //console.log(final_entitie)
         final_entities.push(final_entitie)
-
       })
-      counter += value.text.trim().split(" ").length
-      text += "<p> " + value.text + " </p>"
-      if (value.text != "") {
-        text += " "
+      if (value.text === "") {
+        text += "\n"
       }
+      else {
+        counter += value.text.split(" ").length + 1
+        text += " " + value.text + " \n"
+
+      }
+
   })
     
-    // console.log(final_entities)
+    console.log(final_entities[0])
     //console.log(text)
-    
+
     if (anom === null) {
       setAnom({
-        value: [],
-        //value: final_entities,
+        //value: [],
+        value: final_entities,
         tag: "PER"
       })
     }
@@ -382,15 +396,14 @@ function App() {
     }
 
     if (mode === "Doccano") {
-      let text = anomText()
 
-      if (anom === null) {
+      if (anom === null || anom_test === null) {
         return <></>
       }
       return (
         <div className='Text'>
             <TokenAnnotator
-              tokens={text.split(" ")}
+              tokens={anom_test.split(" ")}
               value={anom.value}
               onNewEntitie={handleNewEntitie}
               onEntitieChange={handleEntitieChange}
@@ -408,6 +421,7 @@ function App() {
 
   return (
     <div className="App">
+      let text = anomText()
       {Header()}
 
       {Side()}
