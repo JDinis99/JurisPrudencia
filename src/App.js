@@ -6,6 +6,7 @@ import Sidebar from './components/sidebar';
 
 import TokenAnnotator from './tokenAnnotator/TokenAnnotator.tsx';
 import ActionMenu from './components/actionMenu';
+import PopUpMenu from './components/popUpMenu';
 
 import {useMousePos} from "./utils/useMousePos";
 
@@ -162,11 +163,14 @@ function App() {
   const [anom_test, setAnomText] = useState(null)
   const [anom, setAnom] = useState(null)
   const last_index = useRef(0)
+  const last_tag = useRef(null)
   const [menuStyle, setMenuStyle] = useState({
     left: 0,
     top: 0,
     showMenu: false
   })
+
+  const [showPopUp, setShowPopUp] = useState()
 
   useEffect(() => {
     getAllEntities()
@@ -207,28 +211,71 @@ function App() {
       showMenu: false
     })
 
-    let new_anom = null
-    let old_value = anom.value
     let new_tag  = e.target.value
-    
-    if (new_tag == "Remove") {
-      let old_tag = anom.tag
-      let slice_1 = old_value.slice(0, last_index.current)
-      let slice_2 = old_value.slice(last_index.current + 1)
-      let new_value = slice_1.concat(slice_2)
-      new_anom = {
-        value: new_value,
-        tag: old_tag
+    last_tag.current = new_tag
+
+    setShowPopUp(true)
+  }
+
+  const handleMultipleTagChange = e => {
+
+    setShowPopUp(false)
+    let new_anom = null
+    let new_tag  = last_tag.current
+    let old_value = anom.value
+    let old_text = old_value[last_index.current].text
+    let old_tag = old_value[last_index.current].tag
+    let new_value = []
+
+    if (e.target.value === "false") {
+      
+      if (new_tag == "Remove") {
+        let old_tag = anom.tag
+        let slice_1 = old_value.slice(0, last_index.current)
+        let slice_2 = old_value.slice(last_index.current + 1)
+        new_value = slice_1.concat(slice_2)
+        new_anom = {
+          value: new_value,
+          tag: old_tag
+        }
       }
+      else {
+        old_value[last_index.current].tag = new_tag
+        new_anom = {
+          value: old_value,
+          tag: new_tag
+        }
+      }
+      setAnom(new_anom);
     }
     else {
-      old_value[last_index.current].tag = new_tag
-      new_anom = {
-        value: old_value,
-        tag: new_tag
+      old_value.forEach(function(entitie){
+        if (new_tag == "Remove") {
+          if (entitie.text === old_text && entitie.tag === old_tag) {
+            // Ignore and dont add to new array
+          }
+          else {
+            new_value.push(entitie)
+          }
+        }
+        else {
+          if (entitie.text === old_text && entitie.tag === old_tag) {
+            // change tag
+            entitie.tag = new_tag
+          }
+        }
+      })
+
+      if (new_tag == "Remove") {
+        new_anom = {
+          value: new_value,
+          tag: old_tag
+        }
+        setAnom(new_anom);
       }
+
     }
-    setAnom(new_anom);
+
   }
 
   
@@ -323,7 +370,8 @@ function App() {
         let final_entitie = {
           start: start,
           end: end,
-          tag: type
+          tag: type,
+          text: entitie[3]
         }
 
         final_entities.push(final_entitie)
@@ -413,6 +461,10 @@ function App() {
       {box()}
 
       {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
+
+      <div className='PopUp'>
+        {PopUpMenu(showPopUp, handleMultipleTagChange)}
+      </div>
 
     </div>
   );

@@ -1,7 +1,7 @@
 const ActionMenu = (x, y, showMenu, handleTagChange) => {
   const style = () => {
     return {
-      heigh: 200,
+      height: 200,
       width: 100,
       color: "FCD2D1",
       backgroundColor: "FF5C58",
