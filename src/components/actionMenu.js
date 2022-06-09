@@ -21,6 +21,8 @@ const ActionMenu = (x, y, showMenu, handleTagChange) => {
       <button onClick={handleTagChange} value="DAT">DAT</button>
       <button onClick={handleTagChange} value="ORG">ORG</button>
       <button onClick={handleTagChange} value="LOC">LOC</button>
+      <button onClick={handleTagChange} value="PRO">PRO</button>
+      <button onClick={handleTagChange} value="MAT">MAT</button>
       <button onClick={handleTagChange} value="Remove">Remove</button>
     </div>
   )

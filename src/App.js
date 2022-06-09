@@ -40,6 +40,18 @@ let allEntities = [
     label: "Localizacoes",
     expanded: true,
     children: []
+  },
+  {
+    id: "PRO",
+    label: "Processos",
+    expanded: true,
+    children: []
+  },
+  {
+    id: "MAT",
+    label: "Matriculas",
+    expanded: true,
+    children: []
   }
 ]
 
@@ -152,8 +164,61 @@ function getAllEntities() {
           allEntities[3].children.push(new_child)
         }
       }
+      if (entitie[0] === "PRO") {
+        
+        allEntities[4].children.forEach(function (child) {
+          // If entitie has been found before
+          if (child.id === entitie[3]) {
+            found = true
+            // Add entitie to children of child
+            child.children.push( {
+              id: entitie[1].toString(),
+              label: entitie[1].toString(),
+            })
+          }
+        })
+    
+        // If entitie has not been found before
+        if (found === false) {
+          // Create new child and add entitie to that child's children
+          let new_child = createChild(entitie)
+          allEntities[3].children.push(new_child)
+        }
+      }
+      if (entitie[0] === "MAT") {
+        
+        allEntities[5].children.forEach(function (child) {
+          // If entitie has been found before
+          if (child.id === entitie[3]) {
+            found = true
+            // Add entitie to children of child
+            child.children.push( {
+              id: entitie[1].toString(),
+              label: entitie[1].toString(),
+            })
+          }
+        })
+    
+        // If entitie has not been found before
+        if (found === false) {
+          // Create new child and add entitie to that child's children
+          let new_child = createChild(entitie)
+          allEntities[3].children.push(new_child)
+        }
+      }
     })
   })
+
+  // Sorting
+  for (let i = 0; i < allEntities.length; i++) {
+    allEntities[i].children.sort(function (a, b) {
+      if (a.id < b.id)
+        return -1;
+      else
+        return 1;
+    })
+  }
+
 }
 
 
@@ -381,7 +446,7 @@ function App() {
       setMode("Editor")
     }
   }
-  
+
   function Header() {
     return (
       <>
@@ -420,6 +485,16 @@ function App() {
         if (entitie[0] === "LOC") {
           let substituion = "Substitute LOC"
           anonimization = "<font color=blue><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
+          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
+        }
+        if (entitie[0] === "PRO") {
+          let substituion = "Substitute PRO"
+          anonimization = "<font color=yellow><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
+          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
+        }
+        if (entitie[0] === "MAT") {
+          let substituion = "Substitute MAT"
+          anonimization = "<font color=red><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
           anonimized_text = anonimized_text.replace(entitie[3], anonimization)
         }
       })
