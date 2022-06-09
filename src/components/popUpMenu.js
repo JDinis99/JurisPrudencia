@@ -1,4 +1,4 @@
-const PopUpMenu = (showMenu, handleMultipleTagChange) => {
+const PopUpMenu = (showMenu, handleMultipleTagChange, entities) => {
   const style = () => {
     return {
       height: 100,
@@ -23,8 +23,11 @@ const PopUpMenu = (showMenu, handleMultipleTagChange) => {
     <div className='PopUp' style={style()}>
       Quer aplicar esta mudança a todas as entidades iguais?
       <br></br>
-      <button onClick={handleMultipleTagChange} value="true">Sim</button>
-      <button onClick={handleMultipleTagChange} value="false">Não</button>
+      PER: {entities.PER}, DAT: {entities.DAT}, ORG: {entities.ORG}, LOC: {entities.LOC}, PRO: {entities.PRO}, MAT: {entities.MAT},
+      <br></br>
+      <button onClick={handleMultipleTagChange} value="Single">Não, apenas a esta entidade</button>
+      <button onClick={handleMultipleTagChange} value="All-Equal">Sim, para todas as entidades iguais com o mesmo tipo</button>
+      <button onClick={handleMultipleTagChange} value="All-All">Sim, para todas as entidades iguais independentemente do tipo</button>
     </div>
   )
 }

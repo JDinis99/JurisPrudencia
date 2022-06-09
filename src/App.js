@@ -170,7 +170,17 @@ function App() {
     showMenu: false
   })
 
-  const [showPopUp, setShowPopUp] = useState()
+  const [popUpMenu, setPopUpMenu] = useState({
+    showMenu: false,
+    entities: {
+      "PER":0,
+      "DAT":0,
+      "ORG":0,
+      "LOC":0,
+      "PRO":0,
+      "MAT":0
+    }
+  })
 
   useEffect(() => {
     getAllEntities()
@@ -214,12 +224,51 @@ function App() {
     let new_tag  = e.target.value
     last_tag.current = new_tag
 
-    setShowPopUp(true)
+    let entitie = anom.value[last_index.current]
+
+    let per_number = 0
+    let dat_number = 0
+    let org_number = 0
+    let loc_number = 0
+    let pro_number = 0
+    let mat_number = 0
+
+    anom.value.forEach(function(ent) {
+      if (ent.tag === "PER" && entitie.text === ent.text) {per_number += 1}
+      else if (ent.tag === "DAT" && entitie.text === ent.text) {dat_number += 1}
+      else if (ent.tag === "ORG" && entitie.text === ent.text) {org_number += 1}
+      else if (ent.tag === "LOC" && entitie.text === ent.text) {loc_number += 1}
+      else if (ent.tag === "PRO" && entitie.text === ent.text) {pro_number += 1}
+      else if (ent.tag === "MAT" && entitie.text === ent.text) {mat_number += 1}
+    })
+
+    setPopUpMenu({
+      showMenu: true,
+      entities: {
+        "PER": per_number,
+        "DAT": dat_number,
+        "ORG": org_number,
+        "LOC": loc_number,
+        "PRO": pro_number,
+        "MAT": mat_number
+      }
+    })
   }
 
   const handleMultipleTagChange = e => {
 
-    setShowPopUp(false)
+    setPopUpMenu({
+      showMenu: false,
+      entities: {
+        "PER":0,
+        "DAT":0,
+        "ORG":0,
+        "LOC":0,
+        "PRO":0,
+        "MAT":0
+      }
+    })
+
     let new_anom = null
     let new_tag  = last_tag.current
     let old_value = anom.value
@@ -227,7 +276,7 @@ function App() {
     let old_tag = old_value[last_index.current].tag
     let new_value = []
 
-    if (e.target.value === "false") {
+    if (e.target.value === "Single") {
       
       if (new_tag == "Remove") {
         let old_tag = anom.tag
@@ -248,7 +297,8 @@ function App() {
       }
       setAnom(new_anom);
     }
-    else {
+
+    else if (e.target.value === "All-Equal") {
       old_value.forEach(function(entitie){
         if (new_tag == "Remove") {
           if (entitie.text === old_text && entitie.tag === old_tag) {
@@ -274,6 +324,33 @@ function App() {
         setAnom(new_anom);
       }
 
+    }
+
+    else if (e.target.value === "All-All") {
+      old_value.forEach(function(entitie){
+        if (new_tag == "Remove") {
+          if (entitie.text === old_text) {
+            // Ignore and dont add to new array
+          }
+          else {
+            new_value.push(entitie)
+          }
+        }
+        else {
+          if (entitie.text === old_text) {
+            // change tag
+            entitie.tag = new_tag
+          }
+        }
+      })
+
+      if (new_tag == "Remove") {
+        new_anom = {
+          value: new_value,
+          tag: old_tag
+        }
+        setAnom(new_anom);
+      }
     }
 
   }
@@ -463,7 +540,7 @@ function App() {
       {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
 
       <div className='PopUp'>
-        {PopUpMenu(showPopUp, handleMultipleTagChange)}
+        {PopUpMenu(popUpMenu.showMenu, handleMultipleTagChange, popUpMenu.entities)}
       </div>
 
     </div>
