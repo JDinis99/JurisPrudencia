@@ -21,14 +21,14 @@ const TAG_COLORS = {
 
 const Mark: React.SFC<MarkProps> = props => (
   <mark
-    style={{backgroundColor: TAG_COLORS[props.tag] || '#84d2ff', padding: '0 4px'}}
+    style={{backgroundColor: TAG_COLORS[props.tag] || '#84d2ff', padding: ".2em .3em", margin: "0 .25em", lineHeight: "1", display: "inline-block", borderRadius: ".25em"}}
     data-start={props.start}
     data-end={props.end}
     onClick={() => props.onClick({start: props.start, end: props.end})}
   >
     {props.content}
     {props.tag && (
-      <span style={{fontSize: '0.7em', fontWeight: 500, marginLeft: 6}}>{props.tag}</span>
+      <span style={{boxSizing: "border-box", content: "attr(data-entity)", fontSize: ".55em", lineHeight: "1", padding: ".35em .35em", borderRadius: ".35em", textTransform: "uppercase", display: "inline-block", verticalAlign: "middle", margin: "0 0 .15rem .5rem", background: "#fff", fontWeight: "700"}}>{props.tag}</span>
     )}
   </mark>
 )

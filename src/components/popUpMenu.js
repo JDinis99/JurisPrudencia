@@ -25,9 +25,9 @@ const PopUpMenu = (showMenu, handleMultipleTagChange, entities) => {
       <br></br>
       PER: {entities.PER}, DAT: {entities.DAT}, ORG: {entities.ORG}, LOC: {entities.LOC}, PRO: {entities.PRO}, MAT: {entities.MAT},
       <br></br>
-      <button onClick={handleMultipleTagChange} value="Single">Não, apenas a esta entidade</button>
-      <button onClick={handleMultipleTagChange} value="All-Equal">Sim, para todas as entidades iguais com o mesmo tipo</button>
-      <button onClick={handleMultipleTagChange} value="All-All">Sim, para todas as entidades iguais independentemente do tipo</button>
+      <button onClick={handleMultipleTagChange} value="Single">Apenas a esta ocorrência deste termo</button>
+      <button onClick={handleMultipleTagChange} value="All-Equal">Todas as ocorrências deste termo e com este tipo</button>
+      <button onClick={handleMultipleTagChange} value="All-All">Todas as ocorrências deste termo, independentemente do tipo</button>
     </div>
   )
 }

@@ -7,12 +7,12 @@ import Sidebar from './components/sidebar';
 import TokenAnnotator from './tokenAnnotator/TokenAnnotator.tsx';
 import ActionMenu from './components/actionMenu';
 import PopUpMenu from './components/popUpMenu';
+import OutsideClickHandler from 'react-outside-click-handler';
 
 import {useMousePos} from "./utils/useMousePos";
 
 
 const example_json = require("./data/example.json");
-
 
 
 // Dictionary of entities by type, that is a dictionary of entitie name whose key is a list occurences of entitie
@@ -612,10 +612,14 @@ function App() {
 
       {box()}
 
-      {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
+      <OutsideClickHandler onOutsideClick={() => {setMenuStyle({left:0,top: 0, showMenu: false})}}>
+        {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
+      </OutsideClickHandler>
 
       <div className='PopUp'>
-        {PopUpMenu(popUpMenu.showMenu, handleMultipleTagChange, popUpMenu.entities)}
+        <OutsideClickHandler onOutsideClick={() => {setPopUpMenu({showMenu: false, entities: {"PER":0, "DAT":0, "ORG":0, "LOC":0, "PRO":0, "MAT":0}})}}>
+          {PopUpMenu(popUpMenu.showMenu, handleMultipleTagChange, popUpMenu.entities)}
+        </OutsideClickHandler>
       </div>
 
     </div>
