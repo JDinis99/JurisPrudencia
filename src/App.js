@@ -14,6 +14,12 @@ import {useMousePos} from "./utils/useMousePos";
 
 const example_json = require("./data/example.json");
 
+// eslint-disable-next-line import/no-webpack-loader-syntax
+var new_example_html_file = require('raw-loader!./data/new_example_2.html');
+var new_example_html = new_example_html_file.default;
+
+//const new_example_html = require("./data/new_example_2.html");
+
 
 // Dictionary of entities by type, that is a dictionary of entitie name whose key is a list occurences of entitie
 let allEntities = [
@@ -225,10 +231,10 @@ function getAllEntities() {
 function App() {
   const editorRef = useRef(null);
   const [mode, setMode] = useState("Doccano")
-  const [anom_test, setAnomText] = useState(null)
+  const [anom_text, setAnomText] = useState(null)
   const [anom, setAnom] = useState(null)
   const last_index = useRef(0)
-  const last_tag = useRef(null)
+  const tag = useRef(null)
   const [menuStyle, setMenuStyle] = useState({
     left: 0,
     top: 0,
@@ -248,8 +254,9 @@ function App() {
   })
 
   useEffect(() => {
-    getAllEntities()
-    setAnomText(anomText())
+    //getAllEntities()
+    //setAnomText(anomText())
+    readHtml()
   }, [])
 
   const handleNewEntitie = (value, p) => {
@@ -287,7 +294,7 @@ function App() {
     })
 
     let new_tag  = e.target.value
-    last_tag.current = new_tag
+    tag.current = new_tag
 
     let entitie = anom.value[last_index.current]
 
@@ -335,7 +342,7 @@ function App() {
     })
 
     let new_anom = null
-    let new_tag  = last_tag.current
+    let new_tag  = tag.current
     let old_value = anom.value
     let old_text = old_value[last_index.current].text
     let old_tag = old_value[last_index.current].tag
@@ -548,7 +555,117 @@ function App() {
 
     return text
   }
-  
+
+  function readHtml () {
+    let raw_text = ""
+    
+    // Join main relevant html into a single string
+    let split = new_example_html.split("\n")
+    for (let line of split) {
+      // Ignore first line
+      if (line.includes("<div")){
+        continue;
+      }
+      // Ignore table
+      else if (line.includes("</div>")) {
+        break
+      }
+      
+      // Normal iteration
+      raw_text += " " + line.trim() + " "
+    }
+
+    // Seperate raw_text into the zones with and without formating
+    let format_tokens = []
+    let iteration_beginning = 0
+    let start_index = 0
+    let end_index = 0
+    let closing_tag_index = 0
+    let tag = ""
+    let temp_tag = ""
+    let temp_split = []
+    let closing_tag = ""
+    let formating = ""
+    let normal = ""
+
+    while (true) {
+      start_index = raw_text.indexOf("<", iteration_beginning)
+
+      // If there are no more tags
+      if (start_index === -1){
+        break
+      }
+
+      end_index = raw_text.indexOf(">", start_index)
+      temp_tag = raw_text.substring(start_index + 1,end_index)
+      temp_split = temp_tag.split(" ")
+      tag = "<" + temp_split[0] + ">"
+      closing_tag = tag .replace("<", "</")
+
+      // Ignore <p> and </p>
+      if (tag === "<p>" || tag === "</p>"){
+        normal = raw_text.substring(iteration_beginning, end_index + 1)
+        format_tokens.push({
+          type: "normal",
+          start_index: iteration_beginning,
+          end_index: start_index,
+          value:normal
+        })
+
+        iteration_beginning = end_index + 1
+        continue
+      }
+
+      closing_tag_index = raw_text.indexOf(closing_tag, end_index)
+
+      normal = raw_text.substring(iteration_beginning, start_index)
+      format_tokens.push({
+        type: "normal",
+        start_index: iteration_beginning,
+        end_index: start_index,
+        value:normal
+      })
+
+      formating = raw_text.substring(start_index, closing_tag_index + closing_tag.length)
+      format_tokens.push({
+        type: "format",
+        start_index: start_index,
+        end_index: closing_tag_index + closing_tag.length,
+        value:formating
+      })
+
+      console.log(tag)
+      console.log(closing_tag)
+
+      iteration_beginning = end_index + 1
+
+      break
+    }
+    
+    console.log(format_tokens)
+
+    //   let split_mark_1 = line.split("<mark")
+
+    //   let first = true
+    //   for(let s of split_mark_1) {
+    //     if (first){
+    //       first = false
+    //       continue
+    //     }
+
+    //     let split_mark_2 = s.split('">')
+    //     let split_mark_3 = split_mark_2[1].split('</mark>')
+    //     let word = split_mark_3[0]
+    //     console.log(word)
+    // }
+
+    setAnomText(raw_text)
+    setAnom({
+      value: [{start: 0, end:1, tag: "PER"}],
+      tag: "PER"
+    })
+  }
+
   function box() {
 
     if (mode === "Editor") {
@@ -582,13 +699,13 @@ function App() {
 
     if (mode === "Doccano") {
 
-      if (anom === null || anom_test === null) {
+      if (anom === null || anom_text === null) {
         return <></>
       }
       return (
         <div className='Text'>
             <TokenAnnotator
-              tokens={anom_test.split(" ")}
+              tokens={anom_text.split(" ")}
               value={anom.value}
               onNewEntitie={handleNewEntitie}
               onEntitieChange={handleEntitieChange}
@@ -612,14 +729,10 @@ function App() {
 
       {box()}
 
-      <OutsideClickHandler onOutsideClick={() => {setMenuStyle({left:0,top: 0, showMenu: false})}}>
         {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
-      </OutsideClickHandler>
 
       <div className='PopUp'>
-        <OutsideClickHandler onOutsideClick={() => {setPopUpMenu({showMenu: false, entities: {"PER":0, "DAT":0, "ORG":0, "LOC":0, "PRO":0, "MAT":0}})}}>
           {PopUpMenu(popUpMenu.showMenu, handleMultipleTagChange, popUpMenu.entities)}
-        </OutsideClickHandler>
       </div>
 
     </div>

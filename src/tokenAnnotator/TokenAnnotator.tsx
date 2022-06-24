@@ -40,6 +40,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   }
 
   const handleMouseUp = () => {
+
     if (!props.onNewEntitie) return
 
     const selection = window.getSelection()
@@ -47,17 +48,58 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     const p = r.getBoundingClientRect();
 
     if (selectionIsEmpty(selection)) return
+    
+    let found = false
+    let anchor = selection.anchorNode
+    let focus = selection.focusNode
 
-    if (
-      !selection.anchorNode.parentElement.hasAttribute('data-i') ||
-      !selection.focusNode.parentElement.hasAttribute('data-i')
-    ) {
-      window.getSelection().empty()
-      return false
+    let start = 0
+    let end = 0
+    let max_iter = 5
+    let current_iter = 0
+
+    while (!found) {
+      // Avoid infinite loops
+      if (current_iter === max_iter){
+        break
+      }
+      if (
+        anchor.parentElement.hasAttribute('data-i') ||
+        focus.parentElement.hasAttribute('data-i')
+      ) {
+        start = parseInt(anchor.parentElement.getAttribute('data-i'), 10)
+        end = parseInt(focus.parentElement.getAttribute('data-i'), 10)
+        found = true
+        break
+      }
+      else {
+        anchor = anchor.parentElement
+        focus = focus.parentElement
+        current_iter += 1
+      }
     }
 
-    let start = parseInt(selection.anchorNode.parentElement.getAttribute('data-i'), 10)
-    let end = parseInt(selection.focusNode.parentElement.getAttribute('data-i'), 10)
+    // if (!found) {
+    //   window.getSelection().empty()
+    //     return false
+    // }
+
+    // if (
+    //   !selection.anchorNode.parentElement.hasAttribute('data-i') ||
+    //   !selection.focusNode.parentElement.hasAttribute('data-i')
+    // ) {
+    //   if (
+    //     !selection.anchorNode.parentElement.parentElement.hasAttribute('data-i') ||
+    //     !selection.focusNode.parentElement.parentElement.hasAttribute('data-i')
+    //   ) {
+    //     window.getSelection().empty()
+    //     return false
+    //   }
+    // }
+    // console.log("AHHHHHHHH - 2")
+
+    // let start = parseInt(selection.anchorNode.parentElement.getAttribute('data-i'), 10)
+    // let end = parseInt(selection.focusNode.parentElement.getAttribute('data-i'), 10)
 
     if (selectionIsBackwards(selection)) {
       ;[start, end] = [end, start]
