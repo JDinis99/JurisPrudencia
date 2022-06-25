@@ -645,6 +645,8 @@ function App() {
     let next_tag_index = 0
     let text = ""
     let text_tokens = []
+
+    // <strong>II – <em>Acórdão do <mark role="ORG">Tribunal da Relação de Coimbra</mark></em></strong>
     
     for (let f_token of format_tokens) {
       console.log(f_token.value)
@@ -672,15 +674,16 @@ function App() {
             opening_tags.push("<" + tag + ">")
             closing_tag = "</" + temp_split[0] + ">"
             closing_tags.push(closing_tag)
+            closing_tag_index = f_token.value.indexOf(closing_tag, end_index)
           }
           // If we are closing older tags
           else {
             // Search for the next tag to close from array
             closing_tag = closing_tags[closing_tags.length - 1]
+            closing_tag_index = f_token.value.indexOf(closing_tag, start_index)
           }
 
           next_tag_index = f_token.value.indexOf("<", end_index + 1)
-          closing_tag_index = f_token.value.indexOf(closing_tag, end_index + 1)
 
           console.log("start_index: ", start_index)
           console.log("end_index: ", end_index)
@@ -693,7 +696,7 @@ function App() {
 
           // If there is text until next tag
           if (next_tag_index !== end_index + 1 && next_tag_index !== -1 && closing_tag_index !== -1) {
-            console.log("FIRST CASE")
+            console.log("if there is text until next tag")
             // Add text until next tag with its proper tags
             text = f_token.value.substring(end_index + 1, next_tag_index)
             console.log("text:" ,text)
@@ -715,16 +718,18 @@ function App() {
             }
           }
 
+          // TODO: FALTA O CASO EM Q A TAG E A PROPRIA ENDING TAG
+
           // If the next tag after starting tag is the corresponding closing tag then close tags
           if (closing_tag_index === next_tag_index) {
-            console.log("SECOND CASE")
+            console.log("FIRST CASE - If the next tag after starting tag is the corresponding closing tag then close tags")
             opening_tags.pop()
             closing_tags.pop()
             iteration_beginning = closing_tag_index + closing_tag.length
           }
           // If not, open next set of tags
           else {
-            console.log("THIRD CASE")
+            console.log("SECOND CASE")
             iteration_beginning = next_tag_index
           }
           
