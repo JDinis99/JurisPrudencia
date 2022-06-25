@@ -231,8 +231,8 @@ function getAllEntities() {
 function App() {
   const editorRef = useRef(null);
   const [mode, setMode] = useState("Doccano")
-  const [anom_text, setAnomText] = useState(null)
-  const [anom, setAnom] = useState(null)
+  const [anomTokens, setAnomTokens] = useState(null)
+  const [anomValues, setAnomValues] = useState(null)
   const last_index = useRef(0)
   const tag = useRef(null)
   const [menuStyle, setMenuStyle] = useState({
@@ -255,25 +255,24 @@ function App() {
 
   useEffect(() => {
     //getAllEntities()
-    //setAnomText(anomText())
+    //setAnomTokens(anomText())
     readHtml()
   }, [])
 
   const handleNewEntitie = (value, p) => {
-    console.log(value[value.length - 1])
     // TODO: Update ALL Entitites based on new value
     setMenuStyle({
       left: p.left,
       top: p.top + 10,
       showMenu: true
     })
-    let old_tag = anom.tag
+    let old_tag = anomValues.tag
     let new_anom = {
       value: value,
       tag: old_tag
     }
     last_index.current = value.length - 1
-    setAnom(new_anom);
+    setAnomValues(new_anom);
   }
 
   const handleEntitieChange = (index, p) => {
@@ -296,7 +295,7 @@ function App() {
     let new_tag  = e.target.value
     tag.current = new_tag
 
-    let entitie = anom.value[last_index.current]
+    let entitie = anomValues.value[last_index.current]
 
     let per_number = 0
     let dat_number = 0
@@ -305,7 +304,7 @@ function App() {
     let pro_number = 0
     let mat_number = 0
 
-    anom.value.forEach(function(ent) {
+    anomValues.value.forEach(function(ent) {
       if (ent.tag === "PER" && entitie.text === ent.text) {per_number += 1}
       else if (ent.tag === "DAT" && entitie.text === ent.text) {dat_number += 1}
       else if (ent.tag === "ORG" && entitie.text === ent.text) {org_number += 1}
@@ -343,7 +342,7 @@ function App() {
 
     let new_anom = null
     let new_tag  = tag.current
-    let old_value = anom.value
+    let old_value = anomValues.value
     let old_text = old_value[last_index.current].text
     let old_tag = old_value[last_index.current].tag
     let new_value = []
@@ -351,7 +350,7 @@ function App() {
     if (e.target.value === "Single") {
       
       if (new_tag == "Remove") {
-        let old_tag = anom.tag
+        let old_tag = anomValues.tag
         let slice_1 = old_value.slice(0, last_index.current)
         let slice_2 = old_value.slice(last_index.current + 1)
         new_value = slice_1.concat(slice_2)
@@ -367,7 +366,7 @@ function App() {
           tag: new_tag
         }
       }
-      setAnom(new_anom);
+      setAnomValues(new_anom);
     }
 
     else if (e.target.value === "All-Equal") {
@@ -393,7 +392,7 @@ function App() {
           value: new_value,
           tag: old_tag
         }
-        setAnom(new_anom);
+        setAnomValues(new_anom);
       }
 
     }
@@ -421,7 +420,7 @@ function App() {
           value: new_value,
           tag: old_tag
         }
-        setAnom(new_anom);
+        setAnomValues(new_anom);
       }
     }
 
@@ -546,8 +545,8 @@ function App() {
 
   })
 
-    if (anom === null) {
-      setAnom({
+    if (anomValues === null) {
+      setAnomValues({
         value: final_entities,
         tag: "PER"
       })
@@ -572,7 +571,7 @@ function App() {
       }
       
       // Normal iteration
-      raw_text += " " + line.trim() + " "
+      raw_text += " " + line.trim()
     }
 
     // Seperate raw_text into the zones with and without formating
@@ -609,7 +608,7 @@ function App() {
           type: "normal",
           start_index: iteration_beginning,
           end_index: start_index,
-          value:normal
+          value: normal
         })
 
         iteration_beginning = end_index + 1
@@ -623,7 +622,7 @@ function App() {
         type: "normal",
         start_index: iteration_beginning,
         end_index: start_index,
-        value:normal
+        value: normal
       })
 
       formating = raw_text.substring(start_index, closing_tag_index + closing_tag.length)
@@ -631,18 +630,110 @@ function App() {
         type: "format",
         start_index: start_index,
         end_index: closing_tag_index + closing_tag.length,
-        value:formating
+        value: formating
       })
 
-      console.log(tag)
-      console.log(closing_tag)
-
-      iteration_beginning = end_index + 1
-
-      break
+      iteration_beginning = closing_tag_index + closing_tag.length
     }
     
-    console.log(format_tokens)
+    //console.log(format_tokens)
+
+    // Process format_tokens into final tokens
+    let final_tokens = []
+    let opening_tags = []
+    let closing_tags = []
+    let next_tag_index = 0
+    let text = ""
+    let text_tokens = []
+    
+    for (let f_token of format_tokens) {
+      console.log(f_token.value)
+      if (f_token.type === "normal") {
+        final_tokens = final_tokens.concat(f_token.value.split(" "))
+      }
+      else if (f_token.type === "format") {
+        opening_tags = []
+        closing_tags = []
+        iteration_beginning = 0
+
+        // while é a primeira iteracao ou opening tags ta vazio / qd o index chegou ao fim?
+        do {
+
+          // Starting tag
+          start_index = f_token.value.indexOf("<", iteration_beginning)
+          end_index = f_token.value.indexOf(">", start_index)
+          tag = f_token.value.substring(start_index+1, end_index)
+          temp_split = tag.split(" ")
+
+          
+          // If we are still finding new tags
+          if (!temp_split[0].includes("/")) {
+            // Add them to the tags arrays
+            opening_tags.push("<" + tag + ">")
+            closing_tag = "</" + temp_split[0] + ">"
+            closing_tags.push(closing_tag)
+          }
+          // If we are closing older tags
+          else {
+            // Search for the next tag to close from array
+            closing_tag = closing_tags[closing_tags.length - 1]
+          }
+
+          next_tag_index = f_token.value.indexOf("<", end_index + 1)
+          closing_tag_index = f_token.value.indexOf(closing_tag, end_index + 1)
+
+          console.log("start_index: ", start_index)
+          console.log("end_index: ", end_index)
+          console.log("next_tag_index: ", next_tag_index)
+          console.log("closing_tag_index: ", closing_tag_index)
+          console.log("tag: ", tag)
+          console.log("closing tag: ", closing_tag)
+          console.log(opening_tags)
+          console.log(closing_tags)
+
+          // If there is text until next tag
+          if (next_tag_index !== end_index + 1 && next_tag_index !== -1 && closing_tag_index !== -1) {
+            console.log("FIRST CASE")
+            // Add text until next tag with its proper tags
+            text = f_token.value.substring(end_index + 1, next_tag_index)
+            console.log("text:" ,text)
+            text_tokens = text.split(" ")
+            for (let t of text_tokens) {
+              if (t !== "") {
+                // Add all necessary tags
+                let txt = ""
+                for (let ta of opening_tags) {
+                  txt += ta
+                }
+                txt += t
+                for (let ta of closing_tags) {
+                  txt += ta
+                }
+                console.log("PUSHED: ", txt)
+                final_tokens.push(txt)
+              }
+            }
+          }
+
+          // If the next tag after starting tag is the corresponding closing tag then close tags
+          if (closing_tag_index === next_tag_index) {
+            console.log("SECOND CASE")
+            opening_tags.pop()
+            closing_tags.pop()
+            iteration_beginning = closing_tag_index + closing_tag.length
+          }
+          // If not, open next set of tags
+          else {
+            console.log("THIRD CASE")
+            iteration_beginning = next_tag_index
+          }
+          
+        } while (opening_tags.length !== 0)
+        break
+      }
+    }
+
+    //console.log(final_tokens)
 
     //   let split_mark_1 = line.split("<mark")
 
@@ -659,8 +750,8 @@ function App() {
     //     console.log(word)
     // }
 
-    setAnomText(raw_text)
-    setAnom({
+    setAnomTokens(final_tokens)
+    setAnomValues({
       value: [{start: 0, end:1, tag: "PER"}],
       tag: "PER"
     })
@@ -699,19 +790,19 @@ function App() {
 
     if (mode === "Doccano") {
 
-      if (anom === null || anom_text === null) {
+      if (anomValues === null || anomTokens === null) {
         return <></>
       }
       return (
         <div className='Text'>
             <TokenAnnotator
-              tokens={anom_text.split(" ")}
-              value={anom.value}
+              tokens={anomTokens}
+              value={anomValues.value}
               onNewEntitie={handleNewEntitie}
               onEntitieChange={handleEntitieChange}
               getSpan={span => ({
                 ...span,
-                tag: anom.tag,
+                tag: anomValues.tag,
               })}
             />
         </div>
