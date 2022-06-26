@@ -718,10 +718,14 @@ function App() {
             }
           }
 
-          // TODO: FALTA O CASO EM Q A TAG E A PROPRIA ENDING TAG
-
+          // If tag in question is its own the closing tag
+          if (start_index === closing_tag_index) {
+            opening_tags.pop()
+            closing_tags.pop()
+            iteration_beginning = end_index + 1
+          }
           // If the next tag after starting tag is the corresponding closing tag then close tags
-          if (closing_tag_index === next_tag_index) {
+          else if (closing_tag_index === next_tag_index) {
             console.log("FIRST CASE - If the next tag after starting tag is the corresponding closing tag then close tags")
             opening_tags.pop()
             closing_tags.pop()
@@ -738,7 +742,7 @@ function App() {
       }
     }
 
-    //console.log(final_tokens)
+    console.log(final_tokens)
 
     //   let split_mark_1 = line.split("<mark")
 
