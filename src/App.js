@@ -602,7 +602,7 @@ function App() {
       closing_tag = tag .replace("<", "</")
 
       // Ignore <p> and </p>
-      if (tag === "<p>" || tag === "</p>"){
+      if (tag === "<p>" || tag === "</p>" || temp_split[0] === "section" || temp_split[0] === "hr" || temp_split[0] === "ol" || temp_split[0] === "li"){
         normal = raw_text.substring(iteration_beginning, end_index + 1)
         format_tokens.push({
           type: "normal",
@@ -696,7 +696,6 @@ function App() {
 
           // If there is text until next tag
           if (next_tag_index !== end_index + 1 && next_tag_index !== -1 && closing_tag_index !== -1) {
-            console.log("if there is text until next tag")
             // Add text until next tag with its proper tags
             text = f_token.value.substring(end_index + 1, next_tag_index)
             console.log("text:" ,text)
@@ -726,19 +725,17 @@ function App() {
           }
           // If the next tag after starting tag is the corresponding closing tag then close tags
           else if (closing_tag_index === next_tag_index) {
-            console.log("FIRST CASE - If the next tag after starting tag is the corresponding closing tag then close tags")
             opening_tags.pop()
             closing_tags.pop()
             iteration_beginning = closing_tag_index + closing_tag.length
           }
           // If not, open next set of tags
           else {
-            console.log("SECOND CASE")
             iteration_beginning = next_tag_index
           }
           
         } while (opening_tags.length !== 0)
-        break
+        //break
       }
     }
 
