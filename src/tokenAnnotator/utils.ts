@@ -39,6 +39,7 @@ export const splitTokensWithOffsets = (text, offsets: {start: number; end: numbe
     let {start, end} = offset
     start = start - value_offset
     end = end - value_offset
+    let true_end = false
 
     // Consider out of bounds offsets
     console.log("text: ", text)
@@ -53,17 +54,18 @@ export const splitTokensWithOffsets = (text, offsets: {start: number; end: numbe
       continue
     }
     // If offset starts before set of tokens, but ends within set of tokens
-    else if (start < 0 && end > 0 && end <= text.length - 1) {
+    else if (start < 0 && end > 0 && end <= text.length) {
       console.log("Case 2")
       start = 0
+      true_end = true
     }
     // If offset is within the set of tokens
-    else if (start >= 0 && start < text.length - 1 && end > 0 && end <= text.length - 1) {
+    else if (start >= 0 && start < text.length && end > 0 && end <= text.length) {
       console.log("Case 3")
-      // Do nothing
+      true_end = true
     }
-    // If offeset starts within set of tokemns, but ends outside set of tokens
-    else if (start >= 0 && start < text.length - 1 && end > text.length - 1) {
+    // If offeset starts within set of tokens, but ends outside set of tokens
+    else if (start >= 0 && start < text.length - 1 && end > text.length) {
       console.log("Case 4")
       end = text.length
     }
@@ -72,8 +74,8 @@ export const splitTokensWithOffsets = (text, offsets: {start: number; end: numbe
       console.log("Case 5")
       continue
     }
-    // If offeset ocupies entire set of tokens
-    else if (start < 0 && end > text.length - 1) {
+    // If offeset ocupies entire set of tokens and beyond
+    else if (start < 0 && end > text.length) {
       console.log("Case 6")
       start = 0
       end = text.length
@@ -92,6 +94,7 @@ export const splitTokensWithOffsets = (text, offsets: {start: number; end: numbe
     splits.push({
       ...offset,
       mark: true,
+      true_end: true_end,
       content: text.slice(start, end).join(' '),
     })
     lastEnd = end

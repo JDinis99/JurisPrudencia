@@ -758,8 +758,8 @@ function App() {
 
     setAnomTokens(final_tokens)
     setAnomValues({
-      //value: [],
-      value: [{start: 10, end:11, tag: "PER"}],
+      value: [],
+      //value: [{start: 0, end:6, tag: "PER"}],
       tag: "PER"
     })
   }

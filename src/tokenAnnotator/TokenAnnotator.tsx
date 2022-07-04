@@ -1,6 +1,7 @@
 import React, {useState} from 'react'
 
 import Mark, {MarkProps} from './Mark.tsx'
+import MarkNoTag, {MarkNoTagProps} from './Mark_no_tag.tsx'
 import {selectionIsEmpty, selectionIsBackwards, splitTokensWithOffsets} from './utils.ts'
 import {Span} from './span.ts'
 import parse from 'html-react-parser';
@@ -33,9 +34,11 @@ export interface TokenAnnotatorProps<T>
 
 const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   const renderMark = props.renderMark || (props => <Mark {...props} />)
+  const renderMarkNoTag = props.renderMark || (props => <MarkNoTag {...props} />)
 
   let res : any[] = []
   let split_i : any = 0
+  let data_i : any = 0
 
   const getSpan = (span: TokenSpan): T => {
     if (props.getSpan) return props.getSpan(span)
@@ -130,18 +133,29 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     const splits = splitTokensWithOffsets(tokens, value, split_i)
     splits.forEach(split => {
       if (split.mark) {
-        let mark = renderMark({
-          key: `${split.start}-${split.end}`,
-          ...split,
-          onClick: handleSplitClick,
-        })
-        tmp_res.push(mark)
+        if (split.true_end){
+          let mark = renderMark({
+            key: `${split.start}-${split.end}`,
+            ...split,
+            onClick: handleSplitClick,
+          })
+          tmp_res.push(mark)
+        }
+        else {
+          let mark = renderMarkNoTag({
+            key: `${split.start}-${split.end}`,
+            ...split,
+            onClick: handleSplitClick,
+          })
+          tmp_res.push(mark)
+        }
       }
       else {
         if (split.content) {
-          tmp_res.push(tokenFunction(split_i, split.content))
+          tmp_res.push(tokenFunction(data_i, split.content))
         }
       }
+      data_i++
     });
     split_i += tokens.length
     return tmp_res
