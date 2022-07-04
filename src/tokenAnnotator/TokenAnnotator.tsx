@@ -1,4 +1,5 @@
 import React, {useState} from 'react'
+import ReactDOMServer from 'react-dom/server'
 
 import Mark, {MarkProps} from './Mark.tsx'
 import MarkNoTag, {MarkNoTagProps} from './Mark_no_tag.tsx'
@@ -162,47 +163,21 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   }
 
   const iterateSplits = (token_list, value) => {
-    if (token_list.tag === "normal") {
+    if (token_list.open_tag === "normal") {
       let tmp = calculateSplits(token_list.tokens, value)
       return tmp
     }
-    else if (token_list.tag === "ol") {
+    else {
       let final_tmp: any[] = []
       token_list.tokens.forEach(element => {
         let tmp :any = iterateSplits(element, value)
         final_tmp.push(tmp)
       });
+
+      let string = token_list.open_tag + ReactDOMServer.renderToString(final_tmp) + token_list.close_tag
       
       return(
-        <ol>
-          {final_tmp}
-        </ol>
-      )
-    }
-    else if (token_list.tag === "li") {
-      let final_tmp: any[] = []
-      token_list.tokens.forEach(element => {
-        let tmp :any = iterateSplits(element, value)
-        final_tmp.push(tmp)
-      });
-      
-      return(
-        <li>
-          {final_tmp}
-        </li>
-      )
-    }
-    else if (token_list.tag === "strong") {
-      let final_tmp: any[] = []
-      token_list.tokens.forEach(element => {
-        let tmp :any = iterateSplits(element, value)
-        final_tmp.push(tmp)
-      });
-      
-      return(
-        <strong>
-          {final_tmp}
-        </strong>
+        parse(string)
       )
     }
   }

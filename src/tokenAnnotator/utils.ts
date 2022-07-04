@@ -42,46 +42,33 @@ export const splitTokensWithOffsets = (text, offsets: {start: number; end: numbe
     let true_end = false
 
     // Consider out of bounds offsets
-    console.log("text: ", text)
-    console.log("text lenght: ", text.length)
-    console.log("start: ", start)
-    console.log("end: ", end)
-    console.log("value_offset: ", value_offset)
 
     // If offset is before this set of tokens
     if (start < 0 && end <=0) {
-      console.log("Case 1")
       continue
     }
     // If offset starts before set of tokens, but ends within set of tokens
     else if (start < 0 && end > 0 && end <= text.length) {
-      console.log("Case 2")
       start = 0
       true_end = true
     }
     // If offset is within the set of tokens
     else if (start >= 0 && start < text.length && end > 0 && end <= text.length) {
-      console.log("Case 3")
       true_end = true
     }
     // If offeset starts within set of tokens, but ends outside set of tokens
     else if (start >= 0 && start < text.length - 1 && end > text.length) {
-      console.log("Case 4")
       end = text.length
     }
     // If offset is after the set of tokens
     else if (start > text.length - 1 && end > text.length - 1) {
-      console.log("Case 5")
       continue
     }
     // If offeset ocupies entire set of tokens and beyond
     else if (start < 0 && end > text.length) {
-      console.log("Case 6")
       start = 0
       end = text.length
     }
-      console.log("End of cases")
-      console.log("-------------------------------")
 
     if (lastEnd < start) {
       for (let i = lastEnd; i < start; i++) {

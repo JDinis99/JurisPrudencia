@@ -805,19 +805,23 @@ function App() {
           tokens: [
             {
               tokens: ["item", "outside", "1" ,"item", "outside", "1"],
-              tag: "normal"
+              open_tag: "normal",
+              close_tag: "normal"
             }
           ],
-          tag: "strong"
+          open_tag: "<strong>",
+          close_tag: "</strong>"
         },
         {
           tokens: [
             {
               tokens: ["item-0", "item-0"],
-              tag: "normal"
+              open_tag: "normal",
+              close_tag: "normal"
             }
           ],
-          tag: ""
+          open_tag: "<li>",
+          close_tag: "</li>"
         },
         {
           tokens: [
@@ -825,26 +829,32 @@ function App() {
               tokens: [
                 {
                   tokens: ["item-1", "item-1"],
-                  tag: "normal"
+                  open_tag: "normal",
+                  close_tag: "normal"
                 }
               ],
-              tag: "li"
+              open_tag: "<li>",
+              close_tag: "</li>"
             },
             {
               tokens: [
                 {
                   tokens: ["item-2", "item-2"],
-                  tag: "normal"
+                  open_tag: "normal",
+                  close_tag: "normal"
                 }
               ],
-              tag: "li"
+              open_tag: "<li>",
+              close_tag: "</li>"
             }
           ],
-          tag: "ol"
+          open_tag: "<ol>",
+          close_tag: "</ol>"
         },
         {
           tokens: ["item-outside-2"],
-          tag: "normal"
+          open_tag: "normal",
+          close_tag: "normal"
         },
       ]
       return (
