@@ -429,9 +429,7 @@ function App() {
   
   const log = () => {
     if (editorRef.current) {
-      //console.log(editorRef.current.getContent());
       let test = editorRef.current.selection.select(editorRef.current.dom.select('s')[0])
-      console.log(test)
       test.scrollIntoView({behavior: "instant", block: "center", inline: "nearest"});
     }
   }
@@ -583,9 +581,10 @@ function App() {
 
     let temp_tag = text.substring(start_index + 1,end_index)
     let temp_split = temp_tag.split(" ")
-    let tag = "<" + temp_split + ">"
+    let tag = "<" + temp_split[0] + ">"
     let closing_tag = tag.replace("<", "</")
     let closing_tag_index = text.indexOf(closing_tag, end_index)
+    tag = "<" + temp_tag + ">"
 
     // If there is text before the tag
     if (start_index !== 0) {
@@ -597,24 +596,30 @@ function App() {
       })
     }
 
-    // Iterate over main tags
-    let new_text = text.substring(end_index+1, closing_tag_index)
-    let tmp_res = iterateHtml(new_text)
-    res.push({
-      tokens: tmp_res,
-      open_tag: tag,
-      close_tag: closing_tag
-    })
-
-
-    // If there is text after the tag
-    if (closing_tag_index !== text.length - closing_tag.length) {
-      let final_text = text.substring(closing_tag_index + closing_tag.length, text.length)
-      res.push({
-        tokens: final_text.split(" "),
+    // If there is no closing tag (ex: single tag <hr>)
+    if (closing_tag_index === -1) {
+      res = res.concat({
+        tokens: [tag],
         open_tag: "normal",
         close_tag: "normal"
       })
+    }
+    else {
+      // Iterate over main tags
+      let new_text = text.substring(end_index+1, closing_tag_index)
+      let tmp_res = iterateHtml(new_text)
+      res.push({
+        tokens: tmp_res,
+        open_tag: tag,
+        close_tag: closing_tag
+      })
+    }
+
+    // If there is text after the tag
+    if (closing_tag_index !== text.length - closing_tag.length) {
+      let final_text = text.substring(closing_tag_index + closing_tag.length+1, text.length)
+      let tmp_res = iterateHtml(final_text)
+      res = res.concat(tmp_res)
     }
 
     return res
@@ -685,63 +690,6 @@ function App() {
       if (anomValues === null || anomTokens === null) {
         return <></>
       }
-      let test_tokens = [
-        {
-          tokens: [
-            {
-              tokens: ["item", "outside", "1" ,"item", "outside", "1"],
-              open_tag: "normal",
-              close_tag: "normal"
-            }
-          ],
-          open_tag: "<strong>",
-          close_tag: "</strong>"
-        },
-        {
-          tokens: [
-            {
-              tokens: ["item-0", "item-0"],
-              open_tag: "normal",
-              close_tag: "normal"
-            }
-          ],
-          open_tag: "<li>",
-          close_tag: "</li>"
-        },
-        {
-          tokens: [
-            {
-              tokens: [
-                {
-                  tokens: ["item-1", "item-1"],
-                  open_tag: "normal",
-                  close_tag: "normal"
-                }
-              ],
-              open_tag: "<li>",
-              close_tag: "</li>"
-            },
-            {
-              tokens: [
-                {
-                  tokens: ["item-2", "item-2"],
-                  open_tag: "normal",
-                  close_tag: "normal"
-                }
-              ],
-              open_tag: "<li>",
-              close_tag: "</li>"
-            }
-          ],
-          open_tag: "<ol>",
-          close_tag: "</ol>"
-        },
-        {
-          tokens: ["item-outside-2"],
-          open_tag: "normal",
-          close_tag: "normal"
-        },
-      ]
       return (
         <div className='Text'>
             <TokenAnnotator
