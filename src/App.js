@@ -555,6 +555,71 @@ function App() {
     return text
   }
 
+  function iterateHtml (text) {
+    let res = []
+    let start_index = text.indexOf("<")
+
+    // If there are no more tags
+    if (start_index === -1){
+      return ([{
+        tokens: text.split(" "),
+        open_tag: "normal",
+        close_tag: "normal"
+      }])
+    }
+
+    let end_index = text.indexOf(">", start_index)
+
+    // If there are no more tags
+    if (end_index === -1){
+      return ([{
+        tokens: text.split(" "),
+        open_tag: "normal",
+        close_tag: "normal"
+      }])
+    }
+
+    // If there are tags
+
+    let temp_tag = text.substring(start_index + 1,end_index)
+    let temp_split = temp_tag.split(" ")
+    let tag = "<" + temp_split + ">"
+    let closing_tag = tag.replace("<", "</")
+    let closing_tag_index = text.indexOf(closing_tag, end_index)
+
+    // If there is text before the tag
+    if (start_index !== 0) {
+      let initial_text = text.substring(0, start_index)
+      res.push({
+        tokens: initial_text.split(" "),
+        open_tag: "normal",
+        close_tag: "normal"
+      })
+    }
+
+    // Iterate over main tags
+    let new_text = text.substring(end_index+1, closing_tag_index)
+    let tmp_res = iterateHtml(new_text)
+    res.push({
+      tokens: tmp_res,
+      open_tag: tag,
+      close_tag: closing_tag
+    })
+
+
+    // If there is text after the tag
+    if (closing_tag_index !== text.length - closing_tag.length) {
+      let final_text = text.substring(closing_tag_index + closing_tag.length, text.length)
+      res.push({
+        tokens: final_text.split(" "),
+        open_tag: "normal",
+        close_tag: "normal"
+      })
+    }
+
+    return res
+  }
+
   function readHtml () {
     let raw_text = ""
     
@@ -574,187 +639,7 @@ function App() {
       raw_text += " " + line.trim()
     }
 
-    // Seperate raw_text into the zones with and without formating
-    let format_tokens = []
-    let iteration_beginning = 0
-    let start_index = 0
-    let end_index = 0
-    let closing_tag_index = 0
-    let tag = ""
-    let temp_tag = ""
-    let temp_split = []
-    let closing_tag = ""
-    let formating = ""
-    let normal = ""
-
-    while (true) {
-      start_index = raw_text.indexOf("<", iteration_beginning)
-
-      // If there are no more tags
-      if (start_index === -1){
-        break
-      }
-
-      end_index = raw_text.indexOf(">", start_index)
-      temp_tag = raw_text.substring(start_index + 1,end_index)
-      temp_split = temp_tag.split(" ")
-      tag = "<" + temp_split[0] + ">"
-      closing_tag = tag .replace("<", "</")
-
-      // Ignore <p> and </p>
-      if (tag === "<p>" || tag === "</p>" || temp_split[0] === "section" || temp_split[0] === "hr" || temp_split[0] === "ol" || temp_split[0] === "li"){
-        normal = raw_text.substring(iteration_beginning, end_index + 1)
-        format_tokens.push({
-          type: "normal",
-          start_index: iteration_beginning,
-          end_index: start_index,
-          value: normal
-        })
-
-        iteration_beginning = end_index + 1
-        continue
-      }
-
-      closing_tag_index = raw_text.indexOf(closing_tag, end_index)
-
-      normal = raw_text.substring(iteration_beginning, start_index)
-      format_tokens.push({
-        type: "normal",
-        start_index: iteration_beginning,
-        end_index: start_index,
-        value: normal
-      })
-
-      formating = raw_text.substring(start_index, closing_tag_index + closing_tag.length)
-      format_tokens.push({
-        type: "format",
-        start_index: start_index,
-        end_index: closing_tag_index + closing_tag.length,
-        value: formating
-      })
-
-      iteration_beginning = closing_tag_index + closing_tag.length
-    }
-    
-    //console.log(format_tokens)
-
-    // Process format_tokens into final tokens
-    let final_tokens = []
-    let opening_tags = []
-    let closing_tags = []
-    let next_tag_index = 0
-    let text = ""
-    let text_tokens = []
-
-    // <strong>II – <em>Acórdão do <mark role="ORG">Tribunal da Relação de Coimbra</mark></em></strong>
-    
-    for (let f_token of format_tokens) {
-      //console.log(f_token.value)
-      if (f_token.type === "normal") {
-        final_tokens = final_tokens.concat(f_token.value.split(" "))
-      }
-      else if (f_token.type === "format") {
-        opening_tags = []
-        closing_tags = []
-        iteration_beginning = 0
-
-        // while é a primeira iteracao ou opening tags ta vazio / qd o index chegou ao fim?
-        do {
-
-          // Starting tag
-          start_index = f_token.value.indexOf("<", iteration_beginning)
-          end_index = f_token.value.indexOf(">", start_index)
-          tag = f_token.value.substring(start_index+1, end_index)
-          temp_split = tag.split(" ")
-
-          
-          // If we are still finding new tags
-          if (!temp_split[0].includes("/")) {
-            // Add them to the tags arrays
-            opening_tags.push("<" + tag + ">")
-            closing_tag = "</" + temp_split[0] + ">"
-            closing_tags.push(closing_tag)
-            closing_tag_index = f_token.value.indexOf(closing_tag, end_index)
-          }
-          // If we are closing older tags
-          else {
-            // Search for the next tag to close from array
-            closing_tag = closing_tags[closing_tags.length - 1]
-            closing_tag_index = f_token.value.indexOf(closing_tag, start_index)
-          }
-
-          next_tag_index = f_token.value.indexOf("<", end_index + 1)
-
-          // console.log("start_index: ", start_index)
-          // console.log("end_index: ", end_index)
-          // console.log("next_tag_index: ", next_tag_index)
-          // console.log("closing_tag_index: ", closing_tag_index)
-          // console.log("tag: ", tag)
-          // console.log("closing tag: ", closing_tag)
-          // console.log(opening_tags)
-          // console.log(closing_tags)
-
-          // If there is text until next tag
-          if (next_tag_index !== end_index + 1 && next_tag_index !== -1 && closing_tag_index !== -1) {
-            // Add text until next tag with its proper tags
-            text = f_token.value.substring(end_index + 1, next_tag_index)
-            //console.log("text:" ,text)
-            text_tokens = text.split(" ")
-            for (let t of text_tokens) {
-              if (t !== "") {
-                // Add all necessary tags
-                let txt = ""
-                for (let ta of opening_tags) {
-                  txt += ta
-                }
-                txt += t
-                for (let ta of closing_tags) {
-                  txt += ta
-                }
-                //console.log("PUSHED: ", txt)
-                final_tokens.push(txt)
-              }
-            }
-          }
-
-          // If tag in question is its own the closing tag
-          if (start_index === closing_tag_index) {
-            opening_tags.pop()
-            closing_tags.pop()
-            iteration_beginning = end_index + 1
-          }
-          // If the next tag after starting tag is the corresponding closing tag then close tags
-          else if (closing_tag_index === next_tag_index) {
-            opening_tags.pop()
-            closing_tags.pop()
-            iteration_beginning = closing_tag_index + closing_tag.length
-          }
-          // If not, open next set of tags
-          else {
-            iteration_beginning = next_tag_index
-          }
-          
-        } while (opening_tags.length !== 0)
-        //break
-      }
-    }
-
-    //console.log(final_tokens)
-
-    //   let split_mark_1 = line.split("<mark")
-
-    //   let first = true
-    //   for(let s of split_mark_1) {
-    //     if (first){
-    //       first = false
-    //       continue
-    //     }
-
-    //     let split_mark_2 = s.split('">')
-    //     let split_mark_3 = split_mark_2[1].split('</mark>')
-    //     let word = split_mark_3[0]
-    //     console.log(word)
-    // }
+    let final_tokens = iterateHtml(raw_text)
 
     setAnomTokens(final_tokens)
     setAnomValues({
@@ -860,8 +745,8 @@ function App() {
       return (
         <div className='Text'>
             <TokenAnnotator
-              //tokens={anomTokens}
-              tokens={test_tokens}
+              tokens={anomTokens}
+              //tokens={test_tokens}
               value={anomValues.value}
               onNewEntitie={handleNewEntitie}
               onEntitieChange={handleEntitieChange}
