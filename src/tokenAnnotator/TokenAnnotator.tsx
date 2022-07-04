@@ -13,16 +13,16 @@ interface TokenProps {
 interface TokenSpan {
   start: number
   end: number
-  tokens: string[]
+  tokens: any[]
 }
 
-const Token: React.SFC<TokenProps> = props => {
-  return <span data-i={props.i}>{parse(props.content)} </span>
+function tokenFunction(i, content){
+  return <span data-i={i}>{parse(content)} </span>
 }
 
 export interface TokenAnnotatorProps<T>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
-  tokens: string[]
+  tokens: any[]
   value: T[]
   onNewEntitie: (value: T[], p) => any
   onEntitieChange: (index, p) => any
@@ -33,6 +33,9 @@ export interface TokenAnnotatorProps<T>
 
 const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   const renderMark = props.renderMark || (props => <Mark {...props} />)
+
+  let res : any[] = []
+  let split_i : any = 0
 
   const getSpan = (span: TokenSpan): T => {
     if (props.getSpan) return props.getSpan(span)
@@ -96,7 +99,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     //     return false
     //   }
     // }
-    // console.log("AHHHHHHHH - 2")
+    // //console.log("AHHHHHHHH - 2")
 
     // let start = parseInt(selection.anchorNode.parentElement.getAttribute('data-i'), 10)
     // let end = parseInt(selection.focusNode.parentElement.getAttribute('data-i'), 10)
@@ -122,21 +125,83 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     }
   }
 
+  const calculateSplits = (tokens, value) => {
+    let tmp_res : any[] = []
+    const splits = splitTokensWithOffsets(tokens, value, split_i)
+    splits.forEach(split => {
+      if (split.mark) {
+        let mark = renderMark({
+          key: `${split.start}-${split.end}`,
+          ...split,
+          onClick: handleSplitClick,
+        })
+        tmp_res.push(mark)
+      }
+      else {
+        if (split.content) {
+          tmp_res.push(tokenFunction(split_i, split.content))
+        }
+      }
+    });
+    split_i += tokens.length
+    return tmp_res
+  }
+
+  const iterateSplits = (token_list, value) => {
+    if (token_list.tag === "normal") {
+      let tmp = calculateSplits(token_list.tokens, value)
+      return tmp
+    }
+    else if (token_list.tag === "ol") {
+      let final_tmp: any[] = []
+      token_list.tokens.forEach(element => {
+        let tmp :any = iterateSplits(element, value)
+        final_tmp.push(tmp)
+      });
+      
+      return(
+        <ol>
+          {final_tmp}
+        </ol>
+      )
+    }
+    else if (token_list.tag === "li") {
+      let final_tmp: any[] = []
+      token_list.tokens.forEach(element => {
+        let tmp :any = iterateSplits(element, value)
+        final_tmp.push(tmp)
+      });
+      
+      return(
+        <li>
+          {final_tmp}
+        </li>
+      )
+    }
+    else if (token_list.tag === "strong") {
+      let final_tmp: any[] = []
+      token_list.tokens.forEach(element => {
+        let tmp :any = iterateSplits(element, value)
+        final_tmp.push(tmp)
+      });
+      
+      return(
+        <strong>
+          {final_tmp}
+        </strong>
+      )
+    }
+  }
+
   const {tokens, value, onNewEntitie, onEntitieChange, getSpan: _, ...divProps} = props
-  const splits = splitTokensWithOffsets(tokens, value)
+  tokens.forEach(element => {
+    let tmp: any = iterateSplits(element, value)
+    res.push(tmp)
+  });
+
   return (
     <div {...divProps} onMouseUp={handleMouseUp}>
-      {splits.map((split, i) =>
-        split.mark ? (
-          renderMark({
-            key: `${split.start}-${split.end}`,
-            ...split,
-            onClick: handleSplitClick,
-          })
-        ) : (
-          <Token key={split.i} {...split} />
-        )
-      )}
+      {res}
     </div>
   )
 }

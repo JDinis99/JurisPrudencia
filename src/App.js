@@ -649,7 +649,7 @@ function App() {
     // <strong>II – <em>Acórdão do <mark role="ORG">Tribunal da Relação de Coimbra</mark></em></strong>
     
     for (let f_token of format_tokens) {
-      console.log(f_token.value)
+      //console.log(f_token.value)
       if (f_token.type === "normal") {
         final_tokens = final_tokens.concat(f_token.value.split(" "))
       }
@@ -685,20 +685,20 @@ function App() {
 
           next_tag_index = f_token.value.indexOf("<", end_index + 1)
 
-          console.log("start_index: ", start_index)
-          console.log("end_index: ", end_index)
-          console.log("next_tag_index: ", next_tag_index)
-          console.log("closing_tag_index: ", closing_tag_index)
-          console.log("tag: ", tag)
-          console.log("closing tag: ", closing_tag)
-          console.log(opening_tags)
-          console.log(closing_tags)
+          // console.log("start_index: ", start_index)
+          // console.log("end_index: ", end_index)
+          // console.log("next_tag_index: ", next_tag_index)
+          // console.log("closing_tag_index: ", closing_tag_index)
+          // console.log("tag: ", tag)
+          // console.log("closing tag: ", closing_tag)
+          // console.log(opening_tags)
+          // console.log(closing_tags)
 
           // If there is text until next tag
           if (next_tag_index !== end_index + 1 && next_tag_index !== -1 && closing_tag_index !== -1) {
             // Add text until next tag with its proper tags
             text = f_token.value.substring(end_index + 1, next_tag_index)
-            console.log("text:" ,text)
+            //console.log("text:" ,text)
             text_tokens = text.split(" ")
             for (let t of text_tokens) {
               if (t !== "") {
@@ -711,7 +711,7 @@ function App() {
                 for (let ta of closing_tags) {
                   txt += ta
                 }
-                console.log("PUSHED: ", txt)
+                //console.log("PUSHED: ", txt)
                 final_tokens.push(txt)
               }
             }
@@ -739,7 +739,7 @@ function App() {
       }
     }
 
-    console.log(final_tokens)
+    //console.log(final_tokens)
 
     //   let split_mark_1 = line.split("<mark")
 
@@ -758,7 +758,8 @@ function App() {
 
     setAnomTokens(final_tokens)
     setAnomValues({
-      value: [{start: 0, end:1, tag: "PER"}],
+      //value: [],
+      value: [{start: 10, end:11, tag: "PER"}],
       tag: "PER"
     })
   }
@@ -799,10 +800,58 @@ function App() {
       if (anomValues === null || anomTokens === null) {
         return <></>
       }
+      let test_tokens = [
+        {
+          tokens: [
+            {
+              tokens: ["item", "outside", "1" ,"item", "outside", "1"],
+              tag: "normal"
+            }
+          ],
+          tag: "strong"
+        },
+        {
+          tokens: [
+            {
+              tokens: ["item-0", "item-0"],
+              tag: "normal"
+            }
+          ],
+          tag: ""
+        },
+        {
+          tokens: [
+            {
+              tokens: [
+                {
+                  tokens: ["item-1", "item-1"],
+                  tag: "normal"
+                }
+              ],
+              tag: "li"
+            },
+            {
+              tokens: [
+                {
+                  tokens: ["item-2", "item-2"],
+                  tag: "normal"
+                }
+              ],
+              tag: "li"
+            }
+          ],
+          tag: "ol"
+        },
+        {
+          tokens: ["item-outside-2"],
+          tag: "normal"
+        },
+      ]
       return (
         <div className='Text'>
             <TokenAnnotator
-              tokens={anomTokens}
+              //tokens={anomTokens}
+              tokens={test_tokens}
               value={anomValues.value}
               onNewEntitie={handleNewEntitie}
               onEntitieChange={handleEntitieChange}
