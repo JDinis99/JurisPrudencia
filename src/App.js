@@ -230,7 +230,6 @@ function getAllEntities() {
 
 function App() {
   const editorRef = useRef(null);
-  const [mode, setMode] = useState("Doccano")
   const [anomTokens, setAnomTokens] = useState(null)
   const [anomValues, setAnomValues] = useState(null)
   const last_index = useRef(0)
@@ -240,6 +239,8 @@ function App() {
     top: 0,
     showMenu: false
   })
+  let tokenCounter = 0
+  let value = []
 
   const [popUpMenu, setPopUpMenu] = useState({
     showMenu: false,
@@ -254,8 +255,6 @@ function App() {
   })
 
   useEffect(() => {
-    //getAllEntities()
-    //setAnomTokens(anomText())
     readHtml()
   }, [])
 
@@ -426,13 +425,7 @@ function App() {
 
   }
 
-  
-  const log = () => {
-    if (editorRef.current) {
-      let test = editorRef.current.selection.select(editorRef.current.dom.select('s')[0])
-      test.scrollIntoView({behavior: "instant", block: "center", inline: "nearest"});
-    }
-  }
+
 
   function Side() {
     return (
@@ -442,116 +435,19 @@ function App() {
     )
   }
 
-  function changeMode() {
-    if (mode === "Editor") {
-      setMode("Doccano")
-    }
-    if (mode === "Doccano") {
-      setMode("Editor")
-    }
-  }
-
   function Header() {
     return (
       <>
         <header className='PageHeader'>
           Header
         </header>
-        <button onClick={changeMode}>
+        <button>
           Mode change
         </button>
       </>
       )
   }
 
-  const text = () => {
-    let text = ""
-    example_json.forEach(function(value) {
-      let anonimized_text = value.text
-      let anonimization = ""
-      let substituion = ""
-      value.entities.forEach(function(entitie) {
-        if (entitie[0] === "ORG") {
-          let substituion = "Substitute ORG"
-          anonimization = "<font color=red><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
-          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
-        }
-        if (entitie[0] === "PER") {
-          let substituion = "Substitute PER"
-          anonimization = "<font color=green><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
-          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
-        }
-        if (entitie[0] === "DAT") {
-          let substituion = "Substitute DAT"
-          anonimization = "<font color=brown><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
-          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
-        }
-        if (entitie[0] === "LOC") {
-          let substituion = "Substitute LOC"
-          anonimization = "<font color=blue><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
-          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
-        }
-        if (entitie[0] === "PRO") {
-          let substituion = "Substitute PRO"
-          anonimization = "<font color=yellow><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
-          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
-        }
-        if (entitie[0] === "MAT") {
-          let substituion = "Substitute MAT"
-          anonimization = "<font color=red><b><strike>" + entitie[3] + "</b></strike> " + substituion + "</font>"
-          anonimized_text = anonimized_text.replace(entitie[3], anonimization)
-        }
-      })
-      text += '<p>' + anonimized_text + '</p>'
-    })
-
-    return text
-  }
-
-  const anomText = () => {
-    let text = ""
-    let final_entities = []
-
-    // Counter for words not characters
-    let counter = 0
-    example_json.forEach(function(value) {
-
-      value.entities.forEach(function(entitie) {
-        let type = entitie[0]
-        let tmp_str = value.text.slice(0, entitie[1])
-
-        let start = counter + tmp_str.split(" ").length
-        let end = start + entitie[3].split(" ").length
-
-        let final_entitie = {
-          start: start,
-          end: end,
-          tag: type,
-          text: entitie[3]
-        }
-
-        final_entities.push(final_entitie)
-      })
-      if (value.text === "") {
-        text += "\n"
-      }
-      else {
-        counter += value.text.split(" ").length + 1
-        text += " " + value.text + " \n"
-
-      }
-
-  })
-
-    if (anomValues === null) {
-      setAnomValues({
-        value: final_entities,
-        tag: "PER"
-      })
-    }
-
-    return text
-  }
 
   function iterateHtml (text) {
     let res = []
@@ -559,8 +455,12 @@ function App() {
 
     // If there are no more tags
     if (start_index === -1){
+    let split = text.trim().split(" ")
+      tokenCounter += split.length
+      // console.log("adding lenght: ", split.length)
+      // console.log("new counter: ", tokenCounter)
       return ([{
-        tokens: text.split(" "),
+        tokens: split,
         open_tag: "normal",
         close_tag: "normal"
       }])
@@ -570,8 +470,12 @@ function App() {
 
     // If there are no more tags
     if (end_index === -1){
+      let split = text.trim().split(" ")
+      tokenCounter += split.length
+      // console.log("adding lenght: ", split.length)
+      // console.log("new counter: ", tokenCounter)
       return ([{
-        tokens: text.split(" "),
+        tokens: split,
         open_tag: "normal",
         close_tag: "normal"
       }])
@@ -589,20 +493,40 @@ function App() {
     // If there is text before the tag
     if (start_index !== 0) {
       let initial_text = text.substring(0, start_index)
-      res.push({
-        tokens: initial_text.split(" "),
-        open_tag: "normal",
-        close_tag: "normal"
-      })
+      let split = initial_text.trim().split(" ")
+      if (split[0] !== "") {
+        tokenCounter += split.length
+        // console.log("adding lenght: ", split.length)
+        // console.log("new counter: ", tokenCounter)
+        res.push({
+          tokens: split,
+          open_tag: "normal",
+          close_tag: "normal"
+        })
+      }
     }
 
     // If there is no closing tag (ex: single tag <hr>)
     if (closing_tag_index === -1) {
+      tokenCounter += 1
       res = res.concat({
         tokens: [tag],
         open_tag: "normal",
         close_tag: "normal"
       })
+    }
+    // If it is a mark tag
+    else if (temp_split[0] === "mark") {
+      let new_text = text.substring(end_index+1, closing_tag_index)
+      let split = new_text.trim().split(" ")
+      let role = temp_split[1].substring(6,9)
+      value.push({
+        start: tokenCounter,
+        end: tokenCounter + split.length,
+        tag: role
+      })
+      let tmp_res = iterateHtml(new_text)
+      res = res.concat(tmp_res)
     }
     else {
       // Iterate over main tags
@@ -627,6 +551,7 @@ function App() {
 
   function readHtml () {
     let raw_text = ""
+    value = []
     
     // Join main relevant html into a single string
     let split = new_example_html.split("\n")
@@ -648,64 +573,31 @@ function App() {
 
     setAnomTokens(final_tokens)
     setAnomValues({
-      value: [],
+      value: value,
+      //value: [],
       //value: [{start: 0, end:6, tag: "PER"}],
       tag: "PER"
     })
   }
 
   function box() {
-
-    if (mode === "Editor") {
-      return (
-        <>
-          <Editor tinymceScriptSrc="http://localhost:3000/tinymce/js/tinymce/tinymce.min.js"
-            onInit={(evt, editor) => editorRef.current = editor}
-            initialValue={text()}
-            init={{
-              toolbar_sticky: true,
-              menubar: 'tools',
-              plugins: [
-                'advlist autolink lists link image charmap print preview anchor',
-                'searchreplace visualblocks code fullscreen',
-                'insertdatetime media table paste code help wordcount',
-                'autoresize',
-                'importcss',
-                'example',
-                'code'
-              ],
-              toolbar: 'undo redo | formatselect | ' +
-              'bold italic backcolor | alignleft aligncenter ' +
-              'alignright alignjustify | bullist numlist outdent indent | ' +
-              'removeformat | help | code | example',
-            }}
+    if (anomValues === null || anomTokens === null) {
+      return <></>
+    }
+    return (
+      <div className='Text'>
+          <TokenAnnotator
+            tokens={anomTokens}
+            value={anomValues.value}
+            onNewEntitie={handleNewEntitie}
+            onEntitieChange={handleEntitieChange}
+            getSpan={span => ({
+              ...span,
+              tag: anomValues.tag,
+            })}
           />
-          <button onClick={log}>Log editor content</button>
-        </>
-      )
-    }
-
-    if (mode === "Doccano") {
-
-      if (anomValues === null || anomTokens === null) {
-        return <></>
-      }
-      return (
-        <div className='Text'>
-            <TokenAnnotator
-              tokens={anomTokens}
-              //tokens={test_tokens}
-              value={anomValues.value}
-              onNewEntitie={handleNewEntitie}
-              onEntitieChange={handleEntitieChange}
-              getSpan={span => ({
-                ...span,
-                tag: anomValues.tag,
-              })}
-            />
-        </div>
-      )
-    }
+      </div>
+    )
 
   }
   
@@ -718,10 +610,14 @@ function App() {
 
       {box()}
 
+      <OutsideClickHandler onOutsideClick={() => {setMenuStyle({left:0,top: 0, showMenu: false})}}>
         {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
+      </OutsideClickHandler>
 
       <div className='PopUp'>
+        <OutsideClickHandler onOutsideClick={() => {setPopUpMenu({showMenu: false, entities: {"PER":0, "DAT":0, "ORG":0, "LOC":0, "PRO":0, "MAT":0}})}}>
           {PopUpMenu(popUpMenu.showMenu, handleMultipleTagChange, popUpMenu.entities)}
+        </OutsideClickHandler>
       </div>
 
     </div>
