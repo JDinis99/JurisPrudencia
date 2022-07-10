@@ -465,8 +465,8 @@ function App() {
       // console.log("new counter: ", tokenCounter)
       return ([{
         tokens: split,
-        open_tag: "normal",
-        close_tag: "normal"
+        tag: "normal",
+        props: {}
       }])
     }
 
@@ -480,8 +480,8 @@ function App() {
       // console.log("new counter: ", tokenCounter)
       return ([{
         tokens: split,
-        open_tag: "normal",
-        close_tag: "normal"
+        tag: "normal",
+        close_tag: {}
       }])
     }
 
@@ -504,8 +504,8 @@ function App() {
         // console.log("new counter: ", tokenCounter)
         res.push({
           tokens: split,
-          open_tag: "normal",
-          close_tag: "normal"
+          tag: "normal",
+          close_tag: {}
         })
       }
     }
@@ -515,8 +515,8 @@ function App() {
       tokenCounter += 1
       res = res.concat({
         tokens: [tag],
-        open_tag: "normal",
-        close_tag: "normal"
+        tag: "normal",
+        close_tag: {}
       })
     }
     // If it is a mark tag
@@ -536,10 +536,15 @@ function App() {
       // Iterate over main tags
       let new_text = text.substring(end_index+1, closing_tag_index)
       let tmp_res = iterateHtml(new_text)
+      let props = {}
+      for (let i = 1; i < temp_split.length; i++) {
+        let another_split = temp_split[i].split("=")
+        props[another_split[0]] = another_split[1]
+      }
       res.push({
         tokens: tmp_res,
-        open_tag: tag,
-        close_tag: closing_tag
+        tag: temp_split[0],
+        props: props
       })
     }
 

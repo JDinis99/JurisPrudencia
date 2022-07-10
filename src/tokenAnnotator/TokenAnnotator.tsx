@@ -167,7 +167,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   }
 
   const iterateSplits = (token_list, value, onNewEntitie, onEntitieChange, handleSplitClick) => {
-    if (token_list.open_tag === "normal") {
+    if (token_list.tag === "normal") {
       let tmp = calculateSplits(token_list.tokens, value, onNewEntitie, onEntitieChange, handleSplitClick)
       return tmp
     }
@@ -178,10 +178,11 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
         final_tmp.push(tmp)
       });
 
-      let string = token_list.open_tag + ReactDOMServer.renderToString(final_tmp) + token_list.close_tag
+      //let string = token_list.open_tag + ReactDOMServer.renderToString(final_tmp) + token_list.close_tag
+      let element = React.createElement(token_list.tag , token_list.props, final_tmp)
       
       return(
-        parse(string)
+        element
       )
     }
   }
