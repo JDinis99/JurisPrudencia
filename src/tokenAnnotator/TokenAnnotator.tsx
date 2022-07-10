@@ -47,14 +47,17 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   }
 
   const handleMouseUp = () => {
+    console.log("handleMouseUp")
 
     if (!props.onNewEntitie) return
+    console.log("props")
 
     const selection = window.getSelection()
     const r = selection.getRangeAt(0);
     const p = r.getBoundingClientRect();
 
     if (selectionIsEmpty(selection)) return
+    console.log("selection")
     
     let found = false
     let anchor = selection.anchorNode
@@ -119,17 +122,18 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   }
 
   const handleSplitClick = ({start, end}) => {
+    console.log("handleSplitClick")
     const selection = window.getSelection()
     const r = selection.getRangeAt(0);
     const p = r.getBoundingClientRect();
     // Find and remove the matching split.
     const splitIndex = props.value.findIndex(s => s.start === start && s.end === end)
     if (splitIndex >= 0) {
-      props.onEntitieChange(splitIndex, p)
+      onEntitieChange(splitIndex, p)
     }
   }
 
-  const calculateSplits = (tokens, value) => {
+  const calculateSplits = (tokens, value, onNewEntitie, onEntitieChange, handleSplitClick) => {
     let tmp_res : any[] = []
     const splits = splitTokensWithOffsets(tokens, value, split_i)
     splits.forEach(split => {
@@ -162,15 +166,15 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     return tmp_res
   }
 
-  const iterateSplits = (token_list, value) => {
+  const iterateSplits = (token_list, value, onNewEntitie, onEntitieChange, handleSplitClick) => {
     if (token_list.open_tag === "normal") {
-      let tmp = calculateSplits(token_list.tokens, value)
+      let tmp = calculateSplits(token_list.tokens, value, onNewEntitie, onEntitieChange, handleSplitClick)
       return tmp
     }
     else {
       let final_tmp: any[] = []
       token_list.tokens.forEach(element => {
-        let tmp :any = iterateSplits(element, value)
+        let tmp :any = iterateSplits(element, value, onNewEntitie, onEntitieChange, handleSplitClick)
         final_tmp.push(tmp)
       });
 
@@ -184,7 +188,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
 
   const {tokens, value, onNewEntitie, onEntitieChange, getSpan: _, ...divProps} = props
   tokens.forEach(element => {
-    let tmp: any = iterateSplits(element, value)
+    let tmp: any = iterateSplits(element, value, onNewEntitie, onEntitieChange, handleSplitClick)
     res.push(tmp)
   });
 
