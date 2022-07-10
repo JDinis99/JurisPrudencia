@@ -259,7 +259,6 @@ function App() {
   }, [])
 
   const handleNewEntitie = (value, p) => {
-    console.log("handleNewEntitie: ", value)
     // TODO: Update ALL Entitites based on new value
     setMenuStyle({
       left: p.left,
@@ -276,7 +275,6 @@ function App() {
   }
 
   const handleEntitieChange = (index, p) => {
-    console.log("handleEntitieChange: ", index)
     setMenuStyle({
       left: p.left,
       top: p.top + 10,
@@ -287,7 +285,6 @@ function App() {
   }
 
   const handleTagChange = e => {
-    console.log("handleTagChange: ", e)
     setMenuStyle({
       left: 0,
       top: 0,
@@ -329,7 +326,6 @@ function App() {
   }
 
   const handleMultipleTagChange = e => {
-    console.log("handleMultipleTagChange: ", e)
 
     setPopUpMenu({
       showMenu: false,
@@ -527,7 +523,8 @@ function App() {
       value.push({
         start: tokenCounter,
         end: tokenCounter + split.length,
-        tag: role
+        tag: role,
+        text: new_text
       })
       let tmp_res = iterateHtml(new_text)
       res = res.concat(tmp_res)

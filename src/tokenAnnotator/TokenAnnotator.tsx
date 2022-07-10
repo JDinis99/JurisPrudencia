@@ -47,17 +47,14 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   }
 
   const handleMouseUp = () => {
-    console.log("handleMouseUp")
 
     if (!props.onNewEntitie) return
-    console.log("props")
 
     const selection = window.getSelection()
     const r = selection.getRangeAt(0);
     const p = r.getBoundingClientRect();
 
     if (selectionIsEmpty(selection)) return
-    console.log("selection")
     
     let found = false
     let anchor = selection.anchorNode
@@ -117,12 +114,14 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
 
     end += 1
 
+    // console.log(anchor)
+    // console.log(focus)
+
     props.onNewEntitie([...props.value, getSpan({start, end, tokens: props.tokens.slice(start, end)})], p)
     window.getSelection().empty()
   }
 
   const handleSplitClick = ({start, end}) => {
-    console.log("handleSplitClick")
     const selection = window.getSelection()
     const r = selection.getRangeAt(0);
     const p = r.getBoundingClientRect();
@@ -145,6 +144,9 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
             onClick: handleSplitClick,
           })
           tmp_res.push(mark)
+          let split_length = split.content.split(" ")
+          console.log(split_length.length)
+          data_i += split_length.length
         }
         else {
           let mark = renderMarkNoTag({
@@ -153,14 +155,16 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
             onClick: handleSplitClick,
           })
           tmp_res.push(mark)
+          let split_length = split.content.split(" ")
+          data_i += split_length.length
         }
       }
       else {
         if (split.content) {
           tmp_res.push(tokenFunction(data_i, split.content))
         }
+        data_i++
       }
-      data_i++
     });
     split_i += tokens.length
     return tmp_res
