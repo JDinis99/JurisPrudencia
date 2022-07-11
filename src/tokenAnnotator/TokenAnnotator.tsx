@@ -26,7 +26,7 @@ export interface TokenAnnotatorProps<T>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   tokens: any[]
   value: T[]
-  onNewEntitie: (value: T[], p) => any
+  onNewEntitie: (value: T[], p, text) => any
   onEntitieChange: (index, p) => any
   getSpan?: (span: TokenSpan) => T
   renderMark?: (props: MarkProps) => JSX.Element
@@ -57,13 +57,17 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     if (selectionIsEmpty(selection)) return
     
     let found = false
+    // Anchor is first word
     let anchor = selection.anchorNode
+    // Focus is last word
     let focus = selection.focusNode
 
     let start = 0
     let end = 0
     let max_iter = 5
     let current_iter = 0
+
+    let text = ""
 
     while (!found) {
       // Avoid infinite loops
@@ -86,38 +90,27 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
       }
     }
 
-    // if (!found) {
-    //   window.getSelection().empty()
-    //     return false
-    // }
-
-    // if (
-    //   !selection.anchorNode.parentElement.hasAttribute('data-i') ||
-    //   !selection.focusNode.parentElement.hasAttribute('data-i')
-    // ) {
-    //   if (
-    //     !selection.anchorNode.parentElement.parentElement.hasAttribute('data-i') ||
-    //     !selection.focusNode.parentElement.parentElement.hasAttribute('data-i')
-    //   ) {
-    //     window.getSelection().empty()
-    //     return false
-    //   }
-    // }
-    // //console.log("AHHHHHHHH - 2")
-
-    // let start = parseInt(selection.anchorNode.parentElement.getAttribute('data-i'), 10)
-    // let end = parseInt(selection.focusNode.parentElement.getAttribute('data-i'), 10)
-
     if (selectionIsBackwards(selection)) {
       ;[start, end] = [end, start]
     }
 
     end += 1
 
-    // console.log(anchor)
-    // console.log(focus)
+    // If we only selected 1 word
+    if (start === end - 1) {
+      text = anchor.textContent
+    }
+    // If we selected more words
+    else {
+      let split =  selection?.toString().split(" ")
+      text = anchor.textContent + " "
+      for (let i = 1; i < split?.length-1; i++) {
+        text += split[i] + " "
+      }
+      text += focus.textContent
+    }
 
-    props.onNewEntitie([...props.value, getSpan({start, end, tokens: props.tokens.slice(start, end)})], p)
+    props.onNewEntitie([...props.value, getSpan({start, end, tokens: props.tokens.slice(start, end)})], p, text)
     window.getSelection().empty()
   }
 

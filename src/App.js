@@ -258,7 +258,7 @@ function App() {
     readHtml()
   }, [])
 
-  const handleNewEntitie = (value, p) => {
+  const handleNewEntitie = (value, p, text) => {
     // TODO: Update ALL Entitites based on new value
     setMenuStyle({
       left: p.left,
@@ -266,6 +266,7 @@ function App() {
       showMenu: true
     })
     let old_tag = anomValues.tag
+    value[value.length - 1].text = text
     let new_anom = {
       value: value,
       tag: old_tag
