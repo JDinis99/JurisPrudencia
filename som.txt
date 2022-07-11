@@ -1,0 +1,4 @@
+Ler o texto dos tokens
+Corrigir erro de variavel nao chamar funcao de juntar
+Corrrigir erro de formatação
+Popular a lista de entidades

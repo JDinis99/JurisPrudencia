@@ -1,0 +1,5 @@
+TODO:
+
+Considerar o caso: <i> something <b> more somethings </b> yet another something </i>
+
+Fazer com q novas entidades tenham o conteudo no js
