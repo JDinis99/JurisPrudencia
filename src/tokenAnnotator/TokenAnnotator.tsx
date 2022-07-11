@@ -145,7 +145,6 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
           })
           tmp_res.push(mark)
           let split_length = split.content.split(" ")
-          console.log(split_length.length)
           data_i += split_length.length
         }
         else {

@@ -457,8 +457,6 @@ function App() {
     if (start_index === -1){
     let split = text.trim().split(" ")
       tokenCounter += split.length
-      // console.log("adding lenght: ", split.length)
-      // console.log("new counter: ", tokenCounter)
       return ([{
         tokens: split,
         tag: "normal",
@@ -472,12 +470,10 @@ function App() {
     if (end_index === -1){
       let split = text.trim().split(" ")
       tokenCounter += split.length
-      // console.log("adding lenght: ", split.length)
-      // console.log("new counter: ", tokenCounter)
       return ([{
         tokens: split,
         tag: "normal",
-        close_tag: {}
+        props: {}
       }])
     }
 
@@ -496,12 +492,10 @@ function App() {
       let split = initial_text.trim().split(" ")
       if (split[0] !== "") {
         tokenCounter += split.length
-        // console.log("adding lenght: ", split.length)
-        // console.log("new counter: ", tokenCounter)
         res.push({
           tokens: split,
           tag: "normal",
-          close_tag: {}
+          props: {}
         })
       }
     }
@@ -512,7 +506,7 @@ function App() {
       res = res.concat({
         tokens: [tag],
         tag: "normal",
-        close_tag: {}
+        props: {}
       })
     }
     // If it is a mark tag
@@ -547,7 +541,7 @@ function App() {
 
     // If there is text after the tag
     if (closing_tag_index !== text.length - closing_tag.length) {
-      let final_text = text.substring(closing_tag_index + closing_tag.length+1, text.length)
+      let final_text = text.substring(closing_tag_index + closing_tag.length, text.length)
       let tmp_res = iterateHtml(final_text)
       res = res.concat(tmp_res)
     }
