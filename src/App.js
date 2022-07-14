@@ -1,16 +1,14 @@
 import './styles/App.css';
 import React, { useRef, useState, useEffect } from 'react';
-import { Editor } from '@tinymce/tinymce-react';
 
+import entitieOption from './components/entitieOption';
 import Sidebar from './components/sidebar';
-
 import TokenAnnotator from './tokenAnnotator/TokenAnnotator.tsx';
 import ActionMenu from './components/actionMenu';
 import PopUpMenu from './components/popUpMenu';
 import OutsideClickHandler from 'react-outside-click-handler';
 
-import {useMousePos} from "./utils/useMousePos";
-
+import Button from '@mui/material/Button';
 
 const example_json = require("./data/example.json");
 
@@ -18,218 +16,9 @@ const example_json = require("./data/example.json");
 var new_example_html_file = require('raw-loader!./data/new_example_2.html');
 var new_example_html = new_example_html_file.default;
 
-//const new_example_html = require("./data/new_example_2.html");
-
-
-// Dictionary of entities by type, that is a dictionary of entitie name whose key is a list occurences of entitie
-let allEntities = [
-  {
-    id: "ORG",
-    label: "Organizacoes",
-    expanded: true,
-    children: []
-  },
-  {
-    id: "PER",
-    label: "Pessoas",
-    expanded: true,
-    children: []
-  },
-  {
-    id: "DAT",
-    label: "Datas",
-    expanded: true,
-    children: []
-  },
-  {
-    id: "LOC",
-    label: "Localizacoes",
-    expanded: true,
-    children: []
-  },
-  {
-    id: "PRO",
-    label: "Processos",
-    expanded: true,
-    children: []
-  },
-  {
-    id: "MAT",
-    label: "Matriculas",
-    expanded: true,
-    children: []
-  }
-]
-
-function createChild (entitie) {
-  let new_child = {
-    id: entitie[3],
-    label: entitie[3],
-    expanded: true,
-    children: [
-      {
-        id: entitie[1].toString(),
-        label: entitie[1].toString(),
-        data: entitie
-      }
-    ]
-  }
-  return new_child
-}
-
-  
-function getAllEntities() {
-  
-  example_json.forEach(function (value) {
-    value.entities.forEach(function (entitie) {
-
-      let found = false
-
-      // Divide entities per type
-      if (entitie[0] === "ORG") {
-
-        allEntities[0].children.forEach(function (child) {
-          // If entitie has been found before
-          if (child.id === entitie[3]) {
-            found = true
-            // Add entitie to children of child
-            child.children.push( {
-              id: entitie[1].toString(),
-              label: entitie[1].toString(),
-            })
-          }
-        })
-    
-        // If entitie has not been found before
-        if (found === false) {
-          // Create new child and add entitie to that child's children
-          let new_child = createChild(entitie) 
-          allEntities[0].children.push(new_child)
-        }
-      }
-      if (entitie[0] === "PER") {
-
-        allEntities[1].children.forEach(function (child) {
-          // If entitie has been found before
-          if (child.id === entitie[3]) {
-            found = true
-            // Add entitie to children of child
-            child.children.push( {
-              id: entitie[1].toString(),
-              label: entitie[1].toString(),
-            })
-          }
-        })
-    
-        // If entitie has not been found before
-        if (found === false) {
-          // Create new child and add entitie to that child's children
-          let new_child = createChild(entitie)
-          allEntities[1].children.push(new_child)
-        }
-      }
-      if (entitie[0] === "DAT") {
-
-        allEntities[2].children.forEach(function (child) {
-          // If entitie has been found before
-          if (child.id === entitie[3]) {
-            found = true
-            // Add entitie to children of child
-            child.children.push( {
-              id: entitie[1].toString(),
-              label: entitie[1].toString(),
-            })
-          }
-        })
-    
-        // If entitie has not been found before
-        if (found === false) {
-          // Create new child and add entitie to that child's children
-          let new_child = createChild(entitie)
-          allEntities[2].children.push(new_child)
-        }
-      }
-      if (entitie[0] === "LOC") {
-        
-        allEntities[3].children.forEach(function (child) {
-          // If entitie has been found before
-          if (child.id === entitie[3]) {
-            found = true
-            // Add entitie to children of child
-            child.children.push( {
-              id: entitie[1].toString(),
-              label: entitie[1].toString(),
-            })
-          }
-        })
-    
-        // If entitie has not been found before
-        if (found === false) {
-          // Create new child and add entitie to that child's children
-          let new_child = createChild(entitie)
-          allEntities[3].children.push(new_child)
-        }
-      }
-      if (entitie[0] === "PRO") {
-        
-        allEntities[4].children.forEach(function (child) {
-          // If entitie has been found before
-          if (child.id === entitie[3]) {
-            found = true
-            // Add entitie to children of child
-            child.children.push( {
-              id: entitie[1].toString(),
-              label: entitie[1].toString(),
-            })
-          }
-        })
-    
-        // If entitie has not been found before
-        if (found === false) {
-          // Create new child and add entitie to that child's children
-          let new_child = createChild(entitie)
-          allEntities[3].children.push(new_child)
-        }
-      }
-      if (entitie[0] === "MAT") {
-        
-        allEntities[5].children.forEach(function (child) {
-          // If entitie has been found before
-          if (child.id === entitie[3]) {
-            found = true
-            // Add entitie to children of child
-            child.children.push( {
-              id: entitie[1].toString(),
-              label: entitie[1].toString(),
-            })
-          }
-        })
-    
-        // If entitie has not been found before
-        if (found === false) {
-          // Create new child and add entitie to that child's children
-          let new_child = createChild(entitie)
-          allEntities[3].children.push(new_child)
-        }
-      }
-    })
-  })
-
-  // Sorting
-  for (let i = 0; i < allEntities.length; i++) {
-    allEntities[i].children.sort(function (a, b) {
-      if (a.id < b.id)
-        return -1;
-      else
-        return 1;
-    })
-  }
-
-}
-
 
 function App() {
-  const editorRef = useRef(null);
+  const [allEntities, setAllEntites] = useState(null)
   const [anomTokens, setAnomTokens] = useState(null)
   const [anomValues, setAnomValues] = useState(null)
   const last_index = useRef(0)
@@ -241,6 +30,7 @@ function App() {
   })
   let tokenCounter = 0
   let value = []
+  let value_sidebar = useRef(null)
 
   const [popUpMenu, setPopUpMenu] = useState({
     showMenu: false,
@@ -267,6 +57,8 @@ function App() {
     })
     let old_tag = anomValues.tag
     value[value.length - 1].text = text
+    addToSidebar(value[value.length - 1].text, value[value.length - 1].tag, "AA", value.length - 1)
+    setAllEntites(value_sidebar.current)
     let new_anom = {
       value: value,
       tag: old_tag
@@ -358,6 +150,8 @@ function App() {
           value: new_value,
           tag: old_tag
         }
+        removeFromSidebar(old_value[last_index.current].start)
+        setAllEntites(value_sidebar.current)
       }
       else {
         old_value[last_index.current].tag = new_tag
@@ -365,6 +159,8 @@ function App() {
           value: old_value,
           tag: new_tag
         }
+        changeSidebar(old_value[last_index.current].text, new_tag, old_value[last_index.current].start)
+        setAllEntites(value_sidebar.current)
       }
       setAnomValues(new_anom);
     }
@@ -426,14 +222,25 @@ function App() {
 
   }
 
-
-
   function Side() {
-    return (
-      <div className='SideBar'>
-        <Sidebar allMenuItems={allEntities}/>
+    let res = []
+    if (allEntities != null) {
+
+      for (let entitie of allEntities) {
+        res.push(entitieOption(entitie.text, entitie.tag, "AA"))
+      }
+      return (
+        <div className='SideBar'>
+        {res}
       </div>
     )
+  }
+
+    // return (
+    //   <div className='SideBar'>
+    //     <Sidebar allMenuItems={allEntities}/>
+    //   </div>
+    // )
   }
 
   function Header() {
@@ -442,13 +249,88 @@ function App() {
         <header className='PageHeader'>
           Header
         </header>
-        <button>
-          Mode change
-        </button>
+
+        <div className='FlexButtonContainer'>
+          <div className='OptionButton'>
+            <Button variant="contained">Zoom</Button>
+          </div>
+          <div className='OptionButton'>
+            <Button variant="outlined" className='OptionButton'>Feature</Button>
+          </div>
+        </div>
       </>
       )
   }
 
+  function addToSidebar(text, role, id) {
+    let found = false
+    for (let entitie of value_sidebar.current) {
+      if (entitie.text.includes(text) && role == entitie.tag) {
+        found = true
+        entitie.ids.push(id)
+        break
+      }
+    }
+
+    if (found == false) {
+      value_sidebar.current.push({
+        text: [text],
+        ids: [id],
+        tag: role
+      })
+    }
+  }
+
+  function removeFromSidebar(id) {
+    let last = null
+    let counter = 0
+
+    for (let entitie of value_sidebar.current) {
+      if (entitie.ids.includes(id)) {
+        let indice = entitie.ids.indexOf(id)
+
+        let slice_1 = entitie.ids.slice(0, indice)
+        let slice_2 = entitie.ids.slice(indice+1)
+        entitie.ids = slice_1.concat(slice_2)
+
+        console.log(entitie.ids)
+
+        if (entitie.ids.length == 0) {
+          last = true
+        }
+        else {
+          last = false
+        }
+        break
+      }
+      counter++
+    }
+
+    if (last == true) {
+      let slice_1 = value_sidebar.current.slice(0, counter)
+      let slice_2 = value_sidebar.current.slice(counter+1)
+      value_sidebar.current = slice_1.concat(slice_2)
+    }
+  }
+  
+  function changeSidebar(text, new_tag, id) {
+    for (let entitie of value_sidebar.current) {
+      if (entitie.ids.includes(id)) {
+        // If it is an entitie with a single id
+        if (entitie.ids.length == 1) {
+          // Simply Change Tag
+          entitie.tag = new_tag
+        }
+        // If there are multiple ids 
+        else {
+          // Remove current id from sidebar
+          removeFromSidebar(id)
+          // And re-add it with new tag
+          addToSidebar(text, new_tag, id)
+        }
+      }
+    }
+  }
 
   function iterateHtml (text) {
     let res = []
@@ -479,7 +361,6 @@ function App() {
     }
 
     // If there are tags
-
     let temp_tag = text.substring(start_index + 1,end_index)
     let temp_split = temp_tag.split(" ")
     let tag = "<" + temp_split[0] + ">"
@@ -521,6 +402,7 @@ function App() {
         tag: role,
         text: new_text
       })
+      addToSidebar(new_text, role, tokenCounter)
       let tmp_res = iterateHtml(new_text)
       res = res.concat(tmp_res)
     }
@@ -553,6 +435,7 @@ function App() {
   function readHtml () {
     let raw_text = ""
     value = []
+    value_sidebar.current = []
     
     // Join main relevant html into a single string
     let split = new_example_html.split("\n")
@@ -572,6 +455,7 @@ function App() {
 
     let final_tokens = iterateHtml(raw_text)
 
+    setAllEntites(value_sidebar.current)
     setAnomTokens(final_tokens)
     setAnomValues({
       value: value,
@@ -587,16 +471,16 @@ function App() {
     }
     return (
       <div className='Text'>
-          <TokenAnnotator
-            tokens={anomTokens}
-            value={anomValues.value}
-            onNewEntitie={handleNewEntitie}
-            onEntitieChange={handleEntitieChange}
-            getSpan={span => ({
-              ...span,
-              tag: anomValues.tag,
-            })}
-          />
+        <TokenAnnotator
+          tokens={anomTokens}
+          value={anomValues.value}
+          onNewEntitie={handleNewEntitie}
+          onEntitieChange={handleEntitieChange}
+          getSpan={span => ({
+            ...span,
+            tag: anomValues.tag,
+          })}
+        />
       </div>
     )
 
@@ -607,9 +491,10 @@ function App() {
     <div className="App">
       {Header()}
 
-      {Side()}
-
-      {box()}
+      <div className='FlexContainer'>
+        {box()}
+        {Side()}
+      </div>
 
       <OutsideClickHandler onOutsideClick={() => {setMenuStyle({left:0,top: 0, showMenu: false})}}>
         {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}

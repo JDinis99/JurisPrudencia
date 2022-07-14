@@ -2,11 +2,32 @@
   text-align: center;
 }
 
+.FlexButtonContainer {
+  display: flex;
+  justify-content: center;
+  position: sticky;
+  top: 0;
+  background-color: rgb(193, 225, 233);
+  padding-top: 10px;
+  padding-bottom: 20px;
+}
+
+.OptionButton {
+  margin-left: 5px;
+  margin-right: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+.FlexContainer {
+  display: flex;
+  background-color: rgb(232, 236, 237);
+}
+
 .SideBar {
   width: 20%;
   height: 100vh;
   text-align: left;
-  float: left;
   overflow: auto;
   position: sticky;
   top: 0;
@@ -24,8 +45,43 @@
 }
 
 .Text {
-  text-align: left;
-  width: 80%;
-  float: right;
+  text-align: justify;
+  width: 70%;
   white-space: pre-wrap;
+  margin-left: 100px;
+  margin-right: 100px;
+  margin-top: 50px;
+  padding-left: 100px;
+  padding-right: 100px;
+  padding-top: 50px;
+  background-color: white;
+}
+
+.EntitieOptionBox {
+  border: black;
+  border-style: solid;
+  border-width: 1px;
+  background-color: white;
+  display: grid;
+  grid-template-columns: 50% 10% 40%;
+  grid-template-rows: auto auto auto;
+  justify-content: space-evenly;
+  row-gap: 5px;
+  padding: 10px 10px 10px 10px;
+  margin: 10px 10px 10px 10px;
+}
+
+.EntitieOptionOptions {
+  display: flex;
+  justify-items: space-around;
+  grid-column: 1 / 4;
+  justify-content: space-around;
+}
+
+.EntitieSection {
+  align-self: center;
+}
+
+.Test {
+  background-color: red;
 }
