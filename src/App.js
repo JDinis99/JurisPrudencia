@@ -31,6 +31,7 @@ function App() {
   let tokenCounter = 0
   let value = []
   let value_sidebar = useRef(null)
+  let selected = useRef([])
 
   const [popUpMenu, setPopUpMenu] = useState({
     showMenu: false,
@@ -57,7 +58,7 @@ function App() {
     })
     let old_tag = anomValues.tag
     value[value.length - 1].text = text
-    addToSidebar(value[value.length - 1].text, value[value.length - 1].tag, "AA", value.length - 1)
+    addToSidebar(value[value.length - 1].text, value[value.length - 1].tag, "AA", value.length - 1, value[value.length - 1].text)
     setAllEntites(value_sidebar.current)
     let new_anom = {
       value: value,
@@ -222,27 +223,6 @@ function App() {
 
   }
 
-  function Side() {
-    let res = []
-    if (allEntities != null) {
-
-      for (let entitie of allEntities) {
-        res.push(entitieOption(entitie.text, entitie.tag, "AA"))
-      }
-      return (
-        <div className='SideBar'>
-        {res}
-      </div>
-    )
-  }
-
-    // return (
-    //   <div className='SideBar'>
-    //     <Sidebar allMenuItems={allEntities}/>
-    //   </div>
-    // )
-  }
-
   function Header() {
     return (
       <>
@@ -262,12 +242,42 @@ function App() {
       )
   }
 
-  function addToSidebar(text, role, id) {
+  function handleSelect(id) {
+    selected.current.push(id)
+  }
+
+  function Side() {
+    let res = []
+    if (allEntities != null) {
+      let count = 0
+      for (let entitie of allEntities) {
+        res.push(entitieOption(entitie.text, entitie.tag, "AA", count, handleSelect, handleSplit))
+        count++
+      }
+      return (
+        <div className='SideBar'>
+          <button onClick={handleJoinSidebar}>Join</button>
+          {res}
+        </div>
+    )
+  }
+
+    // return (
+    //   <div className='SideBar'>
+    //     <Sidebar allMenuItems={allEntities}/>
+    //   </div>
+    // )
+  }
+
+  function addToSidebar(text, role, id, compare_text) {
     let found = false
     for (let entitie of value_sidebar.current) {
-      if (entitie.text.includes(text) && role == entitie.tag) {
+      if (entitie.text.includes(compare_text) && role == entitie.tag) {
         found = true
         entitie.ids.push(id)
+        if (text != compare_text) {
+          entitie.text.push(text)
+        }
         break
       }
     }
@@ -293,7 +303,9 @@ function App() {
         let slice_2 = entitie.ids.slice(indice+1)
         entitie.ids = slice_1.concat(slice_2)
 
-        console.log(entitie.ids)
+        slice_1 = entitie.text.slice(0, indice)
+        slice_2 = entitie.text.slice(indice+1)
+        entitie.text = slice_1.concat(slice_2)
 
         if (entitie.ids.length == 0) {
           last = true
@@ -326,10 +338,69 @@ function App() {
           // Remove current id from sidebar
           removeFromSidebar(id)
           // And re-add it with new tag
-          addToSidebar(text, new_tag, id)
+          addToSidebar(text, new_tag, id, text)
         }
       }
     }
+  }
+
+  function handleJoinSidebar() {
+    let first = null
+    let slices = []
+    let last_id = -1
+
+    for (let id of selected.current) {
+      if (first == null) {
+        first = id
+      }
+      else {
+        console.log(value_sidebar.current[first].ids)
+        value_sidebar.current[first].ids = value_sidebar.current[first].ids.concat(value_sidebar.current[id].ids)
+        console.log(value_sidebar.current[first].ids)
+        value_sidebar.current[first].text = value_sidebar.current[first].text.concat(value_sidebar.current[id].text)
+
+        let slice = value_sidebar.current.slice(last_id + 1, id)
+        last_id = id
+        slices.push(slice)
+      }
+    }
+
+    let slice = value_sidebar.current.slice(last_id + 1)
+    slices.push(slice)
+
+    // Remove extra entities
+    let final_value = []
+    for (let slice of slices) {
+      final_value = final_value.concat(slice)
+    }
+
+    value_sidebar.current = final_value
+    console.log(value_sidebar.current)
+    selected.current = []
+    setAllEntites(value_sidebar.current)
+  }
+
+  function handleSplit(list_id) {
+    console.log("Initial split: ", value_sidebar.current)
+
+    for (let i in value_sidebar.current[list_id].ids) {
+      if (i == 0) {
+        continue
+      }
+
+      let text = value_sidebar.current[list_id].text[i]
+      let tag = value_sidebar.current[list_id].tag
+      let id = value_sidebar.current[list_id].ids[i]
+
+      console.log(id)
+      removeFromSidebar(id)
+      console.log("After remove: ", value_sidebar.current)
+      addToSidebar(text, tag, id, text)
+      console.log("After add: ", value_sidebar.current)
+    }
+
+    console.log("Final split: ", value_sidebar.current)
+    setAllEntites(value_sidebar.current)
   }
 
   function iterateHtml (text) {
@@ -402,7 +473,7 @@ function App() {
         tag: role,
         text: new_text
       })
-      addToSidebar(new_text, role, tokenCounter)
+      addToSidebar(new_text, role, tokenCounter, new_text)
       let tmp_res = iterateHtml(new_text)
       res = res.concat(tmp_res)
     }
