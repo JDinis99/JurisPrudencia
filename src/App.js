@@ -256,17 +256,48 @@ function App() {
       }
       return (
         <div className='SideBar'>
-          <button onClick={handleJoinSidebar}>Join</button>
+          <button onClick={handleJoinSidebar}>Merge</button>
+          <button onClick={handleSplit}>Split</button>
+          <button>Remove</button>
+
+          <div className="EntitieOptionBox" id='header'>
+            <div className="EntitieSection">
+              Box
+            </div>
+            <div className="EntitieSection">
+              Entidade
+              <button onClick={handleSortEntitie}>S</button>
+            </div>
+            <div className="EntitieSection">
+              Tipo
+              <button onClick={handleSortType}>S</button>
+            </div>
+            <div className="EntitieSection">
+              Anom
+              <button>S</button>
+            </div>
+          </div>
+
           {res}
         </div>
-    )
+     )
+    }
   }
 
-    // return (
-    //   <div className='SideBar'>
-    //     <Sidebar allMenuItems={allEntities}/>
-    //   </div>
-    // )
+  function handleSortEntitie() {
+    value_sidebar.current.sort(function(a,b) {
+      let s = a.text[0].localeCompare(b.text[0])
+      return s
+    })
+    setAllEntites(value_sidebar.current)
+  }
+
+  function handleSortType() {
+    value_sidebar.current.sort(function(a,b) {
+      let s = a.tag.localeCompare(b.tag)
+      return s
+    })
+    setAllEntites(value_sidebar.current)
   }
 
   function addToSidebar(text, role, id, compare_text) {
@@ -354,9 +385,7 @@ function App() {
         first = id
       }
       else {
-        console.log(value_sidebar.current[first].ids)
         value_sidebar.current[first].ids = value_sidebar.current[first].ids.concat(value_sidebar.current[id].ids)
-        console.log(value_sidebar.current[first].ids)
         value_sidebar.current[first].text = value_sidebar.current[first].text.concat(value_sidebar.current[id].text)
 
         let slice = value_sidebar.current.slice(last_id + 1, id)
@@ -375,31 +404,29 @@ function App() {
     }
 
     value_sidebar.current = final_value
-    console.log(value_sidebar.current)
     selected.current = []
     setAllEntites(value_sidebar.current)
   }
 
-  function handleSplit(list_id) {
-    console.log("Initial split: ", value_sidebar.current)
+  function handleSplit() {
+    console.log(selected.current)
+    for (let list_id of selected.current) {
+      console.log(list_id)
+      for (let i in value_sidebar.current[list_id].ids) {
+        if (i == 0) {
+          continue
+        }
 
-    for (let i in value_sidebar.current[list_id].ids) {
-      if (i == 0) {
-        continue
+        let text = value_sidebar.current[list_id].text[i]
+        let tag = value_sidebar.current[list_id].tag
+        let id = value_sidebar.current[list_id].ids[i]
+
+        removeFromSidebar(id)
+        addToSidebar(text, tag, id, text)
       }
+  }
 
-      let text = value_sidebar.current[list_id].text[i]
-      let tag = value_sidebar.current[list_id].tag
-      let id = value_sidebar.current[list_id].ids[i]
-
-      console.log(id)
-      removeFromSidebar(id)
-      console.log("After remove: ", value_sidebar.current)
-      addToSidebar(text, tag, id, text)
-      console.log("After add: ", value_sidebar.current)
-    }
-
-    console.log("Final split: ", value_sidebar.current)
+    selected.current = []
     setAllEntites(value_sidebar.current)
   }
 

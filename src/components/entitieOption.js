@@ -1,36 +1,26 @@
 import parse from 'html-react-parser';
 
-const entitieOption = (entities, type, anom, id, propSelect, propSplit) => {
+const entitieOption = (entities, type, anom, id, propSelect) => {
   function handleSelect() {
     propSelect(id)
   }
 
-  function handleSplit() {
-    propSplit(id)
-  }
-
   return(
     <div className="EntitieOptionBox">
-      <div className='EntitieSection'>
-        {parse(entities.join('<br />'))}
+      <div className="EntitieSection">
+        <button onClick={handleSelect}> Select </button>
       </div>
 
       <div className='EntitieSection'>
-        to
+        {parse(entities.join('<br />---<br />'))}
+      </div>
+
+      <div className="EntitieSection">
+        {type}
       </div>
 
       <div className='EntitieSection'>
         {anom}
-      </div>
-
-      <div className="EntitieOptionOptions">
-        {type}
-      </div>
-
-      <div className="EntitieOptionOptions">
-        <button onClick={handleSelect}> Select </button>
-        <button onClick={handleSplit}> Split </button>
-        <button> Remove </button>
       </div>
     </div>
   )
