@@ -258,7 +258,7 @@ function App() {
         <div className='SideBar'>
           <button onClick={handleJoinSidebar}>Merge</button>
           <button onClick={handleSplit}>Split</button>
-          <button>Remove</button>
+          <button onClick={handleRemove}>Remove</button>
 
           <div className="EntitieOptionBox" id='header'>
             <div className="EntitieSection">
@@ -425,6 +425,39 @@ function App() {
 
     selected.current = []
     setAllEntites(value_sidebar.current)
+  }
+
+  function handleRemove() {
+    let old_value = anomValues.value
+    let old_tag = anomValues.tag
+    let counter = 0
+    let new_value = null
+
+    for (let list_id of selected.current) {
+      for(let ent_id of value_sidebar.current[list_id].ids) {
+        removeFromSidebar(ent_id)
+
+        counter = 0
+        for (let v of old_value) {
+          if (v.start === ent_id) {
+            let slice_1 = old_value.slice(0, counter)
+            let slice_2 = old_value.slice(counter+1)
+            new_value = slice_1.concat(slice_2)
+            continue
+          }
+          counter ++
+        }
+      }
+      old_value = new_value
+    }
+
+
+    selected.current = []
+    setAllEntites(value_sidebar.current)
+    setAnomValues({
+      value: old_value,
+      tag: old_tag
+    })
   }
 
   function iterateHtml (text) {
