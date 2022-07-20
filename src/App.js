@@ -58,7 +58,7 @@ function App() {
     })
     let old_tag = anomValues.tag
     value[value.length - 1].text = text
-    addToSidebar(value[value.length - 1].text, value[value.length - 1].tag, "AA", value.length - 1, value[value.length - 1].text)
+    addToSidebar(value[value.length - 1].text, value[value.length - 1].tag, value[value.length - 1].start, value.length - 1, value[value.length - 1].text)
     setAllEntites(value_sidebar.current)
     let new_anom = {
       value: value,
@@ -261,9 +261,6 @@ function App() {
           <button>Remove</button>
 
           <div className="EntitieOptionBox" id='header'>
-            <div className="EntitieSection">
-              Box
-            </div>
             <div className="EntitieSection">
               Entidade
               <button onClick={handleSortEntitie}>S</button>

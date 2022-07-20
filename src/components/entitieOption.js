@@ -5,14 +5,27 @@ const entitieOption = (entities, type, anom, id, propSelect) => {
     propSelect(id)
   }
 
+  let res = []
+
+  for (let ent of entities) {
+    res.push(
+      <>
+        <div className="EntitieSection">
+          <button onClick={handleSelect}> Select </button>
+        </div>
+
+        <div className='EntitieSection'>
+          {parse(ent)}
+        </div>
+    </>
+    )
+  }
+
   return(
     <div className="EntitieOptionBox">
-      <div className="EntitieSection">
-        <button onClick={handleSelect}> Select </button>
-      </div>
-
-      <div className='EntitieSection'>
-        {parse(entities.join('<br />---<br />'))}
+      
+      <div className='EntitieText'>
+        {res}
       </div>
 
       <div className="EntitieSection">

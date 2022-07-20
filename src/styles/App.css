@@ -63,8 +63,7 @@
   border-width: 1px;
   background-color: white;
   display: grid;
-  grid-template-columns: 20% 50% 15% 15%;
-  grid-template-rows: auto;
+  grid-template-columns: 70% 15% 15%;
   justify-content: space-evenly;
   padding: 10px 10px 10px 10px;
 }
@@ -80,6 +79,12 @@
   border-width: 1px;
   overflow-wrap: break-word;
   padding: 0px 2px 0px 0px;
+}
+
+.EntitieText {
+  grid-row: 1/2;
+  display: grid;
+  grid-template-columns: 30% 70%;
 }
 
 .Test {
