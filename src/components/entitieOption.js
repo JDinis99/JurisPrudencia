@@ -23,6 +23,10 @@ const entitieOption = (entities, type, anom, id, propSelect) => {
 
   return(
     <div className="EntitieOptionBox">
+
+      <div className='EntitieWholeSelect'>
+        <button onClick={handleSelect}> Whole Select </button>
+      </div>
       
       <div className='EntitieText'>
         {res}
