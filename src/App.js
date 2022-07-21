@@ -10,7 +10,7 @@ import OutsideClickHandler from 'react-outside-click-handler';
 
 import Button from '@mui/material/Button';
 
-const example_json = require("./data/example.json");
+//const example_json = require("./data/example.json");
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 var new_example_html_file = require('raw-loader!./data/new_example_2.html');
@@ -58,7 +58,7 @@ function App() {
     })
     let old_tag = anomValues.tag
     value[value.length - 1].text = text
-    addToSidebar(value[value.length - 1].text, value[value.length - 1].tag, value[value.length - 1].start, value.length - 1, value[value.length - 1].text)
+    addToSidebar(value[value.length - 1].text, value[value.length - 1].tag, [value[value.length - 1].start])
     setAllEntites(value_sidebar.current)
     let new_anom = {
       value: value,
@@ -251,12 +251,12 @@ function App() {
     if (allEntities != null) {
       let count = 0
       for (let entitie of allEntities) {
-        res.push(entitieOption(entitie.text, entitie.tag, "AA", count, handleSelect, handleSplit))
+        res.push(entitieOption(entitie.tokens, entitie.tag, "AA", count, handleSelect, handleSplit))
         count++
       }
       return (
         <div className='SideBar'>
-          <button onClick={handleJoinSidebar}>Merge</button>
+          <button onClick={handleMerge}>Merge</button>
           <button onClick={handleSplit}>Split</button>
           <button onClick={handleRemove}>Remove</button>
 
@@ -283,7 +283,7 @@ function App() {
 
   function handleSortEntitie() {
     value_sidebar.current.sort(function(a,b) {
-      let s = a.text[0].localeCompare(b.text[0])
+      let s = a.tokens[0].text.localeCompare(b.tokens[0].text)
       return s
     })
     setAllEntites(value_sidebar.current)
@@ -297,158 +297,154 @@ function App() {
     setAllEntites(value_sidebar.current)
   }
 
-  function addToSidebar(text, role, id, compare_text) {
+  function addToSidebar(text, role, ids) {
     let found = false
     for (let entitie of value_sidebar.current) {
-      if (entitie.text.includes(compare_text) && role == entitie.tag) {
-        found = true
-        entitie.ids.push(id)
-        if (text != compare_text) {
-          entitie.text.push(text)
+      for (let token of entitie.tokens) {
+        // If it already exists
+        if(token.text === text && role === entitie.tag) {
+          found = true
+          token.ids = token.ids.concat(ids)
+          break
         }
-        break
       }
     }
 
     if (found == false) {
       value_sidebar.current.push({
-        text: [text],
-        ids: [id],
+        tokens: [{
+          text: text,
+          ids: ids
+        }],
         tag: role
       })
     }
   }
 
-  function removeFromSidebar(id) {
+  function removeFromSidebar(id, all) {
     let last = null
     let counter = 0
 
     for (let entitie of value_sidebar.current) {
-      if (entitie.ids.includes(id)) {
-        let indice = entitie.ids.indexOf(id)
+      for(let token of entitie.tokens) {
+        if (token.ids.includes(id)) {
+          // If there is only one token with same text as id or if we want to remove all
+          if (token.ids.length === 0 || all === true) {
+            last = true
+            break
+          }
 
-        let slice_1 = entitie.ids.slice(0, indice)
-        let slice_2 = entitie.ids.slice(indice+1)
-        entitie.ids = slice_1.concat(slice_2)
+          // If not
 
-        slice_1 = entitie.text.slice(0, indice)
-        slice_2 = entitie.text.slice(indice+1)
-        entitie.text = slice_1.concat(slice_2)
+          let indice = token.ids.indexOf(id)
 
-        if (entitie.ids.length == 0) {
-          last = true
+          let slice_1 = token.ids.slice(0, indice)
+          let slice_2 = token.ids.slice(indice+1)
+          token.ids = slice_1.concat(slice_2)
+          break
         }
-        else {
-          last = false
-        }
+      }
+      
+      if (last === true) {
         break
       }
       counter++
     }
 
     if (last == true) {
+      console.log(counter)
       let slice_1 = value_sidebar.current.slice(0, counter)
       let slice_2 = value_sidebar.current.slice(counter+1)
       value_sidebar.current = slice_1.concat(slice_2)
     }
   }
   
-  function changeSidebar(text, new_tag, id) {
+  function changeSidebar(text, new_tag, id, all) {
     for (let entitie of value_sidebar.current) {
-      if (entitie.ids.includes(id)) {
-        // If it is an entitie with a single id
-        if (entitie.ids.length == 1) {
-          // Simply Change Tag
-          entitie.tag = new_tag
-        }
-        // If there are multiple ids 
-        else {
-          // Remove current id from sidebar
-          removeFromSidebar(id)
-          // And re-add it with new tag
-          addToSidebar(text, new_tag, id, text)
+      for (let token of entitie.tokens) {
+        if (token.ids.includes(id)) {
+          // If it is an entitie with a single id or if we whish to change tag for all ids
+          if (token.ids.length === 1 || all === true) {
+            // Simply Change Tag
+            entitie.tag = new_tag
+          }
+          // If there are multiple ids and we only want to change 1
+          else {
+            // Remove current id from sidebar
+            removeFromSidebar(id, false)
+            // And re-add it with new tag
+            addToSidebar(text, new_tag, [id])
+          }
+          break
         }
       }
     }
   }
 
-  function handleJoinSidebar() {
+  function handleMerge() {
     let first = null
-    let slices = []
-    let last_id = -1
 
-    for (let id of selected.current) {
-      if (first == null) {
-        first = id
+    for (let selected_id of selected.current) {
+      if (first === null) {
+        first = selected_id.list_id
       }
       else {
-        value_sidebar.current[first].ids = value_sidebar.current[first].ids.concat(value_sidebar.current[id].ids)
-        value_sidebar.current[first].text = value_sidebar.current[first].text.concat(value_sidebar.current[id].text)
+        let token = value_sidebar.current[selected_id.list_id].tokens[selected_id.token_id]
+        value_sidebar.current[first].tokens.push(token)
 
-        let slice = value_sidebar.current.slice(last_id + 1, id)
-        last_id = id
-        slices.push(slice)
+        // Remove extra tokens
+        removeFromSidebar(token.ids[0], true)
       }
     }
 
-    let slice = value_sidebar.current.slice(last_id + 1)
-    slices.push(slice)
-
-    // Remove extra entities
-    let final_value = []
-    for (let slice of slices) {
-      final_value = final_value.concat(slice)
-    }
-
-    value_sidebar.current = final_value
     selected.current = []
     setAllEntites(value_sidebar.current)
   }
 
   function handleSplit() {
-    console.log(selected.current)
-    for (let list_id of selected.current) {
-      console.log(list_id)
-      for (let i in value_sidebar.current[list_id].ids) {
-        if (i == 0) {
-          continue
-        }
-
-        let text = value_sidebar.current[list_id].text[i]
-        let tag = value_sidebar.current[list_id].tag
-        let id = value_sidebar.current[list_id].ids[i]
-
-        removeFromSidebar(id)
-        addToSidebar(text, tag, id, text)
+    for (let selected_id of selected.current) {
+      // If we split an entitie with a single token then ignore
+      if (value_sidebar.current[selected_id.list_id].tokens === 1) {
+        continue
       }
-  }
+
+      // If entitie has multiple tokens, seperate the selected one from the rest
+      let token = value_sidebar.current[selected_id.list_id].tokens[selected_id.token_id]
+
+      addToSidebar(token.text, token.tag, token.ids)
+      removeFromSidebar(token.ids[0], true)
+      }
 
     selected.current = []
     setAllEntites(value_sidebar.current)
   }
 
   function handleRemove() {
+    let old_value_sidebar = value_sidebar.current
     let old_value = anomValues.value
     let old_tag = anomValues.tag
-    let counter = 0
     let new_value = null
+    let counter = 0
 
-    for (let list_id of selected.current) {
-      for(let ent_id of value_sidebar.current[list_id].ids) {
-        removeFromSidebar(ent_id)
+    for (let selected_id of selected.current) {
+      let token = old_value_sidebar[selected_id.list_id].tokens[selected_id.token_id]
+      console.log(token)
+      removeFromSidebar(token.ids[0], true)
 
+      for (let id of token.ids) {
+        console.log(id)
         counter = 0
         for (let v of old_value) {
-          if (v.start === ent_id) {
+          if (v.start === id) {
             let slice_1 = old_value.slice(0, counter)
             let slice_2 = old_value.slice(counter+1)
             new_value = slice_1.concat(slice_2)
-            continue
+            break
           }
           counter ++
         }
+        old_value = new_value
       }
-      old_value = new_value
     }
 
 
@@ -530,7 +526,7 @@ function App() {
         tag: role,
         text: new_text
       })
-      addToSidebar(new_text, role, tokenCounter, new_text)
+      addToSidebar(new_text, role, [tokenCounter])
       let tmp_res = iterateHtml(new_text)
       res = res.concat(tmp_res)
     }

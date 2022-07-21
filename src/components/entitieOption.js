@@ -1,33 +1,37 @@
 import parse from 'html-react-parser';
 
-const entitieOption = (entities, type, anom, id, propSelect) => {
-  function handleSelect() {
-    propSelect(id)
+const entitieOption = (tokens, type, anom, list_id, propSelect) => {
+
+  function handleSelect(token_id) {
+    propSelect({
+      list_id: list_id,
+      token_id: token_id
+    })
   }
 
-  let res = []
 
-  for (let ent of entities) {
+  let res = []
+  let counter = 0
+
+  for (let token of tokens) {
+    let c = counter
     res.push(
       <>
         <div className="EntitieSection">
-          <button onClick={handleSelect}> Select </button>
+          <button onClick={() => handleSelect(c)}> Select </button>
         </div>
 
         <div className='EntitieSection'>
-          {parse(ent)}
+          {parse(token.text)}
         </div>
     </>
     )
+    counter++
   }
 
   return(
     <div className="EntitieOptionBox">
 
-      <div className='EntitieWholeSelect'>
-        <button onClick={handleSelect}> Whole Select </button>
-      </div>
-      
       <div className='EntitieText'>
         {res}
       </div>
