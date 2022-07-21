@@ -243,6 +243,7 @@ function App() {
   }
 
   function handleSelect(id) {
+    console.log("Selected: ", id)
     selected.current.push(id)
   }
 
@@ -324,12 +325,14 @@ function App() {
   function removeFromSidebar(id, all) {
     let last = null
     let counter = 0
+    let t_counter = 0
 
     for (let entitie of value_sidebar.current) {
+      t_counter = 0
       for(let token of entitie.tokens) {
         if (token.ids.includes(id)) {
-          // If there is only one token with same text as id or if we want to remove all
-          if (token.ids.length === 0 || all === true) {
+          // If there is only one id or if we want to remove all
+          if (token.ids.length === 1 || all === true) {
             last = true
             break
           }
@@ -343,6 +346,7 @@ function App() {
           token.ids = slice_1.concat(slice_2)
           break
         }
+        t_counter++
       }
       
       if (last === true) {
@@ -351,11 +355,23 @@ function App() {
       counter++
     }
 
-    if (last == true) {
-      console.log(counter)
-      let slice_1 = value_sidebar.current.slice(0, counter)
-      let slice_2 = value_sidebar.current.slice(counter+1)
-      value_sidebar.current = slice_1.concat(slice_2)
+    if (last === true) {
+      // If it is the only token in entitie
+      if (value_sidebar.current[counter].tokens.length === 1) {
+        let slice_1 = value_sidebar.current.slice(0, counter)
+        let slice_2 = value_sidebar.current.slice(counter+1)
+        value_sidebar.current = slice_1.concat(slice_2)
+      }
+      // If not
+      else {
+        console.log(counter, t_counter)
+        console.log(value_sidebar.current[counter])
+        let slice_1 = value_sidebar.current[counter].tokens.slice(0, t_counter)
+        let slice_2 = value_sidebar.current[counter].tokens.slice(t_counter+1)
+        value_sidebar.current[counter].tokens = slice_1.concat(slice_2)
+
+        console.log(value_sidebar.current[counter])
+      }
     }
   }
   
@@ -428,11 +444,9 @@ function App() {
 
     for (let selected_id of selected.current) {
       let token = old_value_sidebar[selected_id.list_id].tokens[selected_id.token_id]
-      console.log(token)
       removeFromSidebar(token.ids[0], true)
 
       for (let id of token.ids) {
-        console.log(id)
         counter = 0
         for (let v of old_value) {
           if (v.start === id) {
