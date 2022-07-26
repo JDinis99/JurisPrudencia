@@ -25,7 +25,7 @@
 }
 
 .SideBar {
-  width: 30%;
+  width: 50%;
   height: 100vh;
   text-align: left;
   overflow: auto;
@@ -46,7 +46,7 @@
 
 .Text {
   text-align: justify;
-  width: 70%;
+  width: 50%;
   white-space: pre-wrap;
   margin-left: 75px;
   margin-right: 25px;

@@ -41,6 +41,12 @@ function App() {
   let value = []
   let value_sidebar = useRef(null)
   let selected = useRef([])
+  const [order, setOrder] = React.useState('asc');
+  const [orderBy, setOrderBy] = React.useState('calories');
+  const [selectedTable, setSelectedTable] = React.useState([]);
+  const [page, setPage] = React.useState(0);
+  const [dense, setDense] = React.useState(false);
+  const [rowsPerPage, setRowsPerPage] = React.useState(25);
 
   const [popUpMenu, setPopUpMenu] = useState({
     showMenu: false,
@@ -282,8 +288,9 @@ function App() {
         res.push(createRow(entitie.tokens, entitie.tag, "AA"))
         count++
       }
+
       return(
-        TableComponent(res)
+        TableComponent(res, order, setOrder, orderBy, setOrderBy, selectedTable, setSelectedTable, page, setPage, dense, setDense, rowsPerPage, setRowsPerPage)
       )
     }
   }

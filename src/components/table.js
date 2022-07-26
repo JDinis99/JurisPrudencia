@@ -1,5 +1,4 @@
 import * as React from 'react';
-import Button from '@mui/material/Button';
 import PropTypes from 'prop-types';
 import { alpha } from '@mui/material/styles';
 import Box from '@mui/material/Box';
@@ -23,7 +22,8 @@ import DeleteIcon from '@mui/icons-material/Delete';
 import FilterListIcon from '@mui/icons-material/FilterList';
 import { visuallyHidden } from '@mui/utils';
 
-const TableComponent = (rows) => {
+const TableComponent = (rows, order, setOrder, orderBy, setOrderBy, selected, setSelected, page, setPage, dense, setDense, rowsPerPage, setRowsPerPage) => {
+
   function descendingComparator(a, b, orderBy) {
     if (b[orderBy] < a[orderBy]) {
       return -1;
@@ -33,13 +33,13 @@ const TableComponent = (rows) => {
     }
     return 0;
   }
-  
+
   function getComparator(order, orderBy) {
     return order === 'desc'
       ? (a, b) => descendingComparator(a, b, orderBy)
       : (a, b) => -descendingComparator(a, b, orderBy);
   }
-  
+
   // This method is created for cross-browser compatibility, if you don't
   // need to support IE11, you can use Array.prototype.sort() directly
   function stableSort(array, comparator) {
@@ -59,20 +59,20 @@ const TableComponent = (rows) => {
       id: 'name',
       numeric: false,
       disablePadding: true,
-      label: 'Dessert (100g serving)',
+      label: 'Entitie',
     },
     {
-      id: 'Type',
+      id: 'type',
       numeric: false,
       disablePadding: false,
-      label: 'Calories',
+      label: 'Type',
     },
     {
-      id: 'Anom',
-      numeric: false,
+      id: 'anpm',
+      numeric: true,
       disablePadding: false,
-      label: 'Fat (g)',
-    },
+      label: 'Anom',
+    }
   ];
 
   function EnhancedTableHead(props) {
@@ -81,7 +81,7 @@ const TableComponent = (rows) => {
     const createSortHandler = (property) => (event) => {
       onRequestSort(event, property);
     };
-  
+
     return (
       <TableHead>
         <TableRow>
@@ -92,7 +92,7 @@ const TableComponent = (rows) => {
               checked={rowCount > 0 && numSelected === rowCount}
               onChange={onSelectAllClick}
               inputProps={{
-                'aria-label': 'select all entities',
+                'aria-label': 'select all desserts',
               }}
             />
           </TableCell>
@@ -121,7 +121,7 @@ const TableComponent = (rows) => {
       </TableHead>
     );
   }
-  
+
   EnhancedTableHead.propTypes = {
     numSelected: PropTypes.number.isRequired,
     onRequestSort: PropTypes.func.isRequired,
@@ -130,10 +130,10 @@ const TableComponent = (rows) => {
     orderBy: PropTypes.string.isRequired,
     rowCount: PropTypes.number.isRequired,
   };
-  
+
   const EnhancedTableToolbar = (props) => {
     const { numSelected } = props;
-  
+
     return (
       <Toolbar
         sx={{
@@ -161,10 +161,10 @@ const TableComponent = (rows) => {
             id="tableTitle"
             component="div"
           >
-            Nutrition
+            Entities
           </Typography>
         )}
-  
+
         {numSelected > 0 ? (
           <Tooltip title="Delete">
             <IconButton>
@@ -181,25 +181,19 @@ const TableComponent = (rows) => {
       </Toolbar>
     );
   };
-  
+
   EnhancedTableToolbar.propTypes = {
     numSelected: PropTypes.number.isRequired,
   };
-  
+
   function EnhancedTable() {
-    const [order, setOrder] = React.useState('asc');
-    const [orderBy, setOrderBy] = React.useState('calories');
-    const [selected, setSelected] = React.useState([]);
-    const [page, setPage] = React.useState(0);
-    const [dense, setDense] = React.useState(false);
-    const [rowsPerPage, setRowsPerPage] = React.useState(5);
-  
+
     const handleRequestSort = (event, property) => {
       const isAsc = orderBy === property && order === 'asc';
       setOrder(isAsc ? 'desc' : 'asc');
       setOrderBy(property);
     };
-  
+
     const handleSelectAllClick = (event) => {
       if (event.target.checked) {
         const newSelecteds = rows.map((n) => n.name);
@@ -208,11 +202,11 @@ const TableComponent = (rows) => {
       }
       setSelected([]);
     };
-  
+
     const handleClick = (event, name) => {
       const selectedIndex = selected.indexOf(name);
       let newSelected = [];
-  
+
       if (selectedIndex === -1) {
         newSelected = newSelected.concat(selected, name);
       } else if (selectedIndex === 0) {
@@ -225,29 +219,29 @@ const TableComponent = (rows) => {
           selected.slice(selectedIndex + 1),
         );
       }
-  
+
       setSelected(newSelected);
     };
-  
+
     const handleChangePage = (event, newPage) => {
       setPage(newPage);
     };
-  
+
     const handleChangeRowsPerPage = (event) => {
       setRowsPerPage(parseInt(event.target.value, 10));
       setPage(0);
     };
-  
+
     const handleChangeDense = (event) => {
       setDense(event.target.checked);
     };
-  
+
     const isSelected = (name) => selected.indexOf(name) !== -1;
-  
+
     // Avoid a layout jump when reaching the last page with empty rows.
     const emptyRows =
       page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
-  
+
     return (
       <Box sx={{ width: '100%' }}>
         <Paper sx={{ width: '100%', mb: 2 }}>
@@ -268,13 +262,13 @@ const TableComponent = (rows) => {
               />
               <TableBody>
                 {/* if you don't need to support IE11, you can replace the `stableSort` call with:
-                   rows.slice().sort(getComparator(order, orderBy)) */}
+                  rows.slice().sort(getComparator(order, orderBy)) */}
                 {stableSort(rows, getComparator(order, orderBy))
                   .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                   .map((row, index) => {
                     const isItemSelected = isSelected(row.name);
                     const labelId = `enhanced-table-checkbox-${index}`;
-  
+
                     return (
                       <TableRow
                         hover
@@ -337,34 +331,8 @@ const TableComponent = (rows) => {
     );
   }
 
+  return EnhancedTable()
 
-  return (
-    <TableContainer component={Paper}>
-      <Table aria-label="simple table">
-        <TableHead>
-          <TableRow>
-            <TableCell>Entities</TableCell>
-            <TableCell align="right">Type</TableCell>
-            <TableCell align="right">Anom</TableCell>
-          </TableRow>
-        </TableHead>
-        <TableBody>
-          {rows.map((row) => (
-            <TableRow
-              key={row.name}
-              sx={{ '&:last-child td, &:last-child th': { border: 0 } }}
-            >
-              <TableCell component="th" scope="row">
-                {row.name}
-              </TableCell>
-              <TableCell align="right">{row.type}</TableCell>
-              <TableCell align="right">{row.anom}</TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
-    </TableContainer>
- )
 }
 
-export default TableComponent;
+export default TableComponent
