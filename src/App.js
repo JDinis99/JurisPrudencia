@@ -7,8 +7,17 @@ import TokenAnnotator from './tokenAnnotator/TokenAnnotator.tsx';
 import ActionMenu from './components/actionMenu';
 import PopUpMenu from './components/popUpMenu';
 import OutsideClickHandler from 'react-outside-click-handler';
+import TableComponent from './components/table';
+import parse from 'html-react-parser';
 
 import Button from '@mui/material/Button';
+import Table from '@mui/material/Table';
+import TableBody from '@mui/material/TableBody';
+import TableCell from '@mui/material/TableCell';
+import TableContainer from '@mui/material/TableContainer';
+import TableHead from '@mui/material/TableHead';
+import TableRow from '@mui/material/TableRow';
+import Paper from '@mui/material/Paper';
 
 //const example_json = require("./data/example.json");
 
@@ -44,6 +53,24 @@ function App() {
       "MAT":0
     }
   })
+
+  function createRow(entities, type, anom) {
+    let name = ""
+    let counter = 0
+    for (let e of entities) {
+      name += e.text
+      // If not last
+      if (counter != entities.length-1) {
+        name += "<br></br>"
+      }
+      counter++
+    }
+
+    name = parse(name)
+
+    return { name, type, anom };
+  }
+  
 
   useEffect(() => {
     readHtml()
@@ -252,33 +279,12 @@ function App() {
     if (allEntities != null) {
       let count = 0
       for (let entitie of allEntities) {
-        res.push(entitieOption(entitie.tokens, entitie.tag, "AA", count, handleSelect, handleSplit))
+        res.push(createRow(entitie.tokens, entitie.tag, "AA"))
         count++
       }
-      return (
-        <div className='SideBar'>
-          <button onClick={handleMerge}>Merge</button>
-          <button onClick={handleSplit}>Split</button>
-          <button onClick={handleRemove}>Remove</button>
-
-          <div className="EntitieOptionBox" id='header'>
-            <div className="EntitieSection">
-              Entidade
-              <button onClick={handleSortEntitie}>S</button>
-            </div>
-            <div className="EntitieSection">
-              Tipo
-              <button onClick={handleSortType}>S</button>
-            </div>
-            <div className="EntitieSection">
-              Anom
-              <button>S</button>
-            </div>
-          </div>
-
-          {res}
-        </div>
-     )
+      return(
+        TableComponent(res)
+      )
     }
   }
 
