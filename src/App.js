@@ -364,13 +364,9 @@ function App() {
       }
       // If not
       else {
-        console.log(counter, t_counter)
-        console.log(value_sidebar.current[counter])
         let slice_1 = value_sidebar.current[counter].tokens.slice(0, t_counter)
         let slice_2 = value_sidebar.current[counter].tokens.slice(t_counter+1)
         value_sidebar.current[counter].tokens = slice_1.concat(slice_2)
-
-        console.log(value_sidebar.current[counter])
       }
     }
   }
@@ -399,6 +395,7 @@ function App() {
 
   function handleMerge() {
     let first = null
+    let to_remove = []
 
     for (let selected_id of selected.current) {
       if (first === null) {
@@ -406,11 +403,18 @@ function App() {
       }
       else {
         let token = value_sidebar.current[selected_id.list_id].tokens[selected_id.token_id]
+        console.log(value_sidebar.current[first].tokens)
+        console.log(token)
         value_sidebar.current[first].tokens.push(token)
+        console.log(value_sidebar.current[first].tokens)
 
-        // Remove extra tokens
-        removeFromSidebar(token.ids[0], true)
+        to_remove.push(token.ids[0])
       }
+    }
+
+    // Remove extra tokens
+    for (let r of to_remove) {
+      removeFromSidebar(r, true)
     }
 
     selected.current = []
