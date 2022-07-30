@@ -10,6 +10,8 @@ import OutsideClickHandler from 'react-outside-click-handler';
 import TableComponent from './components/table';
 import parse from 'html-react-parser';
 
+import { useAppContext } from './context/context';
+
 import Button from '@mui/material/Button';
 import Table from '@mui/material/Table';
 import TableBody from '@mui/material/TableBody';
@@ -27,6 +29,10 @@ var new_example_html = new_example_html_file.default;
 
 
 function App() {
+  const {
+    value_sidebar
+  } = useAppContext()
+
   const [allEntities, setAllEntites] = useState(null)
   const [anomTokens, setAnomTokens] = useState(null)
   const [anomValues, setAnomValues] = useState(null)
@@ -39,8 +45,9 @@ function App() {
   })
   let tokenCounter = 0
   let value = []
-  let value_sidebar = useRef(null)
   let selected = useRef([])
+
+  // Side Table
   const [order, setOrder] = React.useState('asc');
   const [orderBy, setOrderBy] = React.useState('calories');
   const [selectedTable, setSelectedTable] = React.useState([]);
