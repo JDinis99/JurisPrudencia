@@ -8,6 +8,7 @@ import ActionMenu from './components/actionMenu';
 import PopUpMenu from './components/popUpMenu';
 import OutsideClickHandler from 'react-outside-click-handler';
 import TableComponent from './components/table';
+import TableComponent2 from './components/table2';
 import parse from 'html-react-parser';
 
 import { useAppContext } from './context/context';
@@ -295,6 +296,10 @@ function App() {
         res.push(createRow(entitie.tokens, entitie.tag, "AA"))
         count++
       }
+
+      return(
+        TableComponent2(res)
+      )
 
       return(
         TableComponent(res, order, setOrder, orderBy, setOrderBy, selectedTable, setSelectedTable, page, setPage, dense, setDense, rowsPerPage, setRowsPerPage)
