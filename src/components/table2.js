@@ -24,6 +24,8 @@ const TableComponent2 = (rows, propMerge, propSplit, propRemove) => {
             selected.push(row.id)
           });
           propMerge(selected)
+
+          table.resetRowSelection()
         };
 
         const handleSplit = () => {
@@ -33,6 +35,9 @@ const TableComponent2 = (rows, propMerge, propSplit, propRemove) => {
             selected.push(row.id)
           });
           propSplit(selected)
+
+          table.resetRowSelection()
+
         };
 
         const handleRemove = () => {
@@ -42,6 +47,9 @@ const TableComponent2 = (rows, propMerge, propSplit, propRemove) => {
             selected.push(row.id)
           });
           propRemove(selected)
+
+          table.resetRowSelection()
+
         };
 
         return (
