@@ -393,20 +393,22 @@ function App() {
   }
 
   function handleSplit(selected_list) {
-    for (let selected_id of selected.current) {
-      // If we split an entitie with a single token then ignore
-      if (value_sidebar.current[selected_id.list_id].tokens === 1) {
-        continue
+    for (let id of selected_list) {
+      let first = true
+
+      // Split all tokens of an entitie
+      for (let token of value_sidebar.current[id].tokens) {
+        // Ignore first one
+        if (first === true) {
+          first = false
+          continue
+        } else {
+          removeFromSidebar(token.ids[0], true)
+          addToSidebar(token.text, token.tag, token.ids)
+        }
       }
+    }
 
-      // If entitie has multiple tokens, seperate the selected one from the rest
-      let token = value_sidebar.current[selected_id.list_id].tokens[selected_id.token_id]
-
-      addToSidebar(token.text, token.tag, token.ids)
-      removeFromSidebar(token.ids[0], true)
-      }
-
-    selected.current = []
     setAllEntites(value_sidebar.current)
   }
 
