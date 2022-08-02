@@ -22,10 +22,27 @@ import Button from '@mui/material/Button';
 var new_example_html_file = require('raw-loader!./data/new_example_2.html');
 var new_example_html = new_example_html_file.default;
 
+let anomRules = {
+  "PER": "PER",
+  "DAT": "DAT",
+  "ORG": "ORG",
+  "LOC": "LOC",
+  "PRO": "PRO",
+  "MAT": "MAT"
+}
+
 
 function App() {
   let tokenCounter = 0
   let value = []
+  let entitieCounter = {
+    "PER":0,
+    "DAT":0,
+    "ORG":0,
+    "LOC":0,
+    "PRO":0,
+    "MAT":0
+  }
 
   const {
     value_sidebar,
@@ -44,9 +61,14 @@ function App() {
     setPopUpMenu
   } = useAppContext()
 
-  function createRow(entities, type, anom) {
+  function createRow(entities, type) {
     let name = ""
     let counter = 0
+    
+    entitieCounter[type] ++
+    
+    let anom = anomRules[type] + entitieCounter[type]
+
     for (let e of entities) {
       name += e.text
       // If not last
@@ -264,7 +286,7 @@ function App() {
     if (allEntities != null) {
       let count = 0
       for (let entitie of allEntities) {
-        res.push(createRow(entitie.tokens, entitie.tag, "AA"))
+        res.push(createRow(entitie.tokens, entitie.tag))
         count++
       }
 
