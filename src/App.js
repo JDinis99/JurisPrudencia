@@ -371,24 +371,22 @@ function App() {
 
   function handleMerge(selected_list) {
     let first = null
-    let to_remove = []
 
     for (let id of selected_list) {
       if (first === null) {
         first = id
       }
       else {
-        value_sidebar.current[first].tokens = value_sidebar.current[first].tokens.concat(value_sidebar.current[id].tokens)
-
-        for (let token of value_sidebar.current[id].tokens) {
-          to_remove.push(token.ids[0])
+        let tokens = value_sidebar.current[id].tokens
+        for (let token of tokens) {
+          //to_remove.push(token.ids[0])
+          removeFromSidebar(token.ids[0], true)
         }
-      }
-    }
 
-    // Remove extra tokens
-    for (let r of to_remove) {
-      //removeFromSidebar(r, true)
+        value_sidebar.current[first].tokens = value_sidebar.current[first].tokens.concat(tokens)
+
+        
+      }
     }
 
     setAllEntites(value_sidebar.current)
