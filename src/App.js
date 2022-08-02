@@ -14,13 +14,7 @@ import parse from 'html-react-parser';
 import { useAppContext } from './context/context';
 
 import Button from '@mui/material/Button';
-import Table from '@mui/material/Table';
-import TableBody from '@mui/material/TableBody';
-import TableCell from '@mui/material/TableCell';
-import TableContainer from '@mui/material/TableContainer';
-import TableHead from '@mui/material/TableHead';
-import TableRow from '@mui/material/TableRow';
-import Paper from '@mui/material/Paper';
+
 
 //const example_json = require("./data/example.json");
 
@@ -30,43 +24,25 @@ var new_example_html = new_example_html_file.default;
 
 
 function App() {
-  const {
-    value_sidebar
-  } = useAppContext()
-
-  const [allEntities, setAllEntites] = useState(null)
-  const [anomTokens, setAnomTokens] = useState(null)
-  const [anomValues, setAnomValues] = useState(null)
-  const last_index = useRef(0)
-  const tag = useRef(null)
-  const [menuStyle, setMenuStyle] = useState({
-    left: 0,
-    top: 0,
-    showMenu: false
-  })
   let tokenCounter = 0
   let value = []
-  let selected = useRef([])
 
-  // Side Table
-  const [order, setOrder] = React.useState('asc');
-  const [orderBy, setOrderBy] = React.useState('calories');
-  const [selectedTable, setSelectedTable] = React.useState([]);
-  const [page, setPage] = React.useState(0);
-  const [dense, setDense] = React.useState(false);
-  const [rowsPerPage, setRowsPerPage] = React.useState(25);
-
-  const [popUpMenu, setPopUpMenu] = useState({
-    showMenu: false,
-    entities: {
-      "PER":0,
-      "DAT":0,
-      "ORG":0,
-      "LOC":0,
-      "PRO":0,
-      "MAT":0
-    }
-  })
+  const {
+    value_sidebar,
+    allEntities,
+    setAllEntites,
+    anomTokens,
+    setAnomTokens,
+    anomValues,
+    setAnomValues,
+    last_index,
+    tag,
+    menuStyle,
+    setMenuStyle,
+    selected,
+    popUpMenu,
+    setPopUpMenu
+  } = useAppContext()
 
   function createRow(entities, type, anom) {
     let name = ""
@@ -283,11 +259,6 @@ function App() {
       )
   }
 
-  function handleSelect(id) {
-    console.log("Selected: ", id)
-    selected.current.push(id)
-  }
-
   function Side() {
     let res = []
     if (allEntities != null) {
@@ -298,29 +269,9 @@ function App() {
       }
 
       return(
-        TableComponent2(res)
-      )
-
-      return(
-        TableComponent(res, order, setOrder, orderBy, setOrderBy, selectedTable, setSelectedTable, page, setPage, dense, setDense, rowsPerPage, setRowsPerPage)
+        TableComponent2(res, handleMerge, handleSplit, handleRemove)
       )
     }
-  }
-
-  function handleSortEntitie() {
-    value_sidebar.current.sort(function(a,b) {
-      let s = a.tokens[0].text.localeCompare(b.tokens[0].text)
-      return s
-    })
-    setAllEntites(value_sidebar.current)
-  }
-
-  function handleSortType() {
-    value_sidebar.current.sort(function(a,b) {
-      let s = a.tag.localeCompare(b.tag)
-      return s
-    })
-    setAllEntites(value_sidebar.current)
   }
 
   function addToSidebar(text, role, ids) {
@@ -418,35 +369,32 @@ function App() {
     }
   }
 
-  function handleMerge() {
+  function handleMerge(selected_list) {
     let first = null
     let to_remove = []
 
-    for (let selected_id of selected.current) {
+    for (let id of selected_list) {
       if (first === null) {
-        first = selected_id.list_id
+        first = id
       }
       else {
-        let token = value_sidebar.current[selected_id.list_id].tokens[selected_id.token_id]
-        console.log(value_sidebar.current[first].tokens)
-        console.log(token)
-        value_sidebar.current[first].tokens.push(token)
-        console.log(value_sidebar.current[first].tokens)
+        value_sidebar.current[first].tokens = value_sidebar.current[first].tokens.concat(value_sidebar.current[id].tokens)
 
-        to_remove.push(token.ids[0])
+        for (let token of value_sidebar.current[id].tokens) {
+          to_remove.push(token.ids[0])
+        }
       }
     }
 
     // Remove extra tokens
     for (let r of to_remove) {
-      removeFromSidebar(r, true)
+      //removeFromSidebar(r, true)
     }
 
-    selected.current = []
     setAllEntites(value_sidebar.current)
   }
 
-  function handleSplit() {
+  function handleSplit(selected_list) {
     for (let selected_id of selected.current) {
       // If we split an entitie with a single token then ignore
       if (value_sidebar.current[selected_id.list_id].tokens === 1) {
@@ -464,34 +412,42 @@ function App() {
     setAllEntites(value_sidebar.current)
   }
 
-  function handleRemove() {
-    let old_value_sidebar = value_sidebar.current
+  function handleRemove(selected_list) {
     let old_value = anomValues.value
     let old_tag = anomValues.tag
-    let new_value = null
-    let counter = 0
+    let new_value = []
+    let to_remove = []
+    let previous_r = 0
 
-    for (let selected_id of selected.current) {
-      let token = old_value_sidebar[selected_id.list_id].tokens[selected_id.token_id]
-      removeFromSidebar(token.ids[0], true)
+    console.log(old_value)
+    for (let id of selected_list) {
 
-      for (let id of token.ids) {
-        counter = 0
-        for (let v of old_value) {
-          if (v.start === id) {
-            let slice_1 = old_value.slice(0, counter)
-            let slice_2 = old_value.slice(counter+1)
-            new_value = slice_1.concat(slice_2)
-            break
+      for (let token of value_sidebar.current[id].tokens) {
+        console.log(token)
+
+        // Remove from text
+        for (let value_id in old_value) {
+          if (token.ids.includes(old_value[value_id].start)) {
+            to_remove.push(value_id)
           }
-          counter ++
         }
-        old_value = new_value
+
+        removeFromSidebar(token.ids[0], true)
       }
+
+      for (let r_id of to_remove) {
+        let slice = old_value.slice(previous_r, r_id)
+        new_value = new_value.concat(slice)
+        previous_r = r_id + 1
+      }
+      
+      let slice = old_value.slice(previous_r)
+      new_value = new_value.concat(slice)
+
+      old_value = new_value
     }
 
 
-    selected.current = []
     setAllEntites(value_sidebar.current)
     setAnomValues({
       value: old_value,
