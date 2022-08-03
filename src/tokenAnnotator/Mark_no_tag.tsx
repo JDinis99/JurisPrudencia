@@ -1,5 +1,6 @@
 import React from 'react'
 import parse from 'html-react-parser';
+import TAG_COLORS from '../utils/tag_colors';
 
 export interface MarkProps {
   key: string
@@ -13,14 +14,6 @@ export interface MarkProps {
   anom: string
 }
 
-const TAG_COLORS = {
-  ORG: "#00ffa2",
-  PERSON: "#84d2ff",
-  DAT: "#66fc03",
-  LOC: "#fc03c2",
-  PRO: "#eb8634",
-  MAT: "#eb3434"
-};
 
 const MarkNoTag: React.SFC<MarkProps> = props => (
   <mark

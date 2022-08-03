@@ -1,10 +1,30 @@
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
 import { Box, Button, ListItemIcon, MenuItem, Typography } from '@mui/material';
+import TAG_COLORS from '../utils/tag_colors';
 
 const TableComponent2 = (rows, propMerge, propSplit, propRemove) => {
   const columns = [
     {header: "Entitie", accessorKey: "name"},
-    {header: "Type", accessorKey: "type"},
+    {header: "Type", accessorKey: "type",
+    //custom conditional format and styling
+    Cell: ({ cell }) => (
+      <Box
+        sx={(theme) => ({
+          backgroundColor: TAG_COLORS[cell.getValue()],
+          borderRadius: '0.25rem',
+          color: '#fff',
+          maxWidth: '9ch',
+          p: '0.25rem',
+        })}
+      >
+        {cell.getValue()?.toLocaleString?.('en-US', {
+          style: 'currency',
+          currency: 'USD',
+          minimumFractionDigits: 0,
+          maximumFractionDigits: 0,
+        })}
+      </Box>
+    )},
     {header: "Anom", accessorKey: "anom"},
   ]
 
