@@ -26,6 +26,7 @@ export interface TokenAnnotatorProps<T>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   tokens: any[]
   value: T[]
+  preview: boolean
   onNewEntitie: (value: T[], p, text) => any
   onEntitieChange: (index, p) => any
   getSpan?: (span: TokenSpan) => T
@@ -45,6 +46,8 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     if (props.getSpan) return props.getSpan(span)
     return {start: span.start, end: span.end} as T
   }
+
+  const handleTest = () => {}
 
   const handleMouseUp = () => {
 
@@ -131,10 +134,12 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     splits.forEach(split => {
       if (split.mark) {
         if (split.true_end){
+          console.log(split)
           let mark = renderMark({
             key: `${split.start}-${split.end}`,
             ...split,
             onClick: handleSplitClick,
+            preview: props.preview
           })
           tmp_res.push(mark)
           let split_length = split.content.split(" ")
@@ -145,6 +150,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
             key: `${split.start}-${split.end}`,
             ...split,
             onClick: handleSplitClick,
+            preview: props.preview
           })
           tmp_res.push(mark)
           let split_length = split.content.split(" ")
@@ -190,7 +196,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   });
 
   return (
-    <div {...divProps} onMouseUp={handleMouseUp}>
+    <div {...divProps} onMouseUp={props.preview ? handleTest :handleMouseUp}>
       {res}
     </div>
   )

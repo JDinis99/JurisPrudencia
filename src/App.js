@@ -9,11 +9,11 @@ import PopUpMenu from './components/popUpMenu';
 import OutsideClickHandler from 'react-outside-click-handler';
 import TableComponent from './components/table';
 import TableComponent2 from './components/table2';
+import Header from './components/header';
 import parse from 'html-react-parser';
 
 import { useAppContext } from './context/context';
 
-import Button from '@mui/material/Button';
 
 
 //const example_json = require("./data/example.json");
@@ -56,31 +56,59 @@ function App() {
     tag,
     menuStyle,
     setMenuStyle,
-    selected,
     popUpMenu,
-    setPopUpMenu
+    setPopUpMenu,
+    preview,
+    setPreview,
+    rows
   } = useAppContext()
 
-  function createRow(entities, type) {
-    let name = ""
-    let counter = 0
-    
-    entitieCounter[type] ++
-    
-    let anom = anomRules[type] + entitieCounter[type]
+  function createRows() {
+    let res = []
 
-    for (let e of entities) {
-      name += e.text
-      // If not last
-      if (counter != entities.length-1) {
-        name += "<br></br>"
+    let old_value = anomValues.value
+
+    for (let entitie of allEntities) {
+      let entities = entitie.tokens
+      let type = entitie.tag
+      let name = ""
+      let counter = 0
+      
+      entitieCounter[type] ++
+      
+      let anom = anomRules[type] + entitieCounter[type]
+      
+      for (let e of entities) {
+        name += e.text
+        // If not last
+        if (counter != entities.length-1) {
+          name += "<br></br>"
+        }
+        counter++
+
+        // Add anom value to anomValues
+        for (let value of old_value) {
+          if (e.ids.includes(value.start)) {
+            value.anom = anom
+          }
+        }
       }
-      counter++
+      
+      name = parse(name)
+      
+      res.push({ name, type, anom })
+      entitie.anom = anom
+
+      console.log(old_value)
+
     }
+    
+    // setAnomValues({
+    //   value: old_value,
+    //   tag: anomValues.tag
+    // })
 
-    name = parse(name)
-
-    return { name, type, anom };
+    rows.current = res
   }
   
 
@@ -262,36 +290,12 @@ function App() {
 
   }
 
-  function Header() {
-    return (
-      <>
-        <header className='PageHeader'>
-          Header
-        </header>
-
-        <div className='FlexButtonContainer'>
-          <div className='OptionButton'>
-            <Button variant="contained">Zoom</Button>
-          </div>
-          <div className='OptionButton'>
-            <Button variant="outlined" className='OptionButton'>Feature</Button>
-          </div>
-        </div>
-      </>
-      )
-  }
-
   function Side() {
-    let res = []
     if (allEntities != null) {
-      let count = 0
-      for (let entitie of allEntities) {
-        res.push(createRow(entitie.tokens, entitie.tag))
-        count++
-      }
-
+      createRows()
+      
       return(
-        TableComponent2(res, handleMerge, handleSplit, handleRemove)
+        TableComponent2(rows.current, handleMerge, handleSplit, handleRemove)
       )
     }
   }
@@ -625,6 +629,7 @@ function App() {
             ...span,
             tag: anomValues.tag,
           })}
+          preview={preview}
         />
       </div>
     )

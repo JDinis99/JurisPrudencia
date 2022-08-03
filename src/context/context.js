@@ -12,6 +12,7 @@ const Context = createContext();
 
 export function AppContext({ children }) {
   let value_sidebar = useRef(null)
+  let rows = useRef(null)
   const [allEntities, setAllEntites] = useState(null)
   const [anomTokens, setAnomTokens] = useState(null)
   const [anomValues, setAnomValues] = useState(null)
@@ -36,6 +37,8 @@ export function AppContext({ children }) {
     }
   })
 
+  const [preview, setPreview] = useState(false)
+
   const f_value = useMemo(() => ({
     value_sidebar,
     allEntities,
@@ -50,7 +53,10 @@ export function AppContext({ children }) {
     setMenuStyle,
     selected,
     popUpMenu,
-    setPopUpMenu
+    setPopUpMenu,
+    preview,
+    setPreview,
+    rows
   }));
 
   return <Context.Provider value={f_value}>{children}</Context.Provider>;
