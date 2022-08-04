@@ -196,7 +196,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   });
 
   return (
-    <div {...divProps} onMouseUp={props.preview ? handleTest :handleMouseUp}>
+    <div {...divProps} onMouseUp={handleMouseUp}>
       {res}
     </div>
   )
