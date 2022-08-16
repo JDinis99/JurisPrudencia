@@ -12,6 +12,7 @@ import TableComponent2 from './components/table2';
 import Header from './components/header';
 import parse from 'html-react-parser';
 
+
 import { useAppContext } from './context/context';
 
 
@@ -58,8 +59,8 @@ function App() {
     setMenuStyle,
     popUpMenu,
     setPopUpMenu,
-    preview,
-    setPreview,
+    mode,
+    setMode,
     rows
   } = useAppContext()
 
@@ -99,7 +100,7 @@ function App() {
       res.push({ name, type, anom })
       entitie.anom = anom
 
-      console.log(old_value)
+      //console.log(old_value)
 
     }
     
@@ -445,11 +446,11 @@ function App() {
     let to_remove = []
     let previous_r = 0
 
-    console.log(old_value)
+    //console.log(old_value)
     for (let id of selected_list) {
 
       for (let token of value_sidebar.current[id].tokens) {
-        console.log(token)
+        //console.log(token)
 
         // Remove from text
         for (let value_id in old_value) {
@@ -629,7 +630,7 @@ function App() {
             ...span,
             tag: anomValues.tag,
           })}
-          preview={preview}
+          mode={mode}
         />
       </div>
     )

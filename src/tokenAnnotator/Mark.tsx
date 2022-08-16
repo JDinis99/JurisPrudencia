@@ -9,7 +9,7 @@ export interface MarkProps {
   tag: string
   color?: string
   onClick: (any) => any
-  preview: boolean
+  mode: string
   anom: string
 }
 
@@ -29,7 +29,7 @@ const Mark: React.SFC<MarkProps> = props => (
     data-end={props.end}
     onClick={() => props.onClick({start: props.start, end: props.end})}
   >
-    {props.preview ? props.anom : parse(props.content)}
+    {props.mode == "Preview" ? props.anom : parse(props.content)}
     {props.tag && (
       <span style={{boxSizing: "border-box", content: "attr(data-entity)", fontSize: ".55em", lineHeight: "1", padding: ".35em .35em", borderRadius: ".35em", textTransform: "uppercase", display: "inline-block", verticalAlign: "middle", margin: "0 0 .15rem .5rem", background: "#fff", fontWeight: "700"}}>{props.tag}</span>
     )}

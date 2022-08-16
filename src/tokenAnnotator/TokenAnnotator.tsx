@@ -26,7 +26,7 @@ export interface TokenAnnotatorProps<T>
   extends Omit<React.HTMLAttributes<HTMLDivElement>, 'onChange'> {
   tokens: any[]
   value: T[]
-  preview: boolean
+  mode: string
   onNewEntitie: (value: T[], p, text) => any
   onEntitieChange: (index, p) => any
   getSpan?: (span: TokenSpan) => T
@@ -139,7 +139,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
             key: `${split.start}-${split.end}`,
             ...split,
             onClick: handleSplitClick,
-            preview: props.preview
+            mode: props.mode
           })
           tmp_res.push(mark)
           let split_length = split.content.split(" ")
@@ -150,7 +150,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
             key: `${split.start}-${split.end}`,
             ...split,
             onClick: handleSplitClick,
-            preview: props.preview
+            mode: props.mode
           })
           tmp_res.push(mark)
           let split_length = split.content.split(" ")

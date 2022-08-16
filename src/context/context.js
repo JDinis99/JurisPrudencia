@@ -38,6 +38,7 @@ export function AppContext({ children }) {
   })
 
   const [preview, setPreview] = useState(false)
+  const [mode, setMode] = useState("Anom")
 
   const f_value = useMemo(() => ({
     value_sidebar,
@@ -56,6 +57,8 @@ export function AppContext({ children }) {
     setPopUpMenu,
     preview,
     setPreview,
+    mode,
+    setMode,
     rows
   }));
 

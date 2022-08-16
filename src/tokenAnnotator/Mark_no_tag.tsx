@@ -10,7 +10,7 @@ export interface MarkProps {
   tag: string
   color?: string
   onClick: (any) => any
-  preview: boolean
+  mode: string
   anom: string
 }
 
@@ -22,7 +22,7 @@ const MarkNoTag: React.SFC<MarkProps> = props => (
     data-end={props.end}
     onClick={() => props.onClick({start: props.start, end: props.end})}
   >
-    {props.preview ? props.anom : parse(props.content)}
+    {props.mode == "Preview" ? props.anom : parse(props.content)}
   </mark>
 )
 
