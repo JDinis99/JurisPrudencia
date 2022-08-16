@@ -187,6 +187,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   }
 
   const {tokens, value, onNewEntitie, onEntitieChange, getSpan: _, ...divProps} = props
+  console.log("rendering splits")
   tokens.forEach(element => {
     let tmp: any = iterateSplits(element, value, onNewEntitie, onEntitieChange, handleSplitClick)
     res.push(tmp)

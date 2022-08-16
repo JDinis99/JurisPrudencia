@@ -48,11 +48,8 @@ function App() {
   const {
     value_sidebar,
     allEntities,
-    setAllEntites,
     anomTokens,
-    setAnomTokens,
     anomValues,
-    setAnomValues,
     last_index,
     tag,
     menuStyle,
@@ -62,15 +59,35 @@ function App() {
     mode,
     setMode,
     rows,
-    raw_text
+    raw_text,
+    renderValue,
+    setRenderValue
   } = useAppContext()
+ 
+
+  useEffect(() => {
+    readHtml()
+  }, [])
+
+  useEffect(() => {
+    if (renderValue.allEntities !== null) {
+      createRows()
+    }
+    if (renderValue.anomTokens) {
+
+    }
+    if (renderValue.anomValues) {
+
+    }
+  }, [renderValue])
 
   function createRows() {
+    console.log("creating rows")
     let res = []
 
-    let old_value = anomValues.value
+    let old_value = anomValues.current.value
 
-    for (let entitie of allEntities) {
+    for (let entitie of allEntities.current) {
       let entities = entitie.tokens
       let type = entitie.tag
       let name = ""
@@ -104,27 +121,21 @@ function App() {
 
     rows.current = res
   }
-  
-
-  useEffect(() => {
-    readHtml()
-  }, [])
 
   const handleNewEntitie = (value, p, text) => {
-    console.log("VALUE: ", value)
     // TODO: Update ALL Entitites based on new value
     setMenuStyle({
       left: p.left,
       top: p.top + 10,
       showMenu: true
     })
-    let old_tag = anomValues.tag
-    let old_value = anomValues.value
+    let old_tag = anomValues.current.tag
+    let old_value = anomValues.current.value
     value.text = text
 
     delete value.tokens
     addToSidebar(value.text, value.tag, [value.start])
-    setAllEntites(value_sidebar.current)
+    allEntities.current = value_sidebar.current
 
     let new_value = [...old_value, value]
     let new_anom = {
@@ -132,7 +143,13 @@ function App() {
       tag: old_tag
     }
     last_index.current = old_value.length
-    setAnomValues(new_anom);
+    anomValues.current = new_anom
+
+    setRenderValue({
+      anomTokens: false,
+      anomValues: true,
+      allEntities: true
+    })
   }
 
   const handleEntitieChange = (index, p) => {
@@ -155,7 +172,7 @@ function App() {
     let new_tag  = e.target.value
     tag.current = new_tag
 
-    let entitie = anomValues.value[last_index.current]
+    let entitie = anomValues.current.value[last_index.current]
 
     let per_number = 0
     let dat_number = 0
@@ -164,7 +181,7 @@ function App() {
     let pro_number = 0
     let mat_number = 0
 
-    anomValues.value.forEach(function(ent) {
+    anomValues.current.value.forEach(function(ent) {
       if (ent.tag === "PER" && entitie.text === ent.text) {per_number += 1}
       else if (ent.tag === "DAT" && entitie.text === ent.text) {dat_number += 1}
       else if (ent.tag === "ORG" && entitie.text === ent.text) {org_number += 1}
@@ -202,7 +219,7 @@ function App() {
 
     let new_anom = null
     let new_tag  = tag.current
-    let old_value = anomValues.value
+    let old_value = anomValues.current.value
     let old_text = old_value[last_index.current].text
     let old_tag = old_value[last_index.current].tag
     let new_value = []
@@ -210,7 +227,7 @@ function App() {
     if (e.target.value === "Single") {
       
       if (new_tag == "Remove") {
-        let old_tag = anomValues.tag
+        let old_tag = anomValues.current.tag
         let slice_1 = old_value.slice(0, last_index.current)
         let slice_2 = old_value.slice(last_index.current + 1)
         new_value = slice_1.concat(slice_2)
@@ -219,7 +236,7 @@ function App() {
           tag: old_tag
         }
         removeFromSidebar(old_value[last_index.current].start)
-        setAllEntites(value_sidebar.current)
+        allEntities = value_sidebar.current
       }
       else {
         old_value[last_index.current].tag = new_tag
@@ -228,9 +245,15 @@ function App() {
           tag: new_tag
         }
         changeSidebar(old_value[last_index.current].text, new_tag, old_value[last_index.current].start)
-        setAllEntites(value_sidebar.current)
+        allEntities = value_sidebar.current
+        
       }
-      setAnomValues(new_anom);
+      anomValues.current = new_anom
+      setRenderValue({
+        anomTokens: false,
+        anomValues: true,
+        allEntities: true
+      })
     }
 
     else if (e.target.value === "All-Equal") {
@@ -256,7 +279,12 @@ function App() {
           value: new_value,
           tag: old_tag
         }
-        setAnomValues(new_anom);
+        anomValues.current = new_anom
+        setRenderValue.current = {
+          anomTokens: false,
+          anomValues: true,
+          allEntities: false
+        }
       }
 
     }
@@ -284,20 +312,15 @@ function App() {
           value: new_value,
           tag: old_tag
         }
-        setAnomValues(new_anom);
+        anomValues.current = new_anom
+        setRenderValue.current = {
+          anomTokens: false,
+          anomValues: true,
+          allEntities: false
+        }
       }
     }
 
-  }
-
-  function Side() {
-    if (allEntities != null) {
-      createRows()
-      
-      return(
-        TableComponent2(rows.current, handleMerge, handleSplit, handleRemove)
-      )
-    }
   }
 
   function addToSidebar(text, role, ids) {
@@ -414,8 +437,12 @@ function App() {
         
       }
     }
-
-    setAllEntites(value_sidebar.current)
+    allEntities = value_sidebar.current
+    setRenderValue({
+      anomTokens: false,
+      anomValues: false,
+      allEntities: true
+    })
   }
 
   function handleSplit(selected_list) {
@@ -435,12 +462,17 @@ function App() {
       }
     }
 
-    setAllEntites(value_sidebar.current)
+    allEntities = value_sidebar.current
+    setRenderValue({
+      anomTokens: false,
+      anomValues: false,
+      allEntities: true
+    })
   }
 
   function handleRemove(selected_list) {
-    let old_value = anomValues.value
-    let old_tag = anomValues.tag
+    let old_value = anomValues.current.value
+    let old_tag = anomValues.current.tag
     let new_value = []
     let to_remove = []
     let previous_r = 0
@@ -471,11 +503,15 @@ function App() {
       old_value = new_value
     }
 
-
-    setAllEntites(value_sidebar.current)
-    setAnomValues({
+    allEntities = value_sidebar.current
+    anomValues.current = {
       value: old_value,
       tag: old_tag
+    }
+    setRenderValue({
+      anomTokens: false,
+      anomValues: true,
+      allEntities: true
     })
   }
 
@@ -604,19 +640,24 @@ function App() {
     raw_text.current = raw_text_temp
     let final_tokens = iterateHtml(raw_text_temp)
 
-    setAllEntites(value_sidebar.current)
-    setAnomTokens(final_tokens)
-    setAnomValues({
+    allEntities.current = value_sidebar.current
+    anomTokens.current = final_tokens
+    anomValues.current = {
       value: value,
       //value: [],
       //value: [{start: 0, end:6, tag: "PER"}],
       tag: "PER"
+    }
+    setRenderValue({
+      anomTokens: true,
+      anomValues: true,
+      allEntities: true
     })
   }
 
   function box() {
     console.log("rendering box")
-    if (anomValues === null || anomTokens === null) {
+    if (anomValues.current === null || anomTokens.current === null) {
       return <></>
     }
     if (mode === "Original") {
@@ -630,13 +671,13 @@ function App() {
       return (
         <div className='Text'>
           <TokenAnnotator
-            tokens={anomTokens}
-            value={anomValues.value}
+            tokens={anomTokens.current}
+            value={anomValues.current.value}
             onNewEntitie={handleNewEntitie}
             onEntitieChange={handleEntitieChange}
             getSpan={span => ({
               ...span,
-              tag: anomValues.tag,
+              tag: anomValues.current.tag,
             })}
             mode={mode}
             />
@@ -654,8 +695,8 @@ function App() {
       {Header()}
 
       <div className='FlexContainer'>
-        {box()}
-        {Side()}
+        {box()}anomTokens
+        {TableComponent2(rows.current, handleMerge, handleSplit, handleRemove)}
       </div>
 
         {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}

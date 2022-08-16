@@ -13,10 +13,10 @@ const Context = createContext();
 export function AppContext({ children }) {
   let value_sidebar = useRef(null)
   let raw_text = useRef(null)
-  let rows = useRef(null)
-  const [allEntities, setAllEntites] = useState(null)
-  const [anomTokens, setAnomTokens] = useState(null)
-  const [anomValues, setAnomValues] = useState(null)
+  let rows = useRef([])
+  const allEntities = useRef(null)
+  const anomTokens = useRef(null)
+  const anomValues = useRef(null)
   const last_index = useRef(0)
   const tag = useRef(null)
   const [menuStyle, setMenuStyle] = useState({
@@ -26,6 +26,11 @@ export function AppContext({ children }) {
   })
   let selected = useRef([])
   const [mode, setMode] = useState("Anom")
+  const [renderValue, setRenderValue] = useState({
+    anomTokens: null,
+    anomValues: null,
+    allEntities: null
+  })
   
 
   const [popUpMenu, setPopUpMenu] = useState({
@@ -43,11 +48,8 @@ export function AppContext({ children }) {
   const f_value = useMemo(() => ({
     value_sidebar,
     allEntities,
-    setAllEntites,
     anomTokens,
-    setAnomTokens,
     anomValues,
-    setAnomValues,
     last_index,
     tag,
     menuStyle,
@@ -58,7 +60,9 @@ export function AppContext({ children }) {
     mode,
     setMode,
     rows,
-    raw_text
+    raw_text,
+    renderValue,
+    setRenderValue
   }));
 
   return <Context.Provider value={f_value}>{children}</Context.Provider>;
