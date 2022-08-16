@@ -8,20 +8,10 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 const Header = () => {
 
   const {
-    preview,
-    setPreview,
     mode,
     setMode,
   } = useAppContext()
 
-  function handlePreview() {
-    if (preview === true) {
-      setPreview(false)
-    }
-    else {
-      setPreview(true)
-    }
-  }
 
   const handleMode = (event, newMode) => {
     setMode(newMode);
@@ -35,9 +25,6 @@ const Header = () => {
       <div className='FlexButtonContainer'>
         <div className='OptionButton'>
           <Button variant="contained">Zoom</Button>
-        </div>
-        <div className='OptionButton'>
-          <Button variant="contained" onClick={handlePreview}>Anom Preview</Button>
         </div>
         <div className='OptionButton'>
           <Button variant="outlined" className='OptionButton'>Feature</Button>

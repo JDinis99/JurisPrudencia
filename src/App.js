@@ -61,7 +61,8 @@ function App() {
     setPopUpMenu,
     mode,
     setMode,
-    rows
+    rows,
+    raw_text
   } = useAppContext()
 
   function createRows() {
@@ -583,7 +584,7 @@ function App() {
   }
 
   function readHtml () {
-    let raw_text = ""
+    let raw_text_temp = ""
     value = []
     value_sidebar.current = []
     
@@ -600,10 +601,11 @@ function App() {
       }
       
       // Normal iteration
-      raw_text += " " + line.trim()
+      raw_text_temp += " " + line.trim()
     }
 
-    let final_tokens = iterateHtml(raw_text)
+    raw_text.current = raw_text_temp
+    let final_tokens = iterateHtml(raw_text_temp)
 
     setAllEntites(value_sidebar.current)
     setAnomTokens(final_tokens)
@@ -619,21 +621,30 @@ function App() {
     if (anomValues === null || anomTokens === null) {
       return <></>
     }
-    return (
-      <div className='Text'>
-        <TokenAnnotator
-          tokens={anomTokens}
-          value={anomValues.value}
-          onNewEntitie={handleNewEntitie}
-          onEntitieChange={handleEntitieChange}
-          getSpan={span => ({
-            ...span,
-            tag: anomValues.tag,
-          })}
-          mode={mode}
-        />
-      </div>
-    )
+    if (mode === "Original") {
+      return (
+        <div className='Text'>
+          {parse(raw_text.current)}
+        </div>
+      )
+    }
+    else {
+      return (
+        <div className='Text'>
+          <TokenAnnotator
+            tokens={anomTokens}
+            value={anomValues.value}
+            onNewEntitie={handleNewEntitie}
+            onEntitieChange={handleEntitieChange}
+            getSpan={span => ({
+              ...span,
+              tag: anomValues.tag,
+            })}
+            mode={mode}
+            />
+        </div>
+      )
+    }
 
   }
   
