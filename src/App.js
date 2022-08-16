@@ -100,15 +100,7 @@ function App() {
       
       res.push({ name, type, anom })
       entitie.anom = anom
-
-      //console.log(old_value)
-
     }
-    
-    // setAnomValues({
-    //   value: old_value,
-    //   tag: anomValues.tag
-    // })
 
     rows.current = res
   }
@@ -119,6 +111,7 @@ function App() {
   }, [])
 
   const handleNewEntitie = (value, p, text) => {
+    console.log("VALUE: ", value)
     // TODO: Update ALL Entitites based on new value
     setMenuStyle({
       left: p.left,
@@ -126,14 +119,19 @@ function App() {
       showMenu: true
     })
     let old_tag = anomValues.tag
-    value[value.length - 1].text = text
-    addToSidebar(value[value.length - 1].text, value[value.length - 1].tag, [value[value.length - 1].start])
+    let old_value = anomValues.value
+    value.text = text
+
+    delete value.tokens
+    addToSidebar(value.text, value.tag, [value.start])
     setAllEntites(value_sidebar.current)
+
+    let new_value = [...old_value, value]
     let new_anom = {
-      value: value,
+      value: new_value,
       tag: old_tag
     }
-    last_index.current = value.length - 1
+    last_index.current = old_value.length
     setAnomValues(new_anom);
   }
 
@@ -315,7 +313,7 @@ function App() {
       }
     }
 
-    if (found == false) {
+    if (found === false) {
       value_sidebar.current.push({
         tokens: [{
           text: text,
@@ -447,11 +445,9 @@ function App() {
     let to_remove = []
     let previous_r = 0
 
-    //console.log(old_value)
     for (let id of selected_list) {
 
       for (let token of value_sidebar.current[id].tokens) {
-        //console.log(token)
 
         // Remove from text
         for (let value_id in old_value) {
@@ -584,6 +580,7 @@ function App() {
   }
 
   function readHtml () {
+    console.log("reading html")
     let raw_text_temp = ""
     value = []
     value_sidebar.current = []
@@ -618,6 +615,7 @@ function App() {
   }
 
   function box() {
+    console.log("rendering box")
     if (anomValues === null || anomTokens === null) {
       return <></>
     }
@@ -647,8 +645,10 @@ function App() {
     }
 
   }
-  
 
+  console.log("rendering main")
+  
+  // NOTE ADD outside click handlers inside each component
   return (
     <div className="App">
       {Header()}
@@ -658,14 +658,10 @@ function App() {
         {Side()}
       </div>
 
-      <OutsideClickHandler onOutsideClick={() => {setMenuStyle({left:0,top: 0, showMenu: false})}}>
         {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
-      </OutsideClickHandler>
 
       <div className='PopUp'>
-        <OutsideClickHandler onOutsideClick={() => {setPopUpMenu({showMenu: false, entities: {"PER":0, "DAT":0, "ORG":0, "LOC":0, "PRO":0, "MAT":0}})}}>
           {PopUpMenu(popUpMenu.showMenu, handleMultipleTagChange, popUpMenu.entities)}
-        </OutsideClickHandler>
       </div>
 
     </div>

@@ -27,7 +27,7 @@ export interface TokenAnnotatorProps<T>
   tokens: any[]
   value: T[]
   mode: string
-  onNewEntitie: (value: T[], p, text) => any
+  onNewEntitie: (value: T, p, text) => any
   onEntitieChange: (index, p) => any
   getSpan?: (span: TokenSpan) => T
   renderMark?: (props: MarkProps) => JSX.Element
@@ -46,8 +46,6 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     if (props.getSpan) return props.getSpan(span)
     return {start: span.start, end: span.end} as T
   }
-
-  const handleTest = () => {}
 
   const handleMouseUp = () => {
 
@@ -113,7 +111,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
       text += focus.textContent
     }
 
-    props.onNewEntitie([...props.value, getSpan({start, end, tokens: props.tokens.slice(start, end)})], p, text)
+    props.onNewEntitie(getSpan({start, end, tokens: props.tokens.slice(start, end)}), p, text)
     window.getSelection().empty()
   }
 
@@ -134,7 +132,6 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     splits.forEach(split => {
       if (split.mark) {
         if (split.true_end){
-          console.log(split)
           let mark = renderMark({
             key: `${split.start}-${split.end}`,
             ...split,
@@ -194,6 +191,8 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     let tmp: any = iterateSplits(element, value, onNewEntitie, onEntitieChange, handleSplitClick)
     res.push(tmp)
   });
+
+  console.log("rendering token annotator")
 
   return (
     <div {...divProps} onMouseUp={handleMouseUp}>
