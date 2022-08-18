@@ -9,6 +9,7 @@ import PopUpMenu from './components/popUpMenu';
 import OutsideClickHandler from 'react-outside-click-handler';
 import TableComponent from './components/table';
 import TableComponent2 from './components/table2';
+import AnomHeader from './components/anomHeader';
 import Header from './components/header';
 import parse from 'html-react-parser';
 
@@ -394,7 +395,9 @@ const Anom = () => {
         value_sidebar.current[counter].tokens = slice_1.concat(slice_2)
       }
     }
-  }
+  }      <header className='PageHeader'>
+  Header
+</header>
   
   function changeSidebar(text, new_tag, id, all) {
     for (let entitie of value_sidebar.current) {
@@ -691,8 +694,8 @@ const Anom = () => {
   
   // NOTE ADD outside click handlers inside each component
   return (
-    <div className="App">
-      {Header()}
+    <div className="Anom">
+      <AnomHeader/>
 
       <div className='FlexContainer'>
         {box()}
