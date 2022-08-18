@@ -11,7 +11,7 @@ function App() {
           <Header/>
           <Routes>
             <Route exact path="/" element={<ImportPage />}/>
-            <Route exact path="/Anom" element={<Anom />}/>
+            <Route exact path="/anom" element={<Anom />}/>
           </Routes>
         </div>
       </div>

@@ -31,6 +31,9 @@ export function AppContext({ children }) {
     anomValues: null,
     allEntities: null
   })
+  const [file, setFile] = useState()
+  const [sourceHtml, setSourceHtml] = useState()
+  const [redirect, setRedirect] = useState()
   
 
   const [popUpMenu, setPopUpMenu] = useState({
@@ -62,7 +65,13 @@ export function AppContext({ children }) {
     rows,
     raw_text,
     renderValue,
-    setRenderValue
+    setRenderValue,
+    file,
+    setFile,
+    redirect,
+    setRedirect,
+    sourceHtml,
+    setSourceHtml,
   }));
 
   return <Context.Provider value={f_value}>{children}</Context.Provider>;

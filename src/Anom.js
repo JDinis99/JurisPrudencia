@@ -1,16 +1,12 @@
 import './styles/App.css';
 import React, { useRef, useState, useEffect } from 'react';
 
-import entitieOption from './components/entitieOption';
-import Sidebar from './components/sidebar';
 import TokenAnnotator from './tokenAnnotator/TokenAnnotator.tsx';
 import ActionMenu from './components/actionMenu';
 import PopUpMenu from './components/popUpMenu';
 import OutsideClickHandler from 'react-outside-click-handler';
-import TableComponent from './components/table';
 import TableComponent2 from './components/table2';
 import AnomHeader from './components/anomHeader';
-import Header from './components/header';
 import parse from 'html-react-parser';
 
 
@@ -62,7 +58,9 @@ const Anom = () => {
     rows,
     raw_text,
     renderValue,
-    setRenderValue
+    setRenderValue,
+    sourceHtml,
+    setSourceHtml,
   } = useAppContext()
  
 
@@ -620,6 +618,10 @@ const Anom = () => {
 
   function readHtml () {
     console.log("reading html")
+    console.log("SOURCE HTML: ", sourceHtml)
+    console.log("new_example_html: ", new_example_html)
+    //new_example_html = sourceHtml
+
     let raw_text_temp = ""
     value = []
     value_sidebar.current = []
