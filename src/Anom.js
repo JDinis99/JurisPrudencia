@@ -579,7 +579,7 @@ const Anom = () => {
     else if (temp_split[0] === "mark") {
       let new_text = text.substring(end_index+1, closing_tag_index)
       let split = new_text.trim().split(" ")
-      let role = temp_split[1].substring(6,9)
+      let role = temp_split[1].substring(5,9)
       value.push({
         start: tokenCounter,
         end: tokenCounter + split.length,
@@ -620,7 +620,7 @@ const Anom = () => {
     console.log("reading html")
     console.log("SOURCE HTML: ", sourceHtml)
     console.log("new_example_html: ", new_example_html)
-    //new_example_html = sourceHtml
+    new_example_html = sourceHtml
 
     let raw_text_temp = ""
     value = []

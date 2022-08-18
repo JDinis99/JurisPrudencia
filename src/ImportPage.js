@@ -30,6 +30,7 @@ const ImportPage = () => {
   }
 
   async function handleSubmit(event) {
+    let final_res = null
     event.preventDefault()
 
     const url = 'https://pe.inesc-id.pt/python/';
@@ -43,7 +44,9 @@ const ImportPage = () => {
     };
     await axios.post(url, formData, config).then((response) => {
       console.log(response.data);
-      setSourceHtml(response.data)
+      final_res = response.data.replace("<div data-from=.docx>", "<div data-from=.docx>\n")
+      final_res = final_res.replace("</div>", "\n</div>\n")
+      setSourceHtml(final_res)
     });
 
     setRedirect(true)
