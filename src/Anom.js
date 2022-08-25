@@ -9,12 +9,8 @@ import TableComponent2 from './components/table2';
 import AnomHeader from './components/anomHeader';
 import parse from 'html-react-parser';
 
-
 import { useAppContext } from './context/context';
 
-
-
-//const example_json = require("./data/example.json");
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 var new_example_html_file = require('raw-loader!./data/new_example_2.html');
@@ -393,9 +389,7 @@ const Anom = () => {
         value_sidebar.current[counter].tokens = slice_1.concat(slice_2)
       }
     }
-  }      <header className='PageHeader'>
-  Header
-</header>
+  }
   
   function changeSidebar(text, new_tag, id, all) {
     for (let entitie of value_sidebar.current) {
@@ -617,10 +611,9 @@ const Anom = () => {
   }
 
   function readHtml () {
-    console.log("reading html")
-    console.log("SOURCE HTML: ", sourceHtml)
-    console.log("new_example_html: ", new_example_html)
-    new_example_html = sourceHtml
+    if (sourceHtml !== null) {
+      new_example_html = sourceHtml
+    }
 
     let raw_text_temp = ""
     value = []

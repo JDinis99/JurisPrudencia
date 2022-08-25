@@ -4,18 +4,32 @@ import { useAppContext } from '../context/context';
 
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+//import { LineBreak, Document, Text } from "redocx";
+// import { saveAs } from 'file-saver';
 
 const AnomHeader = () => {
 
   const {
     mode,
     setMode,
+    sourceHtml
   } = useAppContext()
 
 
   const handleMode = (event, newMode) => {
     setMode(newMode);
   };
+
+  const downloadDocx = async () => {
+    console.log("Docx start")
+    // let doc = <Document>
+    //   sourceHtml
+    // </Document>
+
+    // console.log(doc)
+  }
+
+
   return (
     <>
       <div className='FlexButtonContainer'>
@@ -23,7 +37,7 @@ const AnomHeader = () => {
           <Button variant="contained">Zoom</Button>
         </div>
         <div className='OptionButton'>
-          <Button variant="outlined" className='OptionButton'>Feature</Button>
+          <Button variant="outlined" className='OptionButton' onClick={downloadDocx}>Download</Button>
         </div>
 
         <ToggleButtonGroup
