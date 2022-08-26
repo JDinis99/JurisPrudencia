@@ -5,7 +5,8 @@ import { useAppContext } from '../context/context';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 //import { LineBreak, Document, Text } from "redocx";
-// import { saveAs } from 'file-saver';
+import { Document, Packer } from 'docx';
+import { saveAs } from 'file-saver';
 
 const AnomHeader = () => {
 
@@ -21,12 +22,21 @@ const AnomHeader = () => {
   };
 
   const downloadDocx = async () => {
-    console.log("Docx start")
+    // console.log("Docx start")
     // let doc = <Document>
     //   sourceHtml
     // </Document>
 
     // console.log(doc)
+
+    // let doc = new Document();
+    // const packer = new Packer();
+    // const mimeType =
+    //   "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
+    // packer.toBlob(doc).then(blob => {
+    //   const docblob = blob.slice(0, blob.size, mimeType);
+    //   saveAs(docblob, "test.docx");
+    // });
   }
 
 
