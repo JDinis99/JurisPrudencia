@@ -5,6 +5,7 @@ import { useAppContext } from '../context/context';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 //import { LineBreak, Document, Text } from "redocx";
+import HTMLtoDOCX from 'html-to-docx';
 import { Document, Packer } from 'docx';
 import { saveAs } from 'file-saver';
 
@@ -37,6 +38,16 @@ const AnomHeader = () => {
     //   const docblob = blob.slice(0, blob.size, mimeType);
     //   saveAs(docblob, "test.docx");
     // });
+
+    let htmlString = "<p>Test <b>Bold</b> Test </p> <p>Test <b>Bold</b> Test </p>"
+
+    const fileBuffer = await HTMLtoDOCX(htmlString, null, {
+      table: { row: { cantSplit: true } },
+      footer: true,
+      pageNumber: true,
+    });
+
+    saveAs(fileBuffer, 'html-to-docx.docx');
   }
 
 
