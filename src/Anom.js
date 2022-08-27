@@ -124,7 +124,7 @@ const Anom = () => {
       top: p.top + 10,
       showMenu: true
     })
-    let old_tag = anomValues.current.tag
+    let old_tag = anomValues.current.thtmlStringag
     let old_value = anomValues.current.value
     value.text = text
 
@@ -611,8 +611,12 @@ const Anom = () => {
   }
 
   function readHtml () {
+    // Create default for testing
     if (sourceHtml !== null) {
       new_example_html = sourceHtml
+    }
+    else {
+      setSourceHtml(new_example_html)
     }
 
     let raw_text_temp = ""

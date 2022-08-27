@@ -8,6 +8,7 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import HTMLtoDOCX from 'html-to-docx';
 import { Document, Packer } from 'docx';
 import { saveAs } from 'file-saver';
+var ReactDOMServer = require('react-dom/server');
 
 const AnomHeader = () => {
 
@@ -22,26 +23,11 @@ const AnomHeader = () => {
     setMode(newMode);
   };
 
+  console.log(sourceHtml)
+
   const downloadDocx = async () => {
-    // console.log("Docx start")
-    // let doc = <Document>
-    //   sourceHtml
-    // </Document>
 
-    // console.log(doc)
-
-    // let doc = new Document();
-    // const packer = new Packer();
-    // const mimeType =
-    //   "application/vnd.openxmlformats-officedocument.wordprocessingml.document";
-    // packer.toBlob(doc).then(blob => {
-    //   const docblob = blob.slice(0, blob.size, mimeType);
-    //   saveAs(docblob, "test.docx");
-    // });
-
-    let htmlString = "<p>Test <b>Bold</b> Test </p> <p>Test <b>Bold</b> Test </p>"
-
-    const fileBuffer = await HTMLtoDOCX(htmlString, null, {
+    const fileBuffer = await HTMLtoDOCX(sourceHtml, null, {
       table: { row: { cantSplit: true } },
       footer: true,
       pageNumber: true,

@@ -32,7 +32,7 @@ export function AppContext({ children }) {
     allEntities: null
   })
   const [file, setFile] = useState()
-  const [sourceHtml, setSourceHtml] = useState(null)
+  let [sourceHtml, setSourceHtml] = useState(null)
   const [redirect, setRedirect] = useState()
   
 
