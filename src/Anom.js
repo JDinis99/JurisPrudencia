@@ -1,5 +1,6 @@
 import './styles/App.css';
 import React, { useRef, useState, useEffect } from 'react';
+import ReactDOMServer from 'react-dom/server'
 
 import TokenAnnotator from './tokenAnnotator/TokenAnnotator.tsx';
 import ActionMenu from './components/actionMenu';
@@ -693,12 +694,16 @@ const Anom = () => {
 
   }
 
+  function getText() {
+    return ReactDOMServer.renderToString(box())
+  }
+
   console.log("rendering main")
   
   // NOTE ADD outside click handlers inside each component
   return (
     <div className="Anom">
-      <AnomHeader/>
+      {AnomHeader(getText)}
 
       <div className='FlexContainer'>
         {box()}

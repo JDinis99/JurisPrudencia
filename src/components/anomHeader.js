@@ -14,7 +14,7 @@ import axios from 'axios';
 
 var ReactDOMServer = require('react-dom/server');
 
-const AnomHeader = () => {
+const AnomHeader = (getText) => {
 
   const {
     mode,
@@ -57,7 +57,15 @@ const AnomHeader = () => {
 
   const downloadDocx = async () => {
 
-    const fileBuffer = await HTMLtoDOCX(sourceHtml, null, {
+    let html = getText()
+    console.log(html)
+
+    let final_html = await html.replaceAll("</span>", "</span> ")
+    final_html = await html.replaceAll("<!-- -->", " <!-- -->")
+
+    console.log(final_html)
+
+    const fileBuffer = await HTMLtoDOCX(final_html, null, {
       table: { row: { cantSplit: true } },
       footer: true,
       pageNumber: true,
