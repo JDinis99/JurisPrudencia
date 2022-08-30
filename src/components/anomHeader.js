@@ -1,7 +1,9 @@
 import * as React from 'react';
 import Button from '@mui/material/Button';
 import { useAppContext } from '../context/context';
+import materialTheme from "../utils/material_theme"
 
+import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 //import { LineBreak, Document, Text } from "redocx";
@@ -23,8 +25,6 @@ const AnomHeader = () => {
     setMode(newMode);
   };
 
-  console.log(sourceHtml)
-
   const downloadDocx = async () => {
 
     const fileBuffer = await HTMLtoDOCX(sourceHtml, null, {
@@ -38,21 +38,17 @@ const AnomHeader = () => {
 
 
   return (
-    <>
+    <ThemeProvider theme={materialTheme}>
       <div className='FlexButtonContainer'>
-        <div className='OptionButton'>
-          <Button variant="contained">Zoom</Button>
-        </div>
-        <div className='OptionButton'>
-          <Button variant="outlined" className='OptionButton' onClick={downloadDocx}>Download</Button>
-        </div>
-
         <ToggleButtonGroup
           value={mode}
           exclusive
           onChange={handleMode}
           aria-label="text alignment"
         >
+          <ToggleButton disabled="false" aria-label="left aligned" color="error">
+            Ver:
+          </ToggleButton>
           <ToggleButton value="Original" aria-label="left aligned">
             Original
           </ToggleButton>
@@ -63,8 +59,17 @@ const AnomHeader = () => {
             Preview
           </ToggleButton>
         </ToggleButtonGroup>
+
+        <div className='OptionButton' color="secondary" >
+          <Button variant="outlined">NER</Button>
+        </div>
+
+        <div className='OptionButton'>
+          <Button variant="contained" className='OptionButton' onClick={downloadDocx}>Download</Button>
+        </div>
+
       </div>
-    </>
+    </ThemeProvider>
   )
 }
 

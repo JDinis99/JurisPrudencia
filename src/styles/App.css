@@ -7,7 +7,7 @@
   justify-content: center;
   position: sticky;
   top: 0;
-  background-color: rgb(193, 225, 233);
+  background-color: rgb(255,255,255);
   padding-top: 10px;
   padding-bottom: 20px;
 }
@@ -21,7 +21,7 @@
 
 .FlexContainer {
   display: flex;
-  background-color: rgb(232, 236, 237);
+  background-color: rgba(244,236,206,255);
 }
 
 .SideBar {
@@ -71,7 +71,7 @@
 }
 
 #header {
-  background-color: yellow;
+  background-color: rgba(220,203,170,255);
   margin: 10px 10px 10px 10px;
   padding: 10px 10px 10px 10px;
 }

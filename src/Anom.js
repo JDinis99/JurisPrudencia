@@ -89,8 +89,12 @@ const Anom = () => {
       let counter = 0
       
       entitieCounter[type] ++
+
+      var str = entitieCounter[type].toString()
+      var pad = "000"
+      var ans = pad.substring(0, pad.length - str.length) + str
       
-      let anom = anomRules[type] + entitieCounter[type]
+      let anom = anomRules[type] + ans
       
       for (let e of entities) {
         name += e.text

@@ -5,23 +5,23 @@ import TAG_COLORS from '../utils/tag_colors';
 const TableComponent2 = (rows, propMerge, propSplit, propRemove) => {
   console.log("rendering table")
   const columns = [
-    {header: "Entitie", accessorKey: "name"},
-    {header: "Type", accessorKey: "type",
-    //custom conditional format and styling
-    Cell: ({ cell }) => (
-      <Box
-        sx={() => ({
-          backgroundColor: TAG_COLORS[cell.getValue()],
-          borderRadius: '0.25rem',
-          color: '#fff',
-          maxWidth: '9ch',
-          p: '0.25rem',
-        })}
-      >
-        {cell.getValue()}
-      </Box>
-    )},
-    {header: "Anom", accessorKey: "anom"},
+    {header: "Entitie", accessorKey: "name", minSize: 250},
+    {header: "Type", accessorKey: "type", maxSize:40,
+      //custom conditional format and styling
+      Cell: ({ cell }) => (
+        <Box
+          sx={() => ({
+            backgroundColor: TAG_COLORS[cell.getValue()],
+            borderRadius: '0.25rem',
+            color: 'black',
+            maxWidth: '9ch',
+            p: '0.25rem',
+          })}
+        >
+          {cell.getValue()}
+        </Box>
+      )},
+    {header: "Anom", accessorKey: "anom", maxSize:40,},
   ]
 
   return(
@@ -32,6 +32,9 @@ const TableComponent2 = (rows, propMerge, propSplit, propRemove) => {
       enableRowSelection
       enableColumnOrdering
       //enableColumnResizing
+      initialState={{
+        density: 'compact',
+      }}
       renderToolbarTopCustomActions={({ table }) => {
         const handleMerge = () => {
           let selected =[]

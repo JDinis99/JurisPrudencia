@@ -16,8 +16,6 @@ const ImportPage = () => {
 
 
   const redirectComponent = () => {
-    console.log(file)
-
     if (redirect === true) {
       return (
         <Navigate push to="/anom" />
@@ -43,7 +41,6 @@ const ImportPage = () => {
       },
     };
     await axios.post(url, formData, config).then((response) => {
-      console.log(response.data);
       final_res = response.data.replace("<div data-from=.docx>", "<div data-from=.docx>\n")
       final_res = final_res.replace("</div>", "\n</div>\n")
       setSourceHtml(final_res)
