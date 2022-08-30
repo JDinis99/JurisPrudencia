@@ -34,7 +34,8 @@ export function AppContext({ children }) {
   const [file, setFile] = useState()
   let [sourceHtml, setSourceHtml] = useState(null)
   const [redirect, setRedirect] = useState()
-  
+
+  const [loading, setLoading] = useState(false)
 
   const [popUpMenu, setPopUpMenu] = useState({
     showMenu: false,
@@ -72,6 +73,8 @@ export function AppContext({ children }) {
     setRedirect,
     sourceHtml,
     setSourceHtml,
+    loading,
+    setLoading,
   }));
 
   return <Context.Provider value={f_value}>{children}</Context.Provider>;

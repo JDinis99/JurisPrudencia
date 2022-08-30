@@ -31,7 +31,7 @@ const ImportPage = () => {
     let final_res = null
     event.preventDefault()
 
-    const url = 'https://pe.inesc-id.pt/python/';
+    const url = 'https://pe.inesc-id.pt/python/html';
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileName', file.name);
@@ -58,7 +58,7 @@ const ImportPage = () => {
 
       <form onSubmit={handleSubmit}>
           <h1>Escolha o Ficheiro</h1>
-          <input type="file" onChange={handleChange}/>
+          <input type="file" onChange={handleChange} />
           <button type="submit">Upload</button>
       </form>
     </div>

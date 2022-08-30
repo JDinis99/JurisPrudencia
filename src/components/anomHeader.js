@@ -10,6 +10,8 @@ import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
 import HTMLtoDOCX from 'html-to-docx';
 import { Document, Packer } from 'docx';
 import { saveAs } from 'file-saver';
+import axios from 'axios';
+
 var ReactDOMServer = require('react-dom/server');
 
 const AnomHeader = () => {
@@ -17,13 +19,41 @@ const AnomHeader = () => {
   const {
     mode,
     setMode,
-    sourceHtml
+    file,
+    sourceHtml,
+    setSourceHtml,
+    loading,
+    setLoading,
   } = useAppContext()
 
 
   const handleMode = (event, newMode) => {
     setMode(newMode);
   };
+
+  async function handleNER() {
+    let final_res = null
+
+    const url = 'https://pe.inesc-id.pt/python/';
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileName', file.name);
+    const config = {
+      headers: {
+        'content-type': 'multipart/form-data',
+      },
+    };
+    
+    setLoading(true)
+
+    await axios.post(url, formData, config).then((response) => {
+      final_res = response.data.replace("<div data-from=.docx>", "<div data-from=.docx>\n")
+      final_res = final_res.replace("</div>", "\n</div>\n")
+      setSourceHtml(final_res)
+      setLoading(false)
+    });
+
+  }
 
   const downloadDocx = async () => {
 
@@ -60,9 +90,16 @@ const AnomHeader = () => {
           </ToggleButton>
         </ToggleButtonGroup>
 
-        <div className='OptionButton' color="secondary" >
-          <Button variant="outlined">NER</Button>
-        </div>
+        {
+          loading ?
+          <div className='OptionButton' color="secondary">
+            <Button variant="outlined">Loading</Button>
+          </div>
+          :
+          <div className='OptionButton' color="secondary" onClick={handleNER}>
+            <Button variant="outlined">Anonimização Automática</Button>
+          </div>
+        }
 
         <div className='OptionButton'>
           <Button variant="contained" className='OptionButton' onClick={downloadDocx}>Download</Button>

@@ -62,7 +62,7 @@ const Anom = () => {
 
   useEffect(() => {
     readHtml()
-  }, [])
+  }, [sourceHtml])
 
   useEffect(() => {
     if (renderValue.allEntities !== null) {
