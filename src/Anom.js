@@ -407,6 +407,8 @@ const Anom = () => {
 
       for (let token of value_sidebar.current[id].tokens) {
 
+        console.log(token)
+
         // Remove from text
         for (let value_id in old_value) {
           if (token.ids.includes(old_value[value_id].start)) {
@@ -417,13 +419,15 @@ const Anom = () => {
         removeFromSidebar(token.ids[0], true)
       }
 
+      // ERROR HERE
       for (let r_id of to_remove) {
+        r_id = parseInt(r_id)
         let slice = old_value.slice(previous_r, r_id)
         new_value = new_value.concat(slice)
         previous_r = r_id + 1
       }
-      
-      let slice = old_value.slice(previous_r)
+
+      let slice = old_value.slice(previous_r, old_value.length)
       new_value = new_value.concat(slice)
 
       old_value = new_value
