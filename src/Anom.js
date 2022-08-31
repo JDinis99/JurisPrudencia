@@ -383,7 +383,7 @@ const Anom = () => {
           continue
         } else {
           removeFromSidebar(token.ids[0], true)
-          addToSidebar(token.text, token.tag, token.ids)
+          addToSidebar(token.text, value_sidebar.current[id].tag, token.ids)
         }
       }
     }
@@ -407,8 +407,6 @@ const Anom = () => {
 
       for (let token of value_sidebar.current[id].tokens) {
 
-        console.log(token)
-
         // Remove from text
         for (let value_id in old_value) {
           if (token.ids.includes(old_value[value_id].start)) {
@@ -419,7 +417,6 @@ const Anom = () => {
         removeFromSidebar(token.ids[0], true)
       }
 
-      // ERROR HERE
       for (let r_id of to_remove) {
         r_id = parseInt(r_id)
         let slice = old_value.slice(previous_r, r_id)
@@ -593,7 +590,6 @@ const Anom = () => {
   }
 
   function box() {
-    console.log("rendering box")
     if (anomValues.current === null || anomTokens.current === null) {
       return <></>
     }
@@ -628,8 +624,6 @@ const Anom = () => {
     return ReactDOMServer.renderToString(box())
   }
 
-  console.log("rendering main")
-  
   // NOTE ADD outside click handlers inside each component
   return (
     <div className="Anom">

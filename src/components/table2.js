@@ -125,7 +125,6 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
     {header: "Anom", accessorKey: "anom", maxSize:40,},
   ]
 
-  console.log("RENDERING TABLE")
   return(
     <MaterialReactTable
       columns={columns}
