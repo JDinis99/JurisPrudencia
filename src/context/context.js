@@ -13,7 +13,7 @@ const Context = createContext();
 export function AppContext({ children }) {
   let value_sidebar = useRef(null)
   let raw_text = useRef(null)
-  let rows = useRef([])
+  const [rows, setRows] = useState([])
   const allEntities = useRef(null)
   const anomTokens = useRef(null)
   const anomValues = useRef(null)
@@ -64,6 +64,7 @@ export function AppContext({ children }) {
     mode,
     setMode,
     rows,
+    setRows,
     raw_text,
     renderValue,
     setRenderValue,

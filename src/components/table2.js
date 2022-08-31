@@ -22,6 +22,7 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
     mode,
     setMode,
     rows,
+    setRows,
     raw_text,
     renderValue,
     setRenderValue,
@@ -101,7 +102,7 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
       entitie.anom = anom
     }
 
-    rows.current = res
+    setRows(res)
   }
 
   const columns = [
@@ -128,7 +129,7 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
   return(
     <MaterialReactTable
       columns={columns}
-      data={rows.current}
+      data={rows}
       enableRowNumbers
       enableRowSelection
       enableColumnOrdering
@@ -137,7 +138,6 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
         density: 'compact',
       }}
       renderTopToolbarCustomActions={({ table }) => {
-        console.log("RENDERIN TOP SIDE")
         const handleMerge = () => {
           let selected =[]
           table.getSelectedRowModel().flatRows.map((row) => {
@@ -185,7 +185,7 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
             </Button>
             <Button
               color="info"
-              disabled={table.getSelectedRowModel().flatRows.length < 2}
+              disabled={table.getSelectedRowModel().flatRows.length < 1}
               onClick={handleSplit}
               variant="contained"
             >
@@ -193,7 +193,7 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
             </Button>
             <Button
               color="error"
-              disabled={table.getSelectedRowModel().flatRows.length < 2}
+              disabled={table.getSelectedRowModel().flatRows.length < 1}
               onClick={handleRemove}
               variant="contained"
             >

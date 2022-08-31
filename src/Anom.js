@@ -209,7 +209,7 @@ const Anom = () => {
         setRenderValue.current = {
           anomTokens: false,
           anomValues: true,
-          allEntities: false
+          allEntities: true
         }
       }
 
@@ -242,7 +242,7 @@ const Anom = () => {
         setRenderValue.current = {
           anomTokens: false,
           anomValues: true,
-          allEntities: false
+          allEntities: true
         }
       }
     }
@@ -633,7 +633,7 @@ const Anom = () => {
 
       <div className='FlexContainer'>
         {box()}
-        {TableComponent2(rows.current, handleMerge, handleSplit, handleRemove)}
+        {TableComponent2(handleMerge, handleSplit, handleRemove)}
       </div>
 
         {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
