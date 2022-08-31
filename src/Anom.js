@@ -17,27 +17,10 @@ import { useAppContext } from './context/context';
 var new_example_html_file = require('raw-loader!./data/new_example_2.html');
 var new_example_html = new_example_html_file.default;
 
-let anomRules = {
-  "PER": "PER",
-  "DAT": "DAT",
-  "ORG": "ORG",
-  "LOC": "LOC",
-  "PRO": "PRO",
-  "MAT": "MAT"
-}
-
 
 const Anom = () => {
   let tokenCounter = 0
   let value = []
-  let entitieCounter = {
-    "PER":0,
-    "DAT":0,
-    "ORG":0,
-    "LOC":0,
-    "PRO":0,
-    "MAT":0
-  }
 
   const {
     value_sidebar,
@@ -64,63 +47,6 @@ const Anom = () => {
   useEffect(() => {
     readHtml()
   }, [sourceHtml])
-
-  useEffect(() => {
-    if (renderValue.allEntities !== null) {
-      createRows()
-    }
-    if (renderValue.anomTokens) {
-
-    }
-    if (renderValue.anomValues) {
-
-    }
-  }, [renderValue])
-
-  function createRows() {
-    console.log("creating rows")
-    let res = []
-
-    let old_value = anomValues.current.value
-
-    for (let entitie of allEntities.current) {
-      let entities = entitie.tokens
-      let type = entitie.tag
-      let name = ""
-      let counter = 0
-      
-      entitieCounter[type] ++
-
-      var str = entitieCounter[type].toString()
-      var pad = "000"
-      var ans = pad.substring(0, pad.length - str.length) + str
-      
-      let anom = anomRules[type] + ans
-      
-      for (let e of entities) {
-        name += e.text
-        // If not last
-        if (counter != entities.length-1) {
-          name += "<br></br>"
-        }
-        counter++
-
-        // Add anom value to anomValues
-        for (let value of old_value) {
-          if (e.ids.includes(value.start)) {
-            value.anom = anom
-          }
-        }
-      }
-      
-      name = parse(name)
-      
-      res.push({ name, type, anom })
-      entitie.anom = anom
-    }
-
-    rows.current = res
-  }
 
   const handleNewEntitie = (value, p, text) => {
     // TODO: Update ALL Entitites based on new value
@@ -236,7 +162,7 @@ const Anom = () => {
           tag: old_tag
         }
         removeFromSidebar(old_value[last_index.current].start)
-        allEntities = value_sidebar.current
+        allEntities.current = value_sidebar.current
       }
       else {
         old_value[last_index.current].tag = new_tag
@@ -245,7 +171,7 @@ const Anom = () => {
           tag: new_tag
         }
         changeSidebar(old_value[last_index.current].text, new_tag, old_value[last_index.current].start)
-        allEntities = value_sidebar.current
+        allEntities.current = value_sidebar.current
         
       }
       anomValues.current = new_anom
@@ -437,7 +363,7 @@ const Anom = () => {
         
       }
     }
-    allEntities = value_sidebar.current
+    allEntities.current = value_sidebar.current
     setRenderValue({
       anomTokens: false,
       anomValues: false,
@@ -462,7 +388,7 @@ const Anom = () => {
       }
     }
 
-    allEntities = value_sidebar.current
+    allEntities.current = value_sidebar.current
     setRenderValue({
       anomTokens: false,
       anomValues: false,
@@ -503,7 +429,7 @@ const Anom = () => {
       old_value = new_value
     }
 
-    allEntities = value_sidebar.current
+    allEntities.current = value_sidebar.current
     anomValues.current = {
       value: old_value,
       tag: old_tag
