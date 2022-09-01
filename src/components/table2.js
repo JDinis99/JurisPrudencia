@@ -138,7 +138,6 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
       <MaterialReactTable
         columns={columns}
         data={rows}
-        enableRowNumbers
         enableRowSelection
         enableColumnOrdering
         enablePagination={false}
