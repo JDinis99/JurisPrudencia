@@ -78,6 +78,18 @@ const AnomHeader = (getText) => {
   return (
     <ThemeProvider theme={materialTheme}>
       <div className='FlexButtonContainer'>
+
+        {
+          loading ?
+          <div className='OptionButton' color="secondary">
+            <Button variant="outlined">A Carregar</Button>
+          </div>
+          :
+          <div className='OptionButton' color="secondary" onClick={handleNER}>
+            <Button variant="outlined">Anonimização Automática</Button>
+          </div>
+        }
+
         <ToggleButtonGroup
           value={mode}
           exclusive
@@ -91,26 +103,15 @@ const AnomHeader = (getText) => {
             Original
           </ToggleButton>
           <ToggleButton value="Anom" aria-label="left aligned">
-            Anom
+            Editar
           </ToggleButton>
           <ToggleButton value="Preview" aria-label="left aligned">
-            Preview
+            Anonimizado
           </ToggleButton>
         </ToggleButtonGroup>
 
-        {
-          loading ?
-          <div className='OptionButton' color="secondary">
-            <Button variant="outlined">Loading</Button>
-          </div>
-          :
-          <div className='OptionButton' color="secondary" onClick={handleNER}>
-            <Button variant="outlined">Anonimização Automática</Button>
-          </div>
-        }
-
         <div className='OptionButton'>
-          <Button variant="contained" className='OptionButton' onClick={downloadDocx}>Download</Button>
+          <Button variant="contained" className='OptionButton' onClick={downloadDocx}>Guardar</Button>
         </div>
 
       </div>

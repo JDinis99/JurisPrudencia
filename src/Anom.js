@@ -41,6 +41,7 @@ const Anom = () => {
     setRenderValue,
     sourceHtml,
     setSourceHtml,
+    trueSourceHtml,
   } = useAppContext()
  
 
@@ -571,7 +572,10 @@ const Anom = () => {
       raw_text_temp += " " + line.trim()
     }
 
-    raw_text.current = raw_text_temp
+    if (trueSourceHtml.current === false) {
+      raw_text.current = raw_text_temp
+      trueSourceHtml.current = true
+    }
     let final_tokens = iterateHtml(raw_text_temp)
 
     allEntities.current = value_sidebar.current
@@ -626,18 +630,22 @@ const Anom = () => {
 
   // NOTE ADD outside click handlers inside each component
   return (
-    <div className="Anom">
-      {AnomHeader(getText)}
-
+    <div>
       <div className='FlexContainer'>
-        {box()}
+
+        <div className='Anom'>
+          {AnomHeader(getText)}
+          {box()}
+        </div>
+
         {TableComponent2(handleMerge, handleSplit, handleRemove)}
+
       </div>
 
-        {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
+      {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
 
       <div className='PopUp'>
-          {PopUpMenu(popUpMenu.showMenu, handleMultipleTagChange, popUpMenu.entities)}
+        {PopUpMenu(popUpMenu.showMenu, handleMultipleTagChange, popUpMenu.entities)}
       </div>
 
     </div>

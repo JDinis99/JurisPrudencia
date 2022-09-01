@@ -10,6 +10,8 @@
   background-color: rgb(255,255,255);
   padding-top: 10px;
   padding-bottom: 20px;
+  margin-left: 75px;
+
 }
 
 .OptionButton {
@@ -46,15 +48,14 @@
 
 .Text {
   text-align: justify;
-  width: 50%;
   white-space: pre-wrap;
   margin-left: 75px;
-  margin-right: 25px;
   margin-top: 50px;
   padding-left: 75px;
   padding-right: 75px;
   padding-top: 50px;
   background-color: white;
+  font-size: large;
 }
 
 .EntitieOptionBox {
@@ -92,4 +93,14 @@
 
 .Test {
   background-color: red;
+}
+
+.Table {
+  width: 30%;
+  margin-left: 20px;
+  margin-right: 20px;
+}
+
+.Anom {
+  width: 70%;
 }

@@ -106,8 +106,12 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
   }
 
   const columns = [
-    {header: "Entitie", accessorKey: "name", minSize: 250},
-    {header: "Type", accessorKey: "type", maxSize:40,
+    {header: "Entitidade", accessorKey: "name", minSize: 250,
+    //custom conditional format and styling
+    Cell: ({ cell }) => (
+        <span style={{fontSize:"large"}}>{cell.getValue()}</span>
+      )},
+    {header: "Tipo", accessorKey: "type", maxSize:40,
       //custom conditional format and styling
       Cell: ({ cell }) => (
         <Box
@@ -119,89 +123,96 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
             p: '0.25rem',
           })}
         >
-          {cell.getValue()}
+          <span style={{fontSize:"large"}}>{cell.getValue()}</span>
         </Box>
       )},
-    {header: "Anom", accessorKey: "anom", maxSize:40,},
+    {header: "Anom", accessorKey: "anom", maxSize:40,
+    //custom conditional format and styling
+    Cell: ({ cell }) => (
+        <span style={{fontSize:"large", fontStyle:"italic"}}>{cell.getValue()}</span>
+      )},
   ]
 
   return(
-    <MaterialReactTable
-      columns={columns}
-      data={rows}
-      enableRowNumbers
-      enableRowSelection
-      enableColumnOrdering
-      //enableColumnResizing
-      initialState={{
-        density: 'compact',
-      }}
-      renderTopToolbarCustomActions={({ table }) => {
-        const handleMerge = () => {
-          let selected =[]
-          table.getSelectedRowModel().flatRows.map((row) => {
-            console.log('merging ' + row.getValue('name'));
-            selected.push(row.id)
-          });
-          propMerge(selected)
+    <div className='Table'>
+      <MaterialReactTable
+        columns={columns}
+        data={rows}
+        enableRowNumbers
+        enableRowSelection
+        enableColumnOrdering
+        enablePagination={false}
+        //enableColumnResizing
+        initialState={{
+          density: 'compact',
+        }}
+        renderTopToolbarCustomActions={({ table }) => {
+          const handleMerge = () => {
+            let selected =[]
+            table.getSelectedRowModel().flatRows.map((row) => {
+              console.log('merging ' + row.getValue('name'));
+              selected.push(row.id)
+            });
+            propMerge(selected)
 
-          table.resetRowSelection()
-        };
+            table.resetRowSelection()
+          };
 
-        const handleSplit = () => {
-          let selected =[]
-          table.getSelectedRowModel().flatRows.map((row) => {
-            console.log('spliting ' + row.getValue('name'));
-            selected.push(row.id)
-          });
-          propSplit(selected)
+          const handleSplit = () => {
+            let selected =[]
+            table.getSelectedRowModel().flatRows.map((row) => {
+              console.log('spliting ' + row.getValue('name'));
+              selected.push(row.id)
+            });
+            propSplit(selected)
 
-          table.resetRowSelection()
+            table.resetRowSelection()
 
-        };
+          };
 
-        const handleRemove = () => {
-          let selected =[]
-          table.getSelectedRowModel().flatRows.map((row) => {
-            console.log('removing ' + row.getValue('name'));
-            selected.push(row.id)
-          });
-          propRemove(selected)
+          const handleRemove = () => {
+            let selected =[]
+            table.getSelectedRowModel().flatRows.map((row) => {
+              console.log('removing ' + row.getValue('name'));
+              selected.push(row.id)
+            });
+            propRemove(selected)
 
-          table.resetRowSelection()
+            table.resetRowSelection()
 
-        };
+          };
 
-        return (
-          <div style={{ display: 'flex', gap: '0.5rem' }}>
-            <Button
-              color="success"
-              disabled={table.getSelectedRowModel().flatRows.length < 2}
-              onClick={handleMerge}
-              variant="contained"
-            >
-              Merge
-            </Button>
-            <Button
-              color="info"
-              disabled={table.getSelectedRowModel().flatRows.length < 1}
-              onClick={handleSplit}
-              variant="contained"
-            >
-              Split
-            </Button>
-            <Button
-              color="error"
-              disabled={table.getSelectedRowModel().flatRows.length < 1}
-              onClick={handleRemove}
-              variant="contained"
-            >
-              Remove
-            </Button>
-          </div>
-        );
-      }}
-    />
+          return (
+            <div style={{ display: 'flex', gap: '0.5rem' }}>
+              <Button
+                color="success"
+                disabled={table.getSelectedRowModel().flatRows.length < 2}
+                onClick={handleMerge}
+                variant="contained"
+              >
+                Juntar
+              </Button>
+              <Button
+                color="info"
+                disabled={table.getSelectedRowModel().flatRows.length < 1}
+                onClick={handleSplit}
+                variant="contained"
+              >
+                Separar
+              </Button>
+              <Button
+                color="error"
+                disabled={table.getSelectedRowModel().flatRows.length < 1}
+                onClick={handleRemove}
+                variant="contained"
+              >
+                Remover
+              </Button>
+            </div>
+          );
+        }}
+      />
+    </div>
   )
 }
 

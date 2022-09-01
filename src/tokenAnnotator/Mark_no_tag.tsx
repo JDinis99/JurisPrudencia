@@ -17,7 +17,10 @@ export interface MarkProps {
 
 const MarkNoTag: React.SFC<MarkProps> = props => (
   props.mode == "Preview" ?
-  props.anom + " " :
+  <mark>
+    {props.anom + " "}
+  </mark>
+  :
   <mark
     style={{backgroundColor: TAG_COLORS[props.tag] || '#84d2ff', padding: ".2em .3em", margin: "0 .25em", lineHeight: "1", display: "inline-block", borderRadius: ".25em"}}
     data-start={props.start}
