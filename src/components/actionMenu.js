@@ -23,7 +23,7 @@ const ActionMenu = (x, y, showMenu, handleTagChange) => {
       <button onClick={handleTagChange} value="LOC">LOC</button>
       <button onClick={handleTagChange} value="PRO">PRO</button>
       <button onClick={handleTagChange} value="MAT">MAT</button>
-      <button onClick={handleTagChange} style={{color:"red"}} value="Remove">Remove</button>
+      <button onClick={handleTagChange} style={{color:"red"}} value="Remove">Remover</button>
     </div>
   )
 }
