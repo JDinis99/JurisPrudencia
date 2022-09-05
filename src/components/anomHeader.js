@@ -49,6 +49,8 @@ const AnomHeader = (getText) => {
     await axios.post(url, formData, config).then((response) => {
       final_res = response.data.replace("<div data-from=.docx>", "<div data-from=.docx>\n")
       final_res = final_res.replace("</div>", "\n</div>\n")
+      final_res = final_res.replaceAll("href=", "")
+      final_res = final_res.replaceAll("PER", "PES")
       setSourceHtml(final_res)
       setLoading(false)
     });
@@ -79,36 +81,34 @@ const AnomHeader = (getText) => {
     <ThemeProvider theme={materialTheme}>
       <div className='FlexButtonContainer'>
 
-        {
-          loading ?
-          <div className='OptionButton' color="secondary">
-            <Button variant="outlined">A Carregar</Button>
-          </div>
-          :
-          <div className='OptionButton' color="secondary" onClick={handleNER}>
-            <Button variant="outlined">Anonimização Automática</Button>
-          </div>
-        }
-
         <ToggleButtonGroup
           value={mode}
           exclusive
           onChange={handleMode}
           aria-label="text alignment"
+          className='ToggleButton'
         >
-          <ToggleButton disabled="false" aria-label="left aligned" color="error">
-            Ver:
+          <ToggleButton value="Anom" aria-label="left aligned">
+            Editar
           </ToggleButton>
           <ToggleButton value="Original" aria-label="left aligned">
             Original
-          </ToggleButton>
-          <ToggleButton value="Anom" aria-label="left aligned">
-            Editar
           </ToggleButton>
           <ToggleButton value="Preview" aria-label="left aligned">
             Anonimizado
           </ToggleButton>
         </ToggleButtonGroup>
+
+        {
+          loading ?
+          <div className='OptionButton' color="secondary">
+            <Button variant="contained">A Anonimizar...</Button>
+          </div>
+          :
+          <div className='OptionButton' color="secondary" onClick={handleNER}>
+            <Button variant="contained">Sugerir</Button>
+          </div>
+        }
 
         <div className='OptionButton'>
           <Button variant="contained" className='OptionButton' onClick={downloadDocx}>Guardar</Button>

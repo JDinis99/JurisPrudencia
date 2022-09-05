@@ -31,7 +31,7 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
   } = useAppContext()
 
   let anomRules = {
-    "PER": "PER",
+    "PES": "PES",
     "DAT": "DAT",
     "ORG": "ORG",
     "LOC": "LOC",
@@ -40,7 +40,7 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
   }
   
   let entitieCounter = {
-    "PER":0,
+    "PES":0,
     "DAT":0,
     "ORG":0,
     "LOC":0,

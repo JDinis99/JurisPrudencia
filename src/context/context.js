@@ -41,7 +41,7 @@ export function AppContext({ children }) {
   const [popUpMenu, setPopUpMenu] = useState({
     showMenu: false,
     entities: {
-      "PER":0,
+      "PES":0,
       "DAT":0,
       "ORG":0,
       "LOC":0,

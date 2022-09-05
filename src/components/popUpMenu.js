@@ -23,7 +23,7 @@ const PopUpMenu = (showMenu, handleMultipleTagChange, entities) => {
     <div className='PopUp' style={style()}>
       Quer aplicar esta mudança a todas as entidades iguais?
       <br></br>
-      PER: {entities.PER}, DAT: {entities.DAT}, ORG: {entities.ORG}, LOC: {entities.LOC}, PRO: {entities.PRO}, MAT: {entities.MAT},
+      PES: {entities.PES}, DAT: {entities.DAT}, ORG: {entities.ORG}, LOC: {entities.LOC}, PRO: {entities.PRO}, MAT: {entities.MAT},
       <br></br>
       <button onClick={handleMultipleTagChange} value="Single">Apenas a esta ocorrência deste termo</button>
       <button onClick={handleMultipleTagChange} value="All-Equal">Todas as ocorrências deste termo e com este tipo</button>

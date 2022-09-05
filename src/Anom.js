@@ -109,7 +109,7 @@ const Anom = () => {
     let mat_number = 0
 
     anomValues.current.value.forEach(function(ent) {
-      if (ent.tag === "PER" && entitie.text === ent.text) {per_number += 1}
+      if (ent.tag === "PES" && entitie.text === ent.text) {per_number += 1}
       else if (ent.tag === "DAT" && entitie.text === ent.text) {dat_number += 1}
       else if (ent.tag === "ORG" && entitie.text === ent.text) {org_number += 1}
       else if (ent.tag === "LOC" && entitie.text === ent.text) {loc_number += 1}
@@ -120,7 +120,7 @@ const Anom = () => {
     setPopUpMenu({
       showMenu: true,
       entities: {
-        "PER": per_number,
+        "PES": per_number,
         "DAT": dat_number,
         "ORG": org_number,
         "LOC": loc_number,
@@ -135,7 +135,7 @@ const Anom = () => {
     setPopUpMenu({
       showMenu: false,
       entities: {
-        "PER":0,
+        "PES":0,
         "DAT":0,
         "ORG":0,
         "LOC":0,
@@ -583,8 +583,8 @@ const Anom = () => {
     anomValues.current = {
       value: value,
       //value: [],
-      //value: [{start: 0, end:6, tag: "PER"}],
-      tag: "PER"
+      //value: [{start: 0, end:6, tag: "PES"}],
+      tag: "PES"
     }
     setRenderValue({
       anomTokens: true,
