@@ -49,11 +49,12 @@ const Anom = () => {
     readHtml()
   }, [sourceHtml])
 
-  const handleNewEntitie = (value, p, text) => {
+  const handleNewEntitie = (value, left, top, text) => {
+
     // TODO: Update ALL Entitites based on new value
     setMenuStyle({
-      left: p.left,
-      top: p.top + 10,
+      left: left,
+      top: top,
       showMenu: true
     })
     let old_tag = anomValues.current.thtmlStringag
@@ -79,10 +80,10 @@ const Anom = () => {
     })
   }
 
-  const handleEntitieChange = (index, p) => {
+  const handleEntitieChange = (index, left, top) => {
     setMenuStyle({
-      left: p.left,
-      top: p.top + 10,
+      left: left,
+      top: top,
       showMenu: true
     })
 
@@ -637,13 +638,13 @@ const Anom = () => {
         <div className='Anom'>
           {AnomHeader(getText)}
           {box()}
+          {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
         </div>
 
         {TableComponent2(handleMerge, handleSplit, handleRemove)}
 
       </div>
 
-      {ActionMenu(menuStyle.left, menuStyle.top, menuStyle.showMenu, handleTagChange)}
 
       <div className='PopUp'>
         {PopUpMenu(popUpMenu.showMenu, handleMultipleTagChange, popUpMenu.entities)}

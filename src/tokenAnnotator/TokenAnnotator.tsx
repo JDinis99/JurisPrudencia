@@ -27,8 +27,8 @@ export interface TokenAnnotatorProps<T>
   tokens: any[]
   value: T[]
   mode: string
-  onNewEntitie: (value: T, p, text) => any
-  onEntitieChange: (index, p) => any
+  onNewEntitie: (value: T, left, top, text) => any
+  onEntitieChange: (index, left, top) => any
   getSpan?: (span: TokenSpan) => T
   renderMark?: (props: MarkProps) => JSX.Element
   // TODO: determine whether to overwrite or leave intersecting ranges.
@@ -54,6 +54,8 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     const selection = window.getSelection()
     const r = selection.getRangeAt(0);
     const p = r.getBoundingClientRect();
+
+    console.log()
 
     if (selectionIsEmpty(selection)) return
     
@@ -111,7 +113,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
       text += focus.textContent
     }
 
-    props.onNewEntitie(getSpan({start, end, tokens: props.tokens.slice(start, end)}), p, text)
+    props.onNewEntitie(getSpan({start, end, tokens: props.tokens.slice(start, end)}), p.left, p.top + window.scrollY - 20 , text)
     window.getSelection().empty()
   }
 
@@ -122,7 +124,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     // Find and remove the matching split.
     const splitIndex = props.value.findIndex(s => s.start === start && s.end === end)
     if (splitIndex >= 0) {
-      onEntitieChange(splitIndex, p)
+      onEntitieChange(splitIndex, p.left, p.top + window.scrollY - 20)
     }
   }
 
