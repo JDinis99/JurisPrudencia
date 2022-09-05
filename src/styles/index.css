@@ -11,3 +11,8 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: 'Noto Sans';
+  src: local('Noto Sans'), url(../fonts/NotoSans-ExtraLight.ttf) format('truetype');
+}

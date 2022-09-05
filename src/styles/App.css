@@ -49,8 +49,13 @@
 }
 
 .PageHeader {
-  height: 30px;
-  background-color: gold;
+  background-color: rgba(229,214,183,255);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: "Noto Sans", sans-serif;
+  color: rgba(186,21,20,255);
+  
 }
 
 .Text {

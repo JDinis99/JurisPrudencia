@@ -60,7 +60,7 @@ const ImportPage = () => {
     <div className="ImportPage">
       {redirectComponent()}
 
-      <h1>Bem vindo ao anonimizador, importe um ficheiro para começar o processo</h1>
+      <h1 style={{marginBottom:"50px"}}>Bem vindo ao anonimizador, importe um ficheiro para começar o processo</h1>
 
       <button onClick={handleClick} className="FileButton">
         Escolher Ficheiro
