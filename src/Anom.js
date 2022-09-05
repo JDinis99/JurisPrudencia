@@ -361,10 +361,9 @@ const Anom = () => {
         }
 
         value_sidebar.current[first].tokens = value_sidebar.current[first].tokens.concat(tokens)
-
-        
       }
     }
+    
     allEntities.current = value_sidebar.current
     setRenderValue({
       anomTokens: false,

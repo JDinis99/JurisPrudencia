@@ -113,7 +113,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
       text += focus.textContent
     }
 
-    props.onNewEntitie(getSpan({start, end, tokens: props.tokens.slice(start, end)}), p.left, p.top + window.scrollY - 20 , text)
+    props.onNewEntitie(getSpan({start, end, tokens: props.tokens.slice(start, end)}), p.left, p.top + window.scrollY, text)
     window.getSelection().empty()
   }
 
@@ -124,7 +124,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     // Find and remove the matching split.
     const splitIndex = props.value.findIndex(s => s.start === start && s.end === end)
     if (splitIndex >= 0) {
-      onEntitieChange(splitIndex, p.left, p.top + window.scrollY - 20)
+      onEntitieChange(splitIndex, p.left, p.top + window.scrollY)
     }
   }
 

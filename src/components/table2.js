@@ -106,7 +106,7 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
   }
 
   const columns = [
-    {header: "Entitidade", accessorKey: "name", minSize: 250, maxSize: 250,
+    {header: "Entitidade", accessorKey: "name", minSize: 200, maxSize: 250,
     //custom conditional format and styling
     Cell: ({ cell }) => (
         <span style={{fontSize:"large"}}>{cell.getValue()}</span>

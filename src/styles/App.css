@@ -107,13 +107,13 @@
 }
 
 .Table {
-  width: 30%;
+  width: 40%;
   margin-left: 20px;
   margin-right: 20px;
 }
 
 .Anom {
-  width: 70%;
+  width: 60%;
   position: relative;
 }
 
@@ -123,7 +123,7 @@
 
 .FileButton {
   position: fixed;
-  left: 40%;
+  left: 35%;
 }
 
 .UploadButton {
