@@ -598,6 +598,7 @@ const Anom = () => {
       return <></>
     }
     if (mode === "Original") {
+      console.log(raw_text.current)
       return (
         <div className='Text'>
           {parse(raw_text.current)}

@@ -104,3 +104,7 @@
 .Anom {
   width: 70%;
 }
+
+.Disabled-link {
+  pointer-events: none;
+}

@@ -43,6 +43,7 @@ const ImportPage = () => {
     await axios.post(url, formData, config).then((response) => {
       final_res = response.data.replace("<div data-from=.docx>", "<div data-from=.docx>\n")
       final_res = final_res.replace("</div>", "\n</div>\n")
+      final_res = final_res.replaceAll("href=", "")
       setSourceHtml(final_res)
     });
 
