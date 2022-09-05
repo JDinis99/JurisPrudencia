@@ -1,7 +1,7 @@
 import { useAppContext } from './context/context';
 import axios from 'axios';
 import  { Navigate } from 'react-router-dom'
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 
 const ImportPage = () => {
 
@@ -14,6 +14,11 @@ const ImportPage = () => {
     setSourceHtml,
   } = useAppContext()
 
+  const hiddenFileInput = useRef(null);
+
+  const handleClick = event => {
+    hiddenFileInput.current.click();
+  };
 
   const redirectComponent = () => {
     if (redirect === true) {
@@ -57,11 +62,13 @@ const ImportPage = () => {
 
       <h1>Bem vindo ao anonimizador, importe um ficheiro para começar o processo</h1>
 
-      <form onSubmit={handleSubmit}>
-          <h1>Escolha o Ficheiro</h1>
-          <input type="file" onChange={handleChange} />
-          <button type="submit">Upload</button>
-      </form>
+      <button onClick={handleClick} className="FileButton">
+        Escolher Ficheiro
+      </button>
+      {file === null ? "" : file.name}
+      <input type="file" ref={hiddenFileInput} onChange={handleChange} style={{display: 'none'}} />
+      <button type="submit" onClick={handleSubmit} className="UploadButton">Carregar</button>
+
     </div>
   )
 }

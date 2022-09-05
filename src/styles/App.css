@@ -116,3 +116,13 @@
 .Disabled-link {
   pointer-events: none;
 }
+
+.FileButton {
+  position: fixed;
+  left: 40%;
+}
+
+.UploadButton {
+  position: fixed;
+  left: 60%;
+}
