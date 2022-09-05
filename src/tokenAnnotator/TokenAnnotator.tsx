@@ -186,6 +186,8 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     }
   }
 
+  const nothing = () => {}
+
   const {tokens, value, onNewEntitie, onEntitieChange, getSpan: _, ...divProps} = props
   tokens.forEach(element => {
     let tmp: any = iterateSplits(element, value, onNewEntitie, onEntitieChange, handleSplitClick)
@@ -193,7 +195,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   });
 
   return (
-    <div {...divProps} onMouseUp={handleMouseUp}>
+    <div {...divProps} onMouseUp={() => props.mode === "preview" ? nothing() : handleMouseUp()}>
       {res}
     </div>
   )
