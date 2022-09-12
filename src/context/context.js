@@ -18,6 +18,7 @@ export function AppContext({ children }) {
   const anomTokens = useRef(null)
   const anomValues = useRef(null)
   const last_index = useRef(0)
+  const anom_id = useRef(0)
   const trueSourceHtml = useRef(false)
   const tag = useRef(null)
   const [menuStyle, setMenuStyle] = useState({
@@ -78,6 +79,7 @@ export function AppContext({ children }) {
     loading,
     setLoading,
     trueSourceHtml,
+    anom_id
   }));
 
   return <Context.Provider value={f_value}>{children}</Context.Provider>;

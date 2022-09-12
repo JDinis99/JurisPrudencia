@@ -42,6 +42,7 @@ const Anom = () => {
     sourceHtml,
     setSourceHtml,
     trueSourceHtml,
+    anom_id,
   } = useAppContext()
  
 
@@ -57,7 +58,7 @@ const Anom = () => {
       top: top - 100,
       showMenu: true
     })
-    let old_tag = anomValues.current.thtmlStringag
+    let old_tag = anomValues.current.tag
     let old_value = anomValues.current.value
     value.text = text
 
@@ -404,33 +405,52 @@ const Anom = () => {
     let new_value = []
     let to_remove = []
     let previous_r = 0
+    let number_deleted = 0
 
+    // Id of table
     for (let id of selected_list) {
+      new_value = []
 
-      for (let token of value_sidebar.current[id].tokens) {
+      console.log("SELECT ID: ", id)
+
+      // Each token associated with the sidebar
+      for (let token of value_sidebar.current[id - number_deleted].tokens) {
+
+        console.log("TOKEN: ", token)
 
         // Remove from text
         for (let value_id in old_value) {
-          if (token.ids.includes(old_value[value_id].start)) {
+          if (token.ids.includes(old_value[value_id].id)) {
+            console.log("old_value[value_id]: ", old_value[value_id])
             to_remove.push(value_id)
           }
         }
 
         removeFromSidebar(token.ids[0], true)
+        number_deleted += 1
       }
 
       for (let r_id of to_remove) {
-        r_id = parseInt(r_id)
-        let slice = old_value.slice(previous_r, r_id)
+        let parsed_r_id = parseInt(r_id)
+        console.log("r_id: ", parsed_r_id)
+
+        let slice = old_value.slice(previous_r, parsed_r_id)
+        console.log("prev slice: ", slice)
         new_value = new_value.concat(slice)
-        previous_r = r_id + 1
+        previous_r = parsed_r_id + 1
       }
 
       let slice = old_value.slice(previous_r, old_value.length)
+      console.log("last slice: ", slice)
       new_value = new_value.concat(slice)
 
       old_value = new_value
+      to_remove = []
+      previous_r = 0
+      console.log("CHANGE_----------")
     }
+
+    console.log("FINAL :", old_value)
 
     allEntities.current = value_sidebar.current
     anomValues.current = {
@@ -512,9 +532,11 @@ const Anom = () => {
         start: tokenCounter,
         end: tokenCounter + split.length,
         tag: role,
-        text: new_text
+        text: new_text,
+        id: anom_id.current
       })
-      addToSidebar(new_text, role, [tokenCounter])
+      addToSidebar(new_text, role, [anom_id.current])
+      anom_id.current += 1
       let tmp_res = iterateHtml(new_text)
       res = res.concat(tmp_res)
     }
