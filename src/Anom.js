@@ -93,18 +93,7 @@ const Anom = () => {
     last_index.current = index
   }
 
-  const handleTagChange = e => {
-    setMenuStyle({
-      left: 0,
-      top: 0,
-      showMenu: false
-    })
-
-    let new_tag  = e.target.value
-    tag.current = new_tag
-
-    let entitie = anomValues.current.value[last_index.current]
-
+  const countEntities = (entitie) => {
     let per_number = 0
     let dat_number = 0
     let org_number = 0
@@ -121,15 +110,40 @@ const Anom = () => {
       else if (ent.tag === "MAT" && entitie.text === ent.text) {mat_number += 1}
     })
 
+    return {
+      per_number,
+      dat_number,
+      org_number,
+      loc_number,
+      pro_number,
+      mat_number
+    }
+
+  }
+
+  const handleTagChange = e => {
+    setMenuStyle({
+      left: 0,
+      top: 0,
+      showMenu: false
+    })
+
+    let new_tag  = e.target.value
+    tag.current = new_tag
+
+    let entitie = anomValues.current.value[last_index.current]
+
+    let counts = countEntities(entitie)
+    
     setPopUpMenu({
       showMenu: true,
       entities: {
-        "PES": per_number,
-        "DAT": dat_number,
-        "ORG": org_number,
-        "LOC": loc_number,
-        "PRO": pro_number,
-        "MAT": mat_number
+        "PES": counts.per_number,
+        "DAT": counts.dat_number,
+        "ORG": counts.org_number,
+        "LOC": counts.loc_number,
+        "PRO": counts.pro_number,
+        "MAT": counts.mat_number
       }
     })
   }
@@ -166,7 +180,7 @@ const Anom = () => {
           value: new_value,
           tag: old_tag
         }
-        removeFromSidebar(old_value[last_index.current].start)
+        removeFromSidebar(old_value[last_index.current].id)
         allEntities.current = value_sidebar.current
       }
       else {
@@ -175,7 +189,7 @@ const Anom = () => {
           value: old_value,
           tag: new_tag
         }
-        changeSidebar(old_value[last_index.current].text, new_tag, old_value[last_index.current].start)
+        changeSidebar(old_value[last_index.current].text, new_tag, old_value[last_index.current].id)
         allEntities.current = value_sidebar.current
         
       }

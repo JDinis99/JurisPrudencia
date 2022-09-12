@@ -71,7 +71,8 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
       let type = entitie.tag
       let name = ""
       let counter = 0
-      
+      let count = ""
+
       entitieCounter[type] ++
 
       var str = entitieCounter[type].toString()
@@ -90,15 +91,29 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
 
         // Add anom value to anomValues
         for (let value of old_value) {
-          if (e.ids.includes(value.start)) {
+          if (e.ids.includes(value.id)) {
             value.anom = anom
           }
         }
       }
       
       name = parse(name)
+      let t_counter = 0
+
+      console.log(entitie)
+
+      for (let t of entitie.tokens) {
+        count += t.ids.length
+        // If not last
+        if (t_counter != entitie.tokens.length-1) {
+          count += "<br></br>"
+        }
+        t_counter++
+      }
+
+      count = parse(count)
       
-      res.push({ name, type, anom })
+      res.push({ count, name, type, anom })
       entitie.anom = anom
     }
 
@@ -106,6 +121,11 @@ const TableComponent2 = (propMerge, propSplit, propRemove) => {
   }
 
   const columns = [
+    {header: "#", accessorKey: "count", maxSize:40,
+    //custom conditional format and styling
+    Cell: ({ cell }) => (
+        <span style={{fontSize:"large"}}>{cell.getValue()}</span>
+      )},
     {header: "Entitidade", accessorKey: "name", minSize: 200, maxSize: 250,
     //custom conditional format and styling
     Cell: ({ cell }) => (
