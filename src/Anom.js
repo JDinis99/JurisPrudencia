@@ -61,9 +61,11 @@ const Anom = () => {
     let old_tag = anomValues.current.tag
     let old_value = anomValues.current.value
     value.text = text
+    value.id = anom_id.current
 
     delete value.tokens
-    addToSidebar(value.text, value.tag, [value.start])
+    addToSidebar(value.text, value.tag, [anom_id.current])
+    anom_id.current += 1
     allEntities.current = value_sidebar.current
 
     let new_value = [...old_value, value]
@@ -411,17 +413,12 @@ const Anom = () => {
     for (let id of selected_list) {
       new_value = []
 
-      console.log("SELECT ID: ", id)
-
       // Each token associated with the sidebar
       for (let token of value_sidebar.current[id - number_deleted].tokens) {
-
-        console.log("TOKEN: ", token)
 
         // Remove from text
         for (let value_id in old_value) {
           if (token.ids.includes(old_value[value_id].id)) {
-            console.log("old_value[value_id]: ", old_value[value_id])
             to_remove.push(value_id)
           }
         }
@@ -432,25 +429,18 @@ const Anom = () => {
 
       for (let r_id of to_remove) {
         let parsed_r_id = parseInt(r_id)
-        console.log("r_id: ", parsed_r_id)
-
         let slice = old_value.slice(previous_r, parsed_r_id)
-        console.log("prev slice: ", slice)
         new_value = new_value.concat(slice)
         previous_r = parsed_r_id + 1
       }
 
       let slice = old_value.slice(previous_r, old_value.length)
-      console.log("last slice: ", slice)
       new_value = new_value.concat(slice)
 
       old_value = new_value
       to_remove = []
       previous_r = 0
-      console.log("CHANGE_----------")
     }
-
-    console.log("FINAL :", old_value)
 
     allEntities.current = value_sidebar.current
     anomValues.current = {
