@@ -348,15 +348,16 @@ const Anom = () => {
 
   function handleMerge(selected_list) {
     let first = null
+    let number_deleted = 0
 
     for (let id of selected_list) {
       if (first === null) {
         first = id
       }
       else {
-        let tokens = value_sidebar.current[id].tokens
+        let tokens = value_sidebar.current[id - number_deleted].tokens
         for (let token of tokens) {
-          //to_remove.push(token.ids[0])
+          number_deleted += 1
           removeFromSidebar(token.ids[0], true)
         }
 
