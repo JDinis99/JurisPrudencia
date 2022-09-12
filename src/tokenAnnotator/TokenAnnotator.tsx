@@ -188,7 +188,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     }
   }
 
-  const nothing = () => {console.log("MODE PREVEIW")}
+  const nothing = () => {}
 
   const {tokens, value, onNewEntitie, onEntitieChange, getSpan: _, ...divProps} = props
   tokens.forEach(element => {
