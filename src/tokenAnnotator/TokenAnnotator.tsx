@@ -188,7 +188,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     }
   }
 
-  const nothing = () => {}
+  const nothing = () => {console.log("MODE PREVEIW")}
 
   const {tokens, value, onNewEntitie, onEntitieChange, getSpan: _, ...divProps} = props
   tokens.forEach(element => {
@@ -197,7 +197,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   });
 
   return (
-    <div {...divProps} onMouseUp={() => props.mode === "preview" ? nothing() : handleMouseUp()}>
+    <div {...divProps} onMouseUp={() => props.mode === "Preview" ? nothing() : handleMouseUp()}>
       {res}
     </div>
   )

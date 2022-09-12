@@ -18,7 +18,8 @@ export interface MarkProps {
 const MarkNoTag: React.SFC<MarkProps> = props => (
   props.mode == "Preview" ?
   <mark>
-    {props.anom + " "}
+    {props.anom}
+    {" "}
   </mark>
   :
   <mark
