@@ -350,18 +350,18 @@ const Anom = () => {
       for (let token of entitie.tokens) {
         if (token.ids.includes(id)) {
           // If it is an entitie with a single id or if we whish to change tag for all ids
-          if (token.ids.length === 1 || all === true) {
-            // Simply Change Tag
-            entitie.tag = new_tag
-          }
-          // If there are multiple ids and we only want to change 1
-          else {
-            // Remove current id from sidebar
-            removeFromSidebar(id, false)
-            // And re-add it with new tag
-            addToSidebar(text, new_tag, [id])
-          }
-          break
+          // Remove current id from sidebar
+          removeFromSidebar(id, false)
+          // And re-add it with new tag
+          addToSidebar(text, new_tag, [id])
+          // if (token.ids.length === 1 || all === true) {
+          //   // Simply Change Tag
+          //   entitie.tag = new_tag
+          // }
+          // // If there are multiple ids and we only want to change 1
+          // else {
+          // }
+          // break
         }
       }
     }
