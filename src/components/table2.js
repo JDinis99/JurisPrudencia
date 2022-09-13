@@ -205,8 +205,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, changeSidebar) => {
       name = parse(name)
       let t_counter = 0
 
-      console.log(entitie)
-
       for (let t of entitie.tokens) {
         count += t.ids.length
         // If not last
@@ -226,7 +224,7 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, changeSidebar) => {
   }
 
   const columns = [
-    {header: "#", accessorKey: "count", maxSize:40,
+    {header: "#", accessorKey: "count", maxSize:20,
     //custom conditional format and styling
     Cell: ({ cell }) => (
         <span style={{fontSize:"large"}}>{cell.getValue()}</span>

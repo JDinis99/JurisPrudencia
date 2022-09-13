@@ -181,7 +181,6 @@ const Anom = () => {
           tag: old_tag
         }
         removeFromSidebar(old_value[last_index.current].id)
-        allEntities.current = value_sidebar.current
       }
       else {
         old_value[last_index.current].tag = new_tag
@@ -189,10 +188,9 @@ const Anom = () => {
           value: old_value,
           tag: new_tag
         }
-        changeSidebar(old_value[last_index.current].text, new_tag, old_value[last_index.current].id)
-        allEntities.current = value_sidebar.current
-        
+        changeSidebar(old_value[last_index.current].text, new_tag, old_value[last_index.current].id, false)
       }
+      allEntities.current = value_sidebar.current
       anomValues.current = new_anom
       setRenderValue({
         anomTokens: false,
@@ -206,6 +204,7 @@ const Anom = () => {
         if (new_tag == "Remove") {
           if (entitie.text === old_text && entitie.tag === old_tag) {
             // Ignore and dont add to new array
+            removeFromSidebar(entitie.id)
           }
           else {
             new_value.push(entitie)
@@ -215,22 +214,24 @@ const Anom = () => {
           if (entitie.text === old_text && entitie.tag === old_tag) {
             // change tag
             entitie.tag = new_tag
+            changeSidebar(entitie.text, new_tag, entitie.id, true)
           }
         }
       })
 
+      allEntities.current = value_sidebar.current
       if (new_tag == "Remove") {
         new_anom = {
           value: new_value,
           tag: old_tag
         }
         anomValues.current = new_anom
-        setRenderValue.current = {
-          anomTokens: false,
-          anomValues: true,
-          allEntities: true
-        }
       }
+      setRenderValue({
+        anomTokens: false,
+        anomValues: true,
+        allEntities: true
+      })
 
     }
 
@@ -239,6 +240,7 @@ const Anom = () => {
         if (new_tag == "Remove") {
           if (entitie.text === old_text) {
             // Ignore and dont add to new array
+            removeFromSidebar(entitie.id)
           }
           else {
             new_value.push(entitie)
@@ -248,22 +250,24 @@ const Anom = () => {
           if (entitie.text === old_text) {
             // change tag
             entitie.tag = new_tag
+            changeSidebar(entitie.text, new_tag, entitie.id, true)
           }
         }
       })
 
+      allEntities.current = value_sidebar.current
       if (new_tag == "Remove") {
         new_anom = {
           value: new_value,
           tag: old_tag
         }
         anomValues.current = new_anom
-        setRenderValue.current = {
-          anomTokens: false,
-          anomValues: true,
-          allEntities: true
-        }
       }
+      setRenderValue({
+        anomTokens: false,
+        anomValues: true,
+        allEntities: true
+      })
     }
 
   }
