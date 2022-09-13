@@ -363,111 +363,6 @@ const Anom = () => {
     }
   }
 
-  function handleMerge(selected_list) {
-    let first = null
-    let number_deleted = 0
-
-    for (let id of selected_list) {
-      if (first === null) {
-        first = id
-      }
-      else {
-        let tokens = value_sidebar.current[id - number_deleted].tokens
-        for (let token of tokens) {
-          number_deleted += 1
-          removeFromSidebar(token.ids[0], true)
-        }
-
-        value_sidebar.current[first].tokens = value_sidebar.current[first].tokens.concat(tokens)
-      }
-    }
-    
-    allEntities.current = value_sidebar.current
-    setRenderValue({
-      anomTokens: false,
-      anomValues: false,
-      allEntities: true
-    })
-  }
-
-  function handleSplit(selected_list) {
-    for (let id of selected_list) {
-      let first = true
-
-      // Split all tokens of an entitie
-      for (let token of value_sidebar.current[id].tokens) {
-        // Ignore first one
-        if (first === true) {
-          first = false
-          continue
-        } else {
-          removeFromSidebar(token.ids[0], true)
-          addToSidebar(token.text, value_sidebar.current[id].tag, token.ids)
-        }
-      }
-    }
-
-    allEntities.current = value_sidebar.current
-    setRenderValue({
-      anomTokens: false,
-      anomValues: false,
-      allEntities: true
-    })
-  }
-
-  function handleRemove(selected_list) {
-    let old_value = anomValues.current.value
-    let old_tag = anomValues.current.tag
-    let new_value = []
-    let to_remove = []
-    let previous_r = 0
-    let number_deleted = 0
-
-    // Id of table
-    for (let id of selected_list) {
-      new_value = []
-
-      // Each token associated with the sidebar
-      for (let token of value_sidebar.current[id - number_deleted].tokens) {
-
-        // Remove from text
-        for (let value_id in old_value) {
-          if (token.ids.includes(old_value[value_id].id)) {
-            to_remove.push(value_id)
-          }
-        }
-
-        removeFromSidebar(token.ids[0], true)
-        number_deleted += 1
-      }
-
-      for (let r_id of to_remove) {
-        let parsed_r_id = parseInt(r_id)
-        let slice = old_value.slice(previous_r, parsed_r_id)
-        new_value = new_value.concat(slice)
-        previous_r = parsed_r_id + 1
-      }
-
-      let slice = old_value.slice(previous_r, old_value.length)
-      new_value = new_value.concat(slice)
-
-      old_value = new_value
-      to_remove = []
-      previous_r = 0
-    }
-
-    allEntities.current = value_sidebar.current
-    anomValues.current = {
-      value: old_value,
-      tag: old_tag
-    }
-    setRenderValue({
-      anomTokens: false,
-      anomValues: true,
-      allEntities: true
-    })
-  }
-
   function iterateHtml (text) {
     let res = []
     let start_index = text.indexOf("<")
@@ -670,7 +565,7 @@ const Anom = () => {
           </div>
         </div>
 
-        {TableComponent2(handleMerge, handleSplit, handleRemove)}
+        {TableComponent2(addToSidebar, removeFromSidebar, changeSidebar)}
 
       </div>
 
