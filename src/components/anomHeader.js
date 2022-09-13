@@ -1,4 +1,3 @@
-import * as React from 'react';
 import Button from '@mui/material/Button';
 import { useAppContext } from '../context/context';
 import materialTheme from "../utils/material_theme"
@@ -11,6 +10,18 @@ import HTMLtoDOCX from 'html-to-docx';
 import { Document, Packer } from 'docx';
 import { saveAs } from 'file-saver';
 import axios from 'axios';
+import {Routes, Route, useNavigate} from 'react-router-dom';
+
+import {
+  createContext,
+  useContext,
+  useEffect,
+  useMemo,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
+
 
 var ReactDOMServer = require('react-dom/server');
 
@@ -30,6 +41,8 @@ const AnomHeader = (getText) => {
   const handleMode = (event, newMode) => {
     setMode(newMode);
   };
+
+  const navigate = useNavigate()
 
   async function handleNER() {
     let final_res = null
@@ -55,6 +68,11 @@ const AnomHeader = (getText) => {
       setLoading(false)
     });
 
+  }
+
+
+  const redirectHelp = async () => {
+    navigate("/ajuda")
   }
 
   const downloadDocx = async () => {
@@ -112,6 +130,10 @@ const AnomHeader = (getText) => {
 
         <div className='OptionButton'>
           <Button variant="contained" className='OptionButton' onClick={downloadDocx}>Guardar</Button>
+        </div>
+
+        <div className='OptionButton'>
+          <Button variant="contained" className='OptionButton' onClick={redirectHelp}>Ajuda</Button>
         </div>
 
       </div>

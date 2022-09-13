@@ -8,6 +8,8 @@ import {
   useCallback,
 } from "react";
 
+import {Routes, Route, useNavigate} from 'react-router-dom';
+
 const Context = createContext();
 
 export function AppContext({ children }) {
@@ -79,7 +81,7 @@ export function AppContext({ children }) {
     loading,
     setLoading,
     trueSourceHtml,
-    anom_id
+    anom_id,
   }));
 
   return <Context.Provider value={f_value}>{children}</Context.Provider>;
