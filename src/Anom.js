@@ -134,6 +134,10 @@ const Anom = () => {
     let entitie = anomValues.current.value[last_index.current]
 
     let counts = countEntities(entitie)
+
+    if (new_tag === "Cancel") {
+      return
+    }
     
     setPopUpMenu({
       showMenu: true,
@@ -148,7 +152,7 @@ const Anom = () => {
     })
   }
 
-  const handleMultipleTagChange = e => {
+  const handleMultipleTagChange = value => {
 
     setPopUpMenu({
       showMenu: false,
@@ -162,6 +166,10 @@ const Anom = () => {
       }
     })
 
+    if (value == "Cancel") {
+      return
+    } 
+
     let new_anom = null
     let new_tag  = tag.current
     let old_value = anomValues.current.value
@@ -169,7 +177,7 @@ const Anom = () => {
     let old_tag = old_value[last_index.current].tag
     let new_value = []
 
-    if (e.target.value === "Single") {
+    if (value === "Single") {
       
       if (new_tag == "Remove") {
         let old_tag = anomValues.current.tag
@@ -199,7 +207,7 @@ const Anom = () => {
       })
     }
 
-    else if (e.target.value === "All-Equal") {
+    else if (value === "All-Equal") {
       old_value.forEach(function(entitie){
         if (new_tag == "Remove") {
           if (entitie.text === old_text && entitie.tag === old_tag) {
@@ -235,7 +243,7 @@ const Anom = () => {
 
     }
 
-    else if (e.target.value === "All-All") {
+    else if (value === "All-All") {
       old_value.forEach(function(entitie){
         if (new_tag == "Remove") {
           if (entitie.text === old_text) {
