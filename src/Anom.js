@@ -152,7 +152,7 @@ const Anom = () => {
     })
   }
 
-  const handleMultipleTagChange = value => {
+  const handleMultipleTagChange = (value) => {
 
     setPopUpMenu({
       showMenu: false,
@@ -577,7 +577,7 @@ const Anom = () => {
           </div>
         </div>
 
-        {TableComponent2(addToSidebar, removeFromSidebar, changeSidebar)}
+        {TableComponent2(addToSidebar, removeFromSidebar, handleMultipleTagChange)}
 
       </div>
 

@@ -1,12 +1,12 @@
 import MaterialReactTable, { MRT_ColumnDef } from 'material-react-table';
-import { Box, Button, ListItemIcon, MenuItem, Typography } from '@mui/material';
+import { Box, Button, ListItemIcon, MenuItem, Typography, InputLabel, FormControl, NativeSelect } from '@mui/material';
 import TAG_COLORS from '../utils/tag_colors';
 import React, { useRef, useState, useEffect } from 'react';
 
 import { useAppContext } from '../context/context'
 import parse from 'html-react-parser';
 
-const TableComponent2 = (addToSidebar, removeFromSidebar, changeSidebar) => {
+const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChange) => {
 
   const {
     value_sidebar,
@@ -30,6 +30,8 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, changeSidebar) => {
     setSourceHtml,
   } = useAppContext()
 
+  const [tagChange, setTagChange] = useState(false)
+
   let anomRules = {
     "PES": "PES",
     "DAT": "DAT",
@@ -47,8 +49,7 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, changeSidebar) => {
     "PRO":0,
     "MAT":0
   }
-  
-  
+
   useEffect(() => {
     if (renderValue.allEntities !== null) {
       createRows()
@@ -60,6 +61,12 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, changeSidebar) => {
 
     }
   }, [renderValue])
+
+  useEffect(() => {
+    if (tagChange === true) {
+      createRows()
+    }
+  }, [tagChange])
 
   function handleMergeTable(selected_list) {
     let first = null
@@ -223,6 +230,27 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, changeSidebar) => {
     setRows(res)
   }
 
+  const handleTableChangeEntitie = async (row, e) => {
+    tag.current = e.target.value
+
+    let allEnt = allEntities.current
+
+    // Get index of row in anomValues
+    for (let token of allEnt[row.id].tokens) {
+      let id = token.ids[0]
+
+      // Search for id in anomValues
+      for (let value_id in anomValues.current.value) {
+        let value = anomValues.current.value[value_id]
+        if (value.id === id) {
+          tag.current = e.target.value
+          last_index.current = value_id
+          handleMultipleTagChange("All-Equal")
+        }
+      }
+    }
+  }
+
   const columns = [
     {header: "#", accessorKey: "count", maxSize:20,
     //custom conditional format and styling
@@ -236,7 +264,7 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, changeSidebar) => {
       )},
     {header: "Tipo", accessorKey: "type", maxSize:40,
       //custom conditional format and styling
-      Cell: ({ cell }) => (
+      Cell: ({ cell, row }) => (
         <Box
           sx={() => ({
             backgroundColor: TAG_COLORS[cell.getValue()],
@@ -245,15 +273,41 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, changeSidebar) => {
             maxWidth: '9ch',
             p: '0.25rem',
           })}
-        >
-          <span style={{fontSize:"large"}}>{cell.getValue()}</span>
+          >
+          <FormControl fullWidth>
+            <NativeSelect
+              defaultValue={cell.getValue()}
+              inputProps={{
+                name: 'type',
+                id: 'uncontrolled-native',
+              }}
+              onChange={async (e) => handleTableChangeEntitie(row, e)}
+            >
+              <option value={"PES"}>PES</option>
+              <option value={"ORG"}>ORG</option>
+              <option value={"DAT"}>DAT</option>
+              <option value={"LOC"}>LOC</option>
+              <option value={"PRO"}>PRO</option>
+              <option value={"MAT"}>MAT</option>
+            </NativeSelect>
+          </FormControl>
         </Box>
       )},
     {header: "Anom", accessorKey: "anom", maxSize:40,
-    //custom conditional format and styling
-    Cell: ({ cell }) => (
-        <span style={{fontSize:"large", fontStyle:"italic"}}>{cell.getValue()}</span>
-      )},
+      //custom conditional format and styling
+      Cell: ({ cell, row }) => (
+        <Box
+            sx={() => ({
+              backgroundColor: TAG_COLORS[allEntities.current[row.id].tag],
+              borderRadius: '0.25rem',
+              color: 'black',
+              maxWidth: '9ch',
+              p: '0.25rem',
+            })}
+          >
+            <span style={{fontSize:"large", fontStyle:"italic"}}>{cell.getValue()}</span>
+          </Box>
+        )},
   ]
 
   return(
@@ -264,6 +318,7 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, changeSidebar) => {
         enableRowSelection
         enableColumnOrdering
         enablePagination={false}
+        enableStickyHeader
         //enableColumnResizing
         initialState={{
           density: 'compact',
