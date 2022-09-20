@@ -30,8 +30,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
     setSourceHtml,
   } = useAppContext()
 
-  const [tagChange, setTagChange] = useState(false)
-
   let anomRules = {
     "PES": "PES",
     "DAT": "DAT",
@@ -61,12 +59,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
 
     }
   }, [renderValue])
-
-  useEffect(() => {
-    if (tagChange === true) {
-      createRows()
-    }
-  }, [tagChange])
 
   function handleMergeTable(selected_list) {
     let first = null
