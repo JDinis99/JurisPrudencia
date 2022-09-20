@@ -99,7 +99,7 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           continue
         } else {
           removeFromSidebar(token.ids[0], true)
-          addToSidebar(token.text, value_sidebar.current[id].tag, token.ids)
+          addToSidebar(token.text, value_sidebar.current[id].tag, token.ids, null)
         }
       }
     }

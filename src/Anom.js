@@ -64,7 +64,7 @@ const Anom = () => {
     value.id = anom_id.current
 
     delete value.tokens
-    addToSidebar(value.text, value.tag, [anom_id.current])
+    addToSidebar(value.text, value.tag, [anom_id.current], null)
     anom_id.current += 1
     allEntities.current = value_sidebar.current
 
@@ -280,7 +280,8 @@ const Anom = () => {
 
   }
 
-  function addToSidebar(text, role, ids) {
+  function addToSidebar(text, role, ids, entitie_id) {
+    console.log("POSITION: ", entitie_id)
     let found = false
     for (let entitie of value_sidebar.current) {
       for (let token of entitie.tokens) {
@@ -294,13 +295,25 @@ const Anom = () => {
     }
 
     if (found === false) {
-      value_sidebar.current.push({
-        tokens: [{
-          text: text,
-          ids: ids
-        }],
-        tag: role
-      })
+      if (entitie_id === null) {
+        value_sidebar.current.push({
+          tokens: [{
+            text: text,
+            ids: ids
+          }],
+          tag: role
+        })
+      }
+      else {
+        value_sidebar.current.splice(entitie_id, 0,  {
+          tokens: [{
+            text: text,
+            ids: ids
+          }],
+          tag: role
+        })
+      }
+
     }
   }
 
@@ -354,14 +367,15 @@ const Anom = () => {
   }
   
   function changeSidebar(text, new_tag, id, all) {
-    for (let entitie of value_sidebar.current) {
+    for (let entitie_id in value_sidebar.current) {
+      let entitie = value_sidebar.current[entitie_id]
       for (let token of entitie.tokens) {
         if (token.ids.includes(id)) {
           // If it is an entitie with a single id or if we whish to change tag for all ids
           // Remove current id from sidebar
           removeFromSidebar(id, false)
           // And re-add it with new tag
-          addToSidebar(text, new_tag, [id])
+          addToSidebar(text, new_tag, [id], entitie_id)
           // if (token.ids.length === 1 || all === true) {
           //   // Simply Change Tag
           //   entitie.tag = new_tag
@@ -446,7 +460,7 @@ const Anom = () => {
         text: new_text,
         id: anom_id.current
       })
-      addToSidebar(new_text, role, [anom_id.current])
+      addToSidebar(new_text, role, [anom_id.current], null)
       anom_id.current += 1
       let tmp_res = iterateHtml(new_text)
       res = res.concat(tmp_res)
