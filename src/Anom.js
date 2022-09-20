@@ -281,7 +281,6 @@ const Anom = () => {
   }
 
   function addToSidebar(text, role, ids, entitie_id) {
-    console.log("POSITION: ", entitie_id)
     let found = false
     for (let entitie of value_sidebar.current) {
       for (let token of entitie.tokens) {
@@ -367,8 +366,8 @@ const Anom = () => {
   }
   
   function changeSidebar(text, new_tag, id, all) {
-    for (let entitie_id in value_sidebar.current) {
-      let entitie = value_sidebar.current[entitie_id]
+    let entitie_id = 0
+    for (let entitie of value_sidebar.current) {
       for (let token of entitie.tokens) {
         if (token.ids.includes(id)) {
           // If it is an entitie with a single id or if we whish to change tag for all ids
@@ -386,6 +385,7 @@ const Anom = () => {
           // break
         }
       }
+      entitie_id += 1
     }
   }
 
