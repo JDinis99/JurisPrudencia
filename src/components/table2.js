@@ -288,7 +288,10 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
     {header: "Anom", accessorKey: "anom", maxSize:40,
       //custom conditional format and styling
       Cell: ({ cell, row }) => (
-        <Box
+        allEntities.current[row.id] === undefined ?
+          <span style={{fontSize:"large", fontStyle:"italic"}}>{cell.getValue()}</span>
+          :
+          <Box
             sx={() => ({
               backgroundColor: TAG_COLORS[allEntities.current[row.id].tag],
               borderRadius: '0.25rem',
@@ -299,7 +302,7 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           >
             <span style={{fontSize:"large", fontStyle:"italic"}}>{cell.getValue()}</span>
           </Box>
-        )},
+      )},
   ]
 
   return(
