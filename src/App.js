@@ -6,14 +6,14 @@ import Header from './components/header';
 
 function App() {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <div className="App">
         <div className="content">
           <Header/>
           <Routes>
-            <Route exact path="/anon" element={<ImportPage />}/>
-            <Route exact path="/anon/anom" element={<Anom />}/>
-            <Route exact path="/anon/ajuda" element={<HelpPage />}/>
+            <Route exact path="/" element={<ImportPage />}/>
+            <Route exact path="/anom" element={<Anom />}/>
+            <Route exact path="/ajuda" element={<HelpPage />}/>
           </Routes>
         </div>
       </div>

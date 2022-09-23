@@ -35,7 +35,7 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "start-test": "PUBLIC_URL=/anon react-app-rewired start",
+    "start-test": "PUBLIC_URL=http://localhost:3000/anon && react-app-rewired start",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject"
