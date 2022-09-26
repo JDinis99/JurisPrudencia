@@ -27,6 +27,7 @@ export interface TokenAnnotatorProps<T>
   tokens: any[]
   value: T[]
   mode: string
+  anom_style : string
   onNewEntitie: (value: T, left, top, text) => any
   onEntitieChange: (index, left, top) => any
   getSpan?: (span: TokenSpan) => T
@@ -138,7 +139,8 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
             key: `${split.start}-${split.end}`,
             ...split,
             onClick: handleSplitClick,
-            mode: props.mode
+            mode: props.mode,
+            anom_style : props.anom_style
           })
           tmp_res.push(mark)
           let split_length = split.content.split(" ")
@@ -149,7 +151,8 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
             key: `${split.start}-${split.end}`,
             ...split,
             onClick: handleSplitClick,
-            mode: props.mode
+            mode: props.mode,
+            anom_style : props.anom_style
           })
           tmp_res.push(mark)
           let split_length = split.content.split(" ")

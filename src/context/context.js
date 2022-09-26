@@ -53,6 +53,8 @@ export function AppContext({ children }) {
     }
   })
 
+  const [anomStyle, setAnomStyle] = useState("Type")
+
   const f_value = useMemo(() => ({
     value_sidebar,
     allEntities,
@@ -82,6 +84,8 @@ export function AppContext({ children }) {
     setLoading,
     trueSourceHtml,
     anom_id,
+    anomStyle,
+    setAnomStyle,
   }));
 
   return <Context.Provider value={f_value}>{children}</Context.Provider>;

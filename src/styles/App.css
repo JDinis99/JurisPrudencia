@@ -131,5 +131,9 @@
   left: 60%;
 }
 
-.HelpPage {
+.ToggleStyle {
+  margin-left: 50px;
+  margin-right: 5px;
+  padding-left: 5px;
+  padding-right: 5px;
 }

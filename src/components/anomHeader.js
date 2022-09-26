@@ -35,11 +35,17 @@ const AnomHeader = (getText) => {
     setSourceHtml,
     loading,
     setLoading,
+    anomStyle,
+    setAnomStyle,
   } = useAppContext()
 
 
   const handleMode = (event, newMode) => {
     setMode(newMode);
+  };
+
+  const handlStyle = (event, newMode) => {
+    setAnomStyle(newMode);
   };
 
   const navigate = useNavigate()
@@ -135,6 +141,24 @@ const AnomHeader = (getText) => {
         <div className='OptionButton'>
           <Button variant="contained" className='OptionButton' onClick={redirectHelp}>Ajuda</Button>
         </div>
+
+        <ToggleButtonGroup
+          value={anomStyle}
+          exclusive
+          onChange={handlStyle}
+          aria-label="text alignment"
+          className='ToggleStyle'
+        >
+          <ToggleButton value="" disabled="true" aria-label="left aligned">
+            Estilo de Anonimização:
+          </ToggleButton>
+          <ToggleButton value="Type" aria-label="left aligned">
+            Tipo
+          </ToggleButton>
+          <ToggleButton value="Anom" aria-label="left aligned">
+            Anonimização
+          </ToggleButton>
+        </ToggleButtonGroup>
 
       </div>
     </ThemeProvider>

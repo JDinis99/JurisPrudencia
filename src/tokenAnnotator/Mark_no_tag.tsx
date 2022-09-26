@@ -12,6 +12,7 @@ export interface MarkProps {
   onClick: (any) => any
   mode: string
   anom: string
+  anom_style: string
 }
 
 

@@ -43,6 +43,8 @@ const Anom = () => {
     setSourceHtml,
     trueSourceHtml,
     anom_id,
+    anomStyle,
+    setAnomStyle,
   } = useAppContext()
  
 
@@ -262,7 +264,6 @@ const Anom = () => {
           }
         }
       })
-
       allEntities.current = value_sidebar.current
       if (new_tag == "Remove") {
         new_anom = {
@@ -566,6 +567,7 @@ const Anom = () => {
               tag: anomValues.current.tag,
             })}
             mode={mode}
+            anom_style = {anomStyle}
             />
         </div>
       )
