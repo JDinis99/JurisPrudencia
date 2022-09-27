@@ -6,6 +6,7 @@ import MarkNoTag, {MarkNoTagProps} from './Mark_no_tag.tsx'
 import {selectionIsEmpty, selectionIsBackwards, splitTokensWithOffsets} from './utils.ts'
 import {Span} from './span.ts'
 import parse from 'html-react-parser';
+import { useAppContext } from '../context/context';
 
 interface TokenProps {
   i: number
@@ -19,7 +20,7 @@ interface TokenSpan {
 }
 
 function tokenFunction(i, content){
-  return <span data-i={i}>{parse(content)} </span>
+  return <span id={i} data-i={i}>{parse(content)} </span>
 }
 
 export interface TokenAnnotatorProps<T>
@@ -30,6 +31,7 @@ export interface TokenAnnotatorProps<T>
   anom_style : string
   onNewEntitie: (value: T, left, top, text) => any
   onEntitieChange: (index, left, top) => any
+  onTagChange: (value) => any
   getSpan?: (span: TokenSpan) => T
   renderMark?: (props: MarkProps) => JSX.Element
   // TODO: determine whether to overwrite or leave intersecting ranges.
@@ -38,6 +40,32 @@ export interface TokenAnnotatorProps<T>
 const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   const renderMark = props.renderMark || (props => <Mark {...props} />)
   const renderMarkNoTag = props.renderMark || (props => <MarkNoTag {...props} />)
+
+  const {
+    value_sidebar,
+    allEntities,
+    anomTokens,
+    anomValues,
+    last_index,
+    tag,
+    menuStyle,
+    setMenuStyle,
+    popUpMenu,
+    setPopUpMenu,
+    mode,
+    setMode,
+    rows,
+    raw_text,
+    renderValue,
+    setRenderValue,
+    sourceHtml,
+    setSourceHtml,
+    trueSourceHtml,
+    anom_id,
+    anomStyle,
+    setAnomStyle,
+  } = useAppContext()
+ 
 
   let res : any[] = []
   let split_i : any = 0
@@ -55,8 +83,6 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     const selection = window.getSelection()
     const r = selection.getRangeAt(0);
     const p = r.getBoundingClientRect();
-
-    console.log()
 
     if (selectionIsEmpty(selection)) return
     
@@ -114,6 +140,23 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
       text += focus.textContent
     }
 
+    for (let i = start; i < end; i++) {
+      let el = document.getElementById(i.toString())
+      if (el?.attributes["data-start"] != undefined) {
+        let st = parseInt(el?.attributes["data-start"].value, 10)
+        let en = parseInt(el?.attributes["data-end"].value, 10)
+        console.log("OPEN MENU HERE")
+        const splitIndex = props.value.findIndex(s => s.start === st && s.end === en)
+        console.log(splitIndex)
+        last_index.current = splitIndex
+        tag.current = "Remove"
+        props.onTagChange("Single")
+      }
+    }
+
+    console.log(text)
+    tag.current = "PER"
+    
     props.onNewEntitie(getSpan({start, end, tokens: props.tokens.slice(start, end)}), p.left, p.top + window.scrollY, text)
     window.getSelection().empty()
   }
@@ -124,6 +167,7 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     const p = r.getBoundingClientRect();
     // Find and remove the matching split.
     const splitIndex = props.value.findIndex(s => s.start === start && s.end === end)
+    console.log(splitIndex)
     if (splitIndex >= 0) {
       onEntitieChange(splitIndex, p.left, p.top + window.scrollY)
     }
@@ -140,7 +184,8 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
             ...split,
             onClick: handleSplitClick,
             mode: props.mode,
-            anom_style : props.anom_style
+            anom_style : props.anom_style,
+            data_i: data_i
           })
           tmp_res.push(mark)
           let split_length = split.content.split(" ")
@@ -152,7 +197,8 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
             ...split,
             onClick: handleSplitClick,
             mode: props.mode,
-            anom_style : props.anom_style
+            anom_style : props.anom_style,
+            data_i: data_i
           })
           tmp_res.push(mark)
           let split_length = split.content.split(" ")

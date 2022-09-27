@@ -562,6 +562,7 @@ const Anom = () => {
             value={anomValues.current.value}
             onNewEntitie={handleNewEntitie}
             onEntitieChange={handleEntitieChange}
+            onTagChange={handleMultipleTagChange}
             getSpan={span => ({
               ...span,
               tag: anomValues.current.tag,
