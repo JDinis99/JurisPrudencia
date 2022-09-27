@@ -76,7 +76,6 @@ const AnomHeader = (getText) => {
 
   }
 
-
   const redirectHelp = async () => {
     navigate("/ajuda", {replace:false})
   }

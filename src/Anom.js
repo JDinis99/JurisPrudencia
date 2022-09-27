@@ -11,6 +11,7 @@ import AnomHeader from './components/anomHeader';
 import parse from 'html-react-parser';
 
 import { useAppContext } from './context/context';
+import TAG_COLORS from './utils/tag_colors';
 
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
@@ -102,6 +103,9 @@ const Anom = () => {
     let loc_number = 0
     let pro_number = 0
     let mat_number = 0
+    let cep_number = 0
+    let tel_number = 0
+    let email_number = 0
 
     anomValues.current.value.forEach(function(ent) {
       if (ent.tag === "PES" && entitie.text === ent.text) {per_number += 1}
@@ -110,6 +114,9 @@ const Anom = () => {
       else if (ent.tag === "LOC" && entitie.text === ent.text) {loc_number += 1}
       else if (ent.tag === "PRO" && entitie.text === ent.text) {pro_number += 1}
       else if (ent.tag === "MAT" && entitie.text === ent.text) {mat_number += 1}
+      else if (ent.tag === "CEP" && entitie.text === ent.text) {cep_number += 1}
+      else if (ent.tag === "TEL" && entitie.text === ent.text) {tel_number += 1}
+      else if (ent.tag === "E_MAIL" && entitie.text === ent.text) {email_number += 1}
     })
 
     return {
@@ -118,7 +125,10 @@ const Anom = () => {
       org_number,
       loc_number,
       pro_number,
-      mat_number
+      mat_number,
+      cep_number,
+      tel_number,
+      email_number
     }
 
   }
@@ -454,6 +464,9 @@ const Anom = () => {
       let new_text = text.substring(end_index+1, closing_tag_index)
       let split = new_text.trim().split(" ")
       let role = temp_split[1].substring(5,9)
+      if (role === "E-MA") {
+        role = "E-MAIL"
+      }
       value.push({
         start: tokenCounter,
         end: tokenCounter + split.length,

@@ -36,7 +36,10 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
     "ORG": "ORG",
     "LOC": "LOC",
     "PRO": "PRO",
-    "MAT": "MAT"
+    "MAT": "MAT",
+    "CEP": "CEP",
+    "TEL": "TEL",
+    "E-MAIL": "MAIL"
   }
   
   let entitieCounter = {
@@ -45,7 +48,10 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
     "ORG":0,
     "LOC":0,
     "PRO":0,
-    "MAT":0
+    "MAT":0,
+    "CEP":0,
+    "TEL":0,
+    "E-MAIL":0,
   }
 
   useEffect(() => {
@@ -281,6 +287,9 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
               <option value={"LOC"}>LOC</option>
               <option value={"PRO"}>PRO</option>
               <option value={"MAT"}>MAT</option>
+              <option value={"CEP"}>CEP</option>
+              <option value={"TEL"}>TEL</option>
+              <option value={"E-MAIL"}>E-MAIL</option>
             </NativeSelect>
           </FormControl>
         </Box>
