@@ -78,7 +78,7 @@ const AnomHeader = (getText) => {
 
 
   const redirectHelp = async () => {
-    navigate("/ajuda")
+    navigate("/ajuda", {replace:false})
   }
 
   const downloadDocx = async () => {

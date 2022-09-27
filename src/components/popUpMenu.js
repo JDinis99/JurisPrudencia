@@ -94,6 +94,9 @@ const PopUpMenu = (showMenu, handleMultipleTagChange, entities) => {
   }
 
   let count_string = ""
+  let type_count = 0
+  let total_count = 0
+
   for (let ent_count in entities) {
     if (entities[ent_count] !== 0) {
       let ent_comp = 
@@ -103,10 +106,23 @@ const PopUpMenu = (showMenu, handleMultipleTagChange, entities) => {
           {ent_count} :
           {entities[ent_count]}
         </mark>
+
+      type_count += 1
+      total_count += entities[ent_count]
       count_string += renderToString(ent_comp)
     }
   }
 
+  let disable_equal = true
+  if (total_count > 1) {
+    disable_equal = false
+  }
+  
+  let disable_all = true
+  if (type_count > 1) {
+    disable_all = false
+  }
+  
 
   return (
     <ThemeProvider theme={materialTheme}>
@@ -128,8 +144,8 @@ const PopUpMenu = (showMenu, handleMultipleTagChange, entities) => {
               value={value}
             >
               <FormControlLabel value="Single" control={<Radio />} label="Apenas a esta ocorrência deste termo" />
-              <FormControlLabel value="All-Equal" control={<Radio />} label="Todas as ocorrências deste termo e com este tipo" />
-              <FormControlLabel value="All-All" control={<Radio />} label="Todas as ocorrências deste termo, independentemente do tipo" />
+              <FormControlLabel  disabled={disable_equal} value="All-Equal" control={<Radio />} label="Todas as ocorrências deste termo e com este tipo" />
+              <FormControlLabel disabled={disable_all} value="All-All" control={<Radio />} label="Todas as ocorrências deste termo, independentemente do tipo" />
             </RadioGroup>
             <Button sx={{ mt: 1, mr: 1 }} type="submit" variant="outlined" onClick={handleSubmit}>
               Confirmar
