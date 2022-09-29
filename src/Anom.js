@@ -46,6 +46,7 @@ const Anom = () => {
     anom_id,
     anomStyle,
     setAnomStyle,
+    last_value,
   } = useAppContext()
  
 
@@ -61,29 +62,13 @@ const Anom = () => {
       top: top - 100,
       showMenu: true
     })
-    let old_tag = anomValues.current.tag
-    let old_value = anomValues.current.value
+
     value.text = text
     value.id = anom_id.current
-
     delete value.tokens
-    addToSidebar(value.text, value.tag, [anom_id.current], null)
-    anom_id.current += 1
-    allEntities.current = value_sidebar.current
 
-    let new_value = [...old_value, value]
-    let new_anom = {
-      value: new_value,
-      tag: old_tag
-    }
-    last_index.current = old_value.length
-    anomValues.current = new_anom
-
-    setRenderValue({
-      anomTokens: false,
-      anomValues: true,
-      allEntities: true
-    })
+    last_value.current = value
+    last_index.current = -1
   }
 
   const handleEntitieChange = (index, left, top) => {
@@ -139,8 +124,37 @@ const Anom = () => {
       top: 0,
       showMenu: false
     })
-
     let new_tag  = e.target.value
+
+    if (last_index.current === -1) {
+      let old_tag = anomValues.current.tag
+      let old_value = anomValues.current.value
+      let value = last_value.current
+
+      value.tag = new_tag
+      
+      addToSidebar(value.text, value.tag, [anom_id.current], null)
+      anom_id.current += 1
+      allEntities.current = value_sidebar.current
+  
+      let new_value = [...old_value, value]
+      let new_anom = {
+        value: new_value,
+        tag: old_tag
+      }
+      anomValues.current = new_anom
+
+      last_index.current = old_value.length
+  
+      setRenderValue({
+        anomTokens: false,
+        anomValues: true,
+        allEntities: true
+      })
+
+      return
+    }
+    
     tag.current = new_tag
 
     let entitie = anomValues.current.value[last_index.current]
@@ -150,7 +164,7 @@ const Anom = () => {
     if (new_tag === "Cancel") {
       return
     }
-    
+
     setPopUpMenu({
       showMenu: true,
       entities: {

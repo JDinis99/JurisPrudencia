@@ -5,6 +5,9 @@ import materialTheme from "../utils/material_theme"
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
+import { Switch } from '@mui/material';
+import Typography from '@mui/material/Typography';
+
 //import { LineBreak, Document, Text } from "redocx";
 import HTMLtoDOCX from 'html-to-docx';
 import { Document, Packer } from 'docx';
@@ -45,7 +48,14 @@ const AnomHeader = (getText) => {
   };
 
   const handlStyle = (event, newMode) => {
-    setAnomStyle(newMode);
+    let final_style = ""
+    if (newMode === false) {
+      final_style = "Anom"
+    }
+    else {
+      final_style = "Type"
+    }
+    setAnomStyle(final_style);
   };
 
   const navigate = useNavigate()
@@ -141,23 +151,9 @@ const AnomHeader = (getText) => {
           <Button variant="contained" className='OptionButton' onClick={redirectHelp}>Ajuda</Button>
         </div>
 
-        <ToggleButtonGroup
-          value={anomStyle}
-          exclusive
-          onChange={handlStyle}
-          aria-label="text alignment"
-          className='ToggleStyle'
-        >
-          <ToggleButton value="" disabled="true" aria-label="left aligned">
-            Estilo de Anonimização:
-          </ToggleButton>
-          <ToggleButton value="Type" aria-label="left aligned">
-            Tipo
-          </ToggleButton>
-          <ToggleButton value="Anom" aria-label="left aligned">
-            Anonimização
-          </ToggleButton>
-        </ToggleButtonGroup>
+        <Typography>Mostrar Código</Typography>
+        <Switch defaultChecked color="default" onChange={handlStyle}/>
+        <Typography>Mostrar Tipo</Typography>
 
       </div>
     </ThemeProvider>

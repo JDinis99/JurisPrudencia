@@ -20,6 +20,7 @@ export function AppContext({ children }) {
   const anomTokens = useRef(null)
   const anomValues = useRef(null)
   const last_index = useRef(0)
+  const last_value = useRef(null)
   const anom_id = useRef(0)
   const trueSourceHtml = useRef(false)
   const tag = useRef(null)
@@ -86,6 +87,7 @@ export function AppContext({ children }) {
     anom_id,
     anomStyle,
     setAnomStyle,
+    last_value,
   }));
 
   return <Context.Provider value={f_value}>{children}</Context.Provider>;
