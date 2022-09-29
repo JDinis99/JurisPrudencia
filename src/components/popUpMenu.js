@@ -76,7 +76,9 @@ const PopUpMenu = (showMenu, handleMultipleTagChange, entities) => {
 
   let change_string = <></>
   if (last_index.current !== null && tag.current !== null) {
-    change_string = 
+    if (anomValues.current.value[last_index.current] != undefined) {
+
+      change_string = 
       <span>
         Mudar <b> {anomValues.current.value[last_index.current].text} </b> de
         <mark
@@ -87,10 +89,11 @@ const PopUpMenu = (showMenu, handleMultipleTagChange, entities) => {
         para
         <mark
           style={{backgroundColor: TAG_COLORS[tag.current] || '#84d2ff', padding: ".2em .3em", margin: "0 .25em", lineHeight: "1", display: "inline-block", borderRadius: ".25em"}}
-        >
+          >
           {tag.current}
         </mark>
       </span>
+    }
   }
 
   let count_string = ""
