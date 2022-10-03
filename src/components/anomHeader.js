@@ -42,6 +42,8 @@ const AnomHeader = (getText) => {
     setAnomStyle,
   } = useAppContext()
 
+  const firstSuggest = useRef(true)
+
 
   const handleMode = (event, newMode) => {
     setMode(newMode);
@@ -72,7 +74,7 @@ const AnomHeader = (getText) => {
         'content-type': 'multipart/form-data',
       },
     };
-    
+    firstSuggest.current = false
     setLoading(true)
 
     await axios.post(url, formData, config).then((response) => {
@@ -109,6 +111,16 @@ const AnomHeader = (getText) => {
     saveAs(fileBuffer, 'html-to-docx.docx');
   }
 
+  let suggestDisable = false
+  if (firstSuggest.current == false) {
+    suggestDisable = true
+  }
+
+  let saveDisable = false
+  if (mode == "Anom") {
+    saveDisable = true
+  }
+
 
   return (
     <ThemeProvider theme={materialTheme}>
@@ -121,16 +133,28 @@ const AnomHeader = (getText) => {
           aria-label="text alignment"
           className='ToggleButton'
         >
-          <ToggleButton value="Anom" aria-label="left aligned">
-            Editar
-          </ToggleButton>
           <ToggleButton value="Original" aria-label="left aligned">
             Original
           </ToggleButton>
           <ToggleButton value="Preview" aria-label="left aligned">
             Anonimizado
           </ToggleButton>
+          <ToggleButton value="Anom" aria-label="left aligned">
+            Editar
+          </ToggleButton>
         </ToggleButtonGroup>
+
+
+        {
+          mode == "Anom" ?
+          <>
+            <Typography>Mostrar Código</Typography>
+            <Switch defaultChecked color="default" onChange={handlStyle}/>
+            <Typography>Mostrar Tipo</Typography>
+          </>
+          :
+          <></>
+        }
 
         {
           loading ?
@@ -139,23 +163,19 @@ const AnomHeader = (getText) => {
           </div>
           :
           <div className='OptionButton' color="secondary" onClick={handleNER}>
-            <Button variant="contained">Sugerir</Button>
+            <Button variant="contained" disabled={suggestDisable}>Sugerir</Button>
           </div>
         }
 
         <div className='OptionButton'>
-          <Button variant="contained" className='OptionButton' onClick={downloadDocx}>Guardar</Button>
+          <Button variant="contained" className='OptionButton' onClick={downloadDocx} disabled={saveDisable}>Guardar</Button>
         </div>
 
         <div className='OptionButton'>
           <Button variant="contained" className='OptionButton' onClick={redirectHelp}>Ajuda</Button>
         </div>
 
-        <Typography>Mostrar Código</Typography>
-        <Switch defaultChecked color="default" onChange={handlStyle}/>
-        <Typography>Mostrar Tipo</Typography>
-
-      </div>
+        </div>
     </ThemeProvider>
   )
 }

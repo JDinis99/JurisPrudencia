@@ -363,11 +363,33 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
 
           };
 
+          let joinDisable = true
+          let kwon_type = null
+          let knon_flag = false
+          for (let row of table.getSelectedRowModel().flatRows) {
+            console.log("row: ", row)
+          //table.getSelectedRowModel().flatRows.map((row) => {
+            // If it is the first type
+            if (kwon_type == null) {
+              kwon_type = row.getValue('type')
+            }
+            // If we have more than one type selected
+            if (kwon_type != row.getValue('type')) {
+              knon_flag = true
+              break
+            }
+            console.log("----------------------")
+          };
+
+          if (knon_flag == false && table.getSelectedRowModel().flatRows.length > 1) {
+            joinDisable = false
+          }
+
           return (
             <div style={{ display: 'flex', gap: '0.5rem' }}>
               <Button
                 color="success"
-                disabled={table.getSelectedRowModel().flatRows.length < 2}
+                disabled={joinDisable}
                 onClick={handleMerge}
                 variant="contained"
               >
