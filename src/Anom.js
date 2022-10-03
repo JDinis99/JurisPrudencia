@@ -596,6 +596,8 @@ const Anom = () => {
             })}
             mode={mode}
             anom_style = {anomStyle}
+            last_index = {last_index}
+            tag = {tag}
             />
         </div>
       )

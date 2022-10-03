@@ -8,8 +8,6 @@ import {
   useCallback,
 } from "react";
 
-import {Routes, Route, useNavigate} from 'react-router-dom';
-
 const Context = createContext();
 
 export function AppContext({ children }) {

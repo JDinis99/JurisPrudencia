@@ -95,12 +95,9 @@ const AnomHeader = (getText) => {
   const downloadDocx = async () => {
 
     let html = getText()
-    console.log(html)
 
     let final_html = await html.replaceAll("</span>", "</span> ")
     final_html = await html.replaceAll("<!-- -->", " <!-- -->")
-
-    console.log(final_html)
 
     const fileBuffer = await HTMLtoDOCX(final_html, null, {
       table: { row: { cantSplit: true } },
@@ -117,7 +114,7 @@ const AnomHeader = (getText) => {
   }
 
   let saveDisable = false
-  if (mode == "Anom") {
+  if (mode != "Preview") {
     saveDisable = true
   }
 

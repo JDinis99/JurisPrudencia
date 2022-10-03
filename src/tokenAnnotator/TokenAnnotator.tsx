@@ -34,6 +34,8 @@ export interface TokenAnnotatorProps<T>
   onTagChange: (value) => any
   getSpan?: (span: TokenSpan) => T
   renderMark?: (props: MarkProps) => JSX.Element
+  last_index: any
+  tag: any
   // TODO: determine whether to overwrite or leave intersecting ranges.
 }
 
@@ -41,30 +43,13 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   const renderMark = props.renderMark || (props => <Mark {...props} />)
   const renderMarkNoTag = props.renderMark || (props => <MarkNoTag {...props} />)
 
-  const {
-    value_sidebar,
-    allEntities,
-    anomTokens,
-    anomValues,
-    last_index,
-    tag,
-    menuStyle,
-    setMenuStyle,
-    popUpMenu,
-    setPopUpMenu,
-    mode,
-    setMode,
-    rows,
-    raw_text,
-    renderValue,
-    setRenderValue,
-    sourceHtml,
-    setSourceHtml,
-    trueSourceHtml,
-    anom_id,
-    anomStyle,
-    setAnomStyle,
-  } = useAppContext()
+  // const {
+  //   last_index,
+  //   tag,
+  // } = useAppContext()
+
+  // let last_index = 1
+  // let tag = "PER"
  
 
   let res : any[] = []
@@ -148,14 +133,14 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
         console.log("OPEN MENU HERE")
         const splitIndex = props.value.findIndex(s => s.start === st && s.end === en)
         console.log(splitIndex)
-        last_index.current = splitIndex
-        tag.current = "Remove"
+        props.last_index.current = splitIndex
+        props.tag.current = "Remove"
         props.onTagChange("Single")
       }
     }
 
     console.log(text)
-    tag.current = "PER"
+    props.tag.current = "PER"
     
     props.onNewEntitie(getSpan({start, end, tokens: props.tokens.slice(start, end)}), p.left, p.top + window.scrollY, text)
     window.getSelection().empty()
