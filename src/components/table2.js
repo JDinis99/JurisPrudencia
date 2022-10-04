@@ -258,7 +258,14 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
     {header: "Entitidade", accessorKey: "name", minSize: 200, maxSize: 250,
     //custom conditional format and styling
     Cell: ({ cell }) => (
-        <span style={{fontSize:"large"}}>{cell.getValue()}</span>
+      <Box
+        sx={() => ({
+          whiteSpace: 'pre-wrap',
+          overflowWrap: 'break-word',
+        })}
+        >
+          <span style={{fontSize:"large"}}>{cell.getValue()}</span>
+      </Box>
       )},
     {header: "Tipo", accessorKey: "type", maxSize:40,
       //custom conditional format and styling
