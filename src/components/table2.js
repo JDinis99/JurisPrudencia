@@ -195,7 +195,8 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
         name += e.text
         // If not last
         if (counter != entities.length-1) {
-          name += "<br></br>"
+          //name += "<br></br>"
+          name += "\n\n"
         }
         counter++
 
@@ -211,10 +212,10 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
       let t_counter = 0
 
       for (let t of entitie.tokens) {
-        count += t.ids.length
+        count += t.ids.length.toString()
         // If not last
         if (t_counter != entitie.tokens.length-1) {
-          count += "<br></br>"
+          count += "\n\n"
         }
         t_counter++
       }
@@ -253,7 +254,14 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
     {header: "#", accessorKey: "count", maxSize:20,
     //custom conditional format and styling
     Cell: ({ cell }) => (
-        <span style={{fontSize:"large"}}>{cell.getValue()}</span>
+      <Box
+        sx={() => ({
+          whiteSpace: 'pre-wrap',
+          overflowWrap: 'break-word',
+        })}
+        >
+          <span style={{fontSize:"large"}}>{cell.getValue()}</span>
+      </Box>
       )},
     {header: "Entitidade", accessorKey: "name", minSize: 200, maxSize: 250,
     //custom conditional format and styling
