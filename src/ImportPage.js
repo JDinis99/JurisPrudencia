@@ -6,12 +6,12 @@ import React, { useEffect, useRef } from 'react';
 const ImportPage = () => {
 
   const {
-    file,
-    setFile,
     redirect,
     setRedirect,
     sourceHtml,
     setSourceHtml,
+    file,
+    setFile,
   } = useAppContext()
 
   const hiddenFileInput = useRef(null);
@@ -30,11 +30,11 @@ const ImportPage = () => {
 
   function handleChange(event) {
     setFile(event.target.files[0])
+    handleSubmit(event.target.files[0])
   }
 
-  async function handleSubmit(event) {
+  async function handleSubmit(file) {
     let final_res = null
-    event.preventDefault()
 
     const url = 'https://pe.inesc-id.pt/python/html';
     const formData = new FormData();
@@ -63,13 +63,10 @@ const ImportPage = () => {
 
       <h1 style={{marginBottom:"50px"}}>Bem vindo ao anonimizador, importe um ficheiro para começar o processo</h1>
 
-      <button onClick={handleClick} className="FileButton">
+      <button onClick={handleClick}>
         Escolher Ficheiro
       </button>
-      {file === null ? "" : file.name}
       <input type="file" ref={hiddenFileInput} onChange={handleChange} style={{display: 'none'}} />
-      <button type="submit" onClick={handleSubmit} className="UploadButton">Carregar</button>
-
     </div>
   )
 }
