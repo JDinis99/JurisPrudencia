@@ -43,15 +43,6 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   const renderMark = props.renderMark || (props => <Mark {...props} />)
   const renderMarkNoTag = props.renderMark || (props => <MarkNoTag {...props} />)
 
-  // const {
-  //   last_index,
-  //   tag,
-  // } = useAppContext()
-
-  // let last_index = 1
-  // let tag = "PER"
- 
-
   let res : any[] = []
   let split_i : any = 0
   let data_i : any = 0
@@ -64,6 +55,8 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
   const handleMouseUp = () => {
 
     if (!props.onNewEntitie) return
+
+    props.last_index.current = null
 
     const selection = window.getSelection()
     const r = selection.getRangeAt(0);
@@ -125,28 +118,32 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
       text += focus.textContent
     }
 
+    let temp_index = []
+
     for (let i = start; i < end; i++) {
       let el = document.getElementById(i.toString())
       if (el?.attributes["data-start"] != undefined) {
         let st = parseInt(el?.attributes["data-start"].value, 10)
         let en = parseInt(el?.attributes["data-end"].value, 10)
-        console.log("OPEN MENU HERE")
         const splitIndex = props.value.findIndex(s => s.start === st && s.end === en)
-        console.log(splitIndex)
-        props.last_index.current = splitIndex
-        props.tag.current = "Remove"
-        props.onTagChange("Single")
+        temp_index.push(splitIndex)
+        // props.tag.current = "Remove"
+        // props.onTagChange("Single")
       }
     }
 
-    console.log(text)
+    props.last_index.current = temp_index
+
+    //console.log(text)
     props.tag.current = "PER"
     
     props.onNewEntitie(getSpan({start, end, tokens: props.tokens.slice(start, end)}), p.left, p.top + window.scrollY, text)
-    window.getSelection().empty()
+    //window.getSelection().empty()
   }
 
   const handleSplitClick = ({start, end}) => {
+    props.last_index.current = null
+
     const selection = window.getSelection()
     const r = selection.getRangeAt(0);
     const p = r.getBoundingClientRect();

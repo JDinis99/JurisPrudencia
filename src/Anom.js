@@ -47,6 +47,7 @@ const Anom = () => {
     anomStyle,
     setAnomStyle,
     last_value,
+    last_index_backup,
   } = useAppContext()
  
 
@@ -126,10 +127,42 @@ const Anom = () => {
     })
     let new_tag  = e.target.value
 
+    window.getSelection().empty()
+
+    console.log("BACKUP: ")
+    console.log(last_index_backup.current)
+
     if (last_index.current === -1) {
       let old_tag = anomValues.current.tag
       let old_value = anomValues.current.value
       let value = last_value.current
+
+      if (new_tag === "Cancel") {
+        return
+      }
+
+      if (last_index_backup.current !== null) {
+        let backup_indexes = last_index_backup.current
+        last_index_backup.current = null
+        let index = last_index.current
+
+        let i_modifier = 0
+        for (let i of backup_indexes) {
+          tag.current = "Remove"
+          last_index.current = i - i_modifier
+          handleMultipleTagChange("Single")
+          i_modifier += 1
+        }
+
+        old_tag = anomValues.current.tag
+        old_value = anomValues.current.value
+        value = last_value.current
+        last_index.current = index
+      }
+
+      if (new_tag === "Remove") {
+        return
+      }
 
       value.tag = new_tag
       
@@ -192,20 +225,23 @@ const Anom = () => {
       }
     })
 
-    if (value == "Cancel") {
+    if (value === "Cancel") {
       return
     } 
 
+    
     let new_anom = null
     let new_tag  = tag.current
     let old_value = anomValues.current.value
+    console.log(last_index.current)
+    console.log(old_value[last_index.current])
     let old_text = old_value[last_index.current].text
     let old_tag = old_value[last_index.current].tag
     let new_value = []
 
     if (value === "Single") {
-      
-      if (new_tag == "Remove") {
+
+      if (new_tag === "Remove") {
         let old_tag = anomValues.current.tag
         let slice_1 = old_value.slice(0, last_index.current)
         let slice_2 = old_value.slice(last_index.current + 1)
@@ -596,7 +632,7 @@ const Anom = () => {
             })}
             mode={mode}
             anom_style = {anomStyle}
-            last_index = {last_index}
+            last_index = {last_index_backup}
             tag = {tag}
             />
         </div>
