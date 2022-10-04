@@ -109,6 +109,9 @@
   width: 40%;
   margin-left: 20px;
   margin-right: 20px;
+  position: sticky;
+  top: 0;
+  align-self: flex-start;
 }
 
 .Anom {
