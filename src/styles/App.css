@@ -10,7 +10,6 @@
   background-color: rgba(244,236,206,255);
   padding-top: 10px;
   padding-bottom: 20px;
-  margin-left: 75px;
   align-items: center;
 }
 
@@ -23,7 +22,7 @@
 
 .ToggleButton {
   margin-left: 5px;
-  margin-right: 50px;
+  margin-right: 20px;
   padding-left: 5px;
   padding-right: 5px;
 }
@@ -136,4 +135,10 @@
   margin-right: 5px;
   padding-left: 5px;
   padding-right: 5px;
+}
+
+.ControlSpacer {
+  margin-left: 5px;
+  padding-left: 5px;
+  padding-right: 15px;
 }

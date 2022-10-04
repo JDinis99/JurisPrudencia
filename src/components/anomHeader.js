@@ -1,6 +1,7 @@
 import Button from '@mui/material/Button';
 import { useAppContext } from '../context/context';
 import materialTheme from "../utils/material_theme"
+import {FormControl, NativeSelect } from '@mui/material';
 
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ToggleButton from '@mui/material/ToggleButton';
@@ -49,15 +50,8 @@ const AnomHeader = (getText) => {
     setMode(newMode);
   };
 
-  const handlStyle = (event, newMode) => {
-    let final_style = ""
-    if (newMode === false) {
-      final_style = "Anom"
-    }
-    else {
-      final_style = "Type"
-    }
-    setAnomStyle(final_style);
+  const handlStyle = (e) => {
+    setAnomStyle(e.target.value);
   };
 
   const navigate = useNavigate()
@@ -145,12 +139,26 @@ const AnomHeader = (getText) => {
         </ToggleButtonGroup>
 
 
+
         {
           mode == "Anom" ?
           <>
-            <Typography>Mostrar Código</Typography>
-            <Switch defaultChecked color="default" onChange={handlStyle}/>
-            <Typography>Mostrar Tipo</Typography>
+            Mostrar:
+            <div className='ControlSpacer'>
+              <FormControl>
+                <NativeSelect
+                  defaultValue={"Type"}
+                  inputProps={{
+                    name: 'type',
+                    id: 'uncontrolled-native',
+                  }}
+                  onChange={handlStyle}
+                >
+                  <option value={"Type"}>Tipo</option>
+                  <option value={"Anom"}>Código</option>
+                </NativeSelect>
+              </FormControl>
+            </div>
           </>
           :
           <></>
