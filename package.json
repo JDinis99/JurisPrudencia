@@ -41,7 +41,7 @@
     "eject": "react-scripts eject",
     "build-deploy": "react-app-rewired build && mv build anon"
   },
-  "homepage": "/anon",
+  "homepage": "./",
   "eslintConfig": {
     "extends": [
       "react-app",
