@@ -289,7 +289,7 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           >
           <FormControl fullWidth>
             <NativeSelect
-              defaultValue={cell.getValue()}
+              value={cell.getValue()}
               inputProps={{
                 name: 'type',
                 id: 'uncontrolled-native',
