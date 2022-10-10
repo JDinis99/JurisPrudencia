@@ -12,6 +12,7 @@ const ImportPage = () => {
     setSourceHtml,
     file,
     setFile,
+    page
   } = useAppContext()
 
   const hiddenFileInput = useRef(null);
@@ -19,6 +20,10 @@ const ImportPage = () => {
   const handleClick = event => {
     hiddenFileInput.current.click();
   };
+
+  useEffect(() => {
+    page.current = "import"
+  }, [])
 
   const redirectComponent = () => {
     if (redirect === true) {
@@ -61,7 +66,7 @@ const ImportPage = () => {
     <div className="ImportPage">
       {redirectComponent()}
 
-      <h1 style={{marginBottom:"50px"}}>Bem vindo ao anonimizador, importe um ficheiro para começar o processo</h1>
+      <h1 style={{marginBottom:"50px"}}>Bem vindo ao anonimizador, importe um ficheiro docx para começar o processo</h1>
 
       <button onClick={handleClick}>
         Escolher Ficheiro

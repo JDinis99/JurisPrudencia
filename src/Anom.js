@@ -48,11 +48,13 @@ const Anom = () => {
     setAnomStyle,
     last_value,
     last_index_backup,
+    page
   } = useAppContext()
  
 
   useEffect(() => {
     readHtml()
+    page.current = "anom"
   }, [sourceHtml])
 
   const handleNewEntitie = (value, left, top, text) => {

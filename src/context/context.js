@@ -20,6 +20,7 @@ export function AppContext({ children }) {
   const last_index = useRef(0)
   const last_index_backup = useRef(null)
   const last_value = useRef(null)
+  const page = useRef(null)
   const anom_id = useRef(0)
   const trueSourceHtml = useRef(false)
   const tag = useRef(null)
@@ -88,6 +89,7 @@ export function AppContext({ children }) {
     setAnomStyle,
     last_value,
     last_index_backup,
+    page,
   }));
 
   return <Context.Provider value={f_value}>{children}</Context.Provider>;
