@@ -102,7 +102,12 @@ const AnomHeader = (getText) => {
       pageNumber: true,
     });
 
-    saveAs(fileBuffer, 'html-to-docx.docx');
+    let filnename = "example.docx"
+    if (file !== null) {
+      filnename = file.name.split(".docx")[0] + "_final.docx"
+    }
+
+    saveAs(fileBuffer, filnename);
   }
 
   let suggestDisable = false

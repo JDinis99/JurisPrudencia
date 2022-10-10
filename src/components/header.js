@@ -22,7 +22,7 @@ const Header = () => {
   return (
     <div className='PageHeader'>
 
-      <Link to="/" component={ImportPage}>
+      <Link to="/">
         <img src='./PT-logoLogo-STJ.png' style={{maxHeight:"70px", paddingRight:"20px"}} />
       </Link>
 

@@ -28,7 +28,7 @@ const ImportPage = () => {
   const redirectComponent = () => {
     if (redirect === true) {
       return (
-        <Navigate push to="/anom" />
+        <Navigate push to="/anom"/>
       )
     }
   }
