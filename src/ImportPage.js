@@ -8,9 +8,7 @@ const ImportPage = () => {
   const {
     redirect,
     setRedirect,
-    sourceHtml,
     setSourceHtml,
-    file,
     setFile,
     page
   } = useAppContext()

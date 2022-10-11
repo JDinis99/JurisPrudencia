@@ -5,14 +5,11 @@ import ReactDOMServer from 'react-dom/server'
 import TokenAnnotator from './tokenAnnotator/TokenAnnotator.tsx';
 import ActionMenu from './components/actionMenu';
 import PopUpMenu from './components/popUpMenu';
-import OutsideClickHandler from 'react-outside-click-handler';
 import TableComponent2 from './components/table2';
 import AnomHeader from './components/anomHeader';
 import parse from 'html-react-parser';
 
 import { useAppContext } from './context/context';
-import TAG_COLORS from './utils/tag_colors';
-
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 var new_example_html_file = require('raw-loader!./data/new_example_2.html');
@@ -35,17 +32,13 @@ const Anom = () => {
     popUpMenu,
     setPopUpMenu,
     mode,
-    setMode,
-    rows,
     raw_text,
-    renderValue,
     setRenderValue,
     sourceHtml,
     setSourceHtml,
     trueSourceHtml,
     anom_id,
     anomStyle,
-    setAnomStyle,
     last_value,
     last_index_backup,
     page
@@ -131,8 +124,6 @@ const Anom = () => {
 
     window.getSelection().empty()
 
-    console.log("BACKUP: ")
-    console.log(last_index_backup.current)
 
     if (last_index.current === -1) {
       let old_tag = anomValues.current.tag
@@ -235,8 +226,6 @@ const Anom = () => {
     let new_anom = null
     let new_tag  = tag.current
     let old_value = anomValues.current.value
-    console.log(last_index.current)
-    console.log(old_value[last_index.current])
     let old_text = old_value[last_index.current].text
     let old_tag = old_value[last_index.current].tag
     let new_value = []
@@ -433,19 +422,10 @@ const Anom = () => {
     for (let entitie of value_sidebar.current) {
       for (let token of entitie.tokens) {
         if (token.ids.includes(id)) {
-          // If it is an entitie with a single id or if we whish to change tag for all ids
           // Remove current id from sidebar
           removeFromSidebar(id, false)
           // And re-add it with new tag
           addToSidebar(text, new_tag, [id], entitie_id)
-          // if (token.ids.length === 1 || all === true) {
-          //   // Simply Change Tag
-          //   entitie.tag = new_tag
-          // }
-          // // If there are multiple ids and we only want to change 1
-          // else {
-          // }
-          // break
         }
       }
       entitie_id += 1
@@ -596,8 +576,6 @@ const Anom = () => {
     anomTokens.current = final_tokens
     anomValues.current = {
       value: value,
-      //value: [],
-      //value: [{start: 0, end:6, tag: "PES"}],
       tag: "PES"
     }
     setRenderValue({
@@ -612,7 +590,6 @@ const Anom = () => {
       return <></>
     }
     if (mode === "Original") {
-      console.log(raw_text.current)
       return (
         <div className='Text'>
           {parse(raw_text.current)}

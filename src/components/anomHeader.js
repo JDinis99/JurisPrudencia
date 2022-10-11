@@ -17,17 +17,9 @@ import axios from 'axios';
 import {Routes, Route, useNavigate} from 'react-router-dom';
 
 import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
   useRef,
-  useState,
-  useCallback,
 } from "react";
 
-
-var ReactDOMServer = require('react-dom/server');
 
 const AnomHeader = (getText) => {
 
@@ -35,11 +27,9 @@ const AnomHeader = (getText) => {
     mode,
     setMode,
     file,
-    sourceHtml,
     setSourceHtml,
     loading,
     setLoading,
-    anomStyle,
     setAnomStyle,
   } = useAppContext()
 
@@ -54,7 +44,6 @@ const AnomHeader = (getText) => {
     setAnomStyle(e.target.value);
   };
 
-  const navigate = useNavigate()
 
   async function handleNER() {
     let final_res = null
@@ -83,8 +72,6 @@ const AnomHeader = (getText) => {
   }
 
   const redirectHelp = async () => {
-    //navigate("/ajuda", {replace:false})
-
     var win = window.open("https://docs.google.com/document/d/1yfMYeehjUpf7xJiSYZAVUpdCd5UlQDswt7bOUONwi3E/edit#heading=h.cbjxa1ox4xfc'", '_blank');
     win.focus();
   }

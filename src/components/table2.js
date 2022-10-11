@@ -11,23 +11,13 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
   const {
     value_sidebar,
     allEntities,
-    anomTokens,
     anomValues,
     last_index,
     tag,
-    menuStyle,
-    setMenuStyle,
-    popUpMenu,
-    setPopUpMenu,
-    mode,
-    setMode,
     rows,
     setRows,
-    raw_text,
     renderValue,
     setRenderValue,
-    sourceHtml,
-    setSourceHtml,
   } = useAppContext()
 
   let anomRules = {
@@ -346,7 +336,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           const handleMerge = () => {
             let selected =[]
             table.getSelectedRowModel().flatRows.map((row) => {
-              console.log('merging ' + row.getValue('name'));
               selected.push(row.id)
             });
             handleMergeTable(selected)
@@ -357,7 +346,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           const handleSplit = () => {
             let selected =[]
             table.getSelectedRowModel().flatRows.map((row) => {
-              console.log('spliting ' + row.getValue('name'));
               selected.push(row.id)
             });
             handleSplitTable(selected)
@@ -369,7 +357,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           const handleRemove = () => {
             let selected =[]
             table.getSelectedRowModel().flatRows.map((row) => {
-              console.log('removing ' + row.getValue('name'));
               selected.push(row.id)
             });
             handleRemoveTable(selected)
@@ -382,7 +369,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           let kwon_type = null
           let knon_flag = false
           for (let row of table.getSelectedRowModel().flatRows) {
-            console.log("row: ", row)
           //table.getSelectedRowModel().flatRows.map((row) => {
             // If it is the first type
             if (kwon_type == null) {
@@ -393,7 +379,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
               knon_flag = true
               break
             }
-            console.log("----------------------")
           };
 
           if (knon_flag == false && table.getSelectedRowModel().flatRows.length > 1) {

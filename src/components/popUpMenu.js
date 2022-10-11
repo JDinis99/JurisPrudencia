@@ -18,25 +18,9 @@ const PopUpMenu = (showMenu, handleMultipleTagChange, entities) => {
   const [value, setValue] = React.useState('Single');
 
   const {
-    value_sidebar,
-    allEntities,
-    anomTokens,
     anomValues,
     last_index,
     tag,
-    menuStyle,
-    setMenuStyle,
-    popUpMenu,
-    setPopUpMenu,
-    mode,
-    setMode,
-    rows,
-    setRows,
-    raw_text,
-    renderValue,
-    setRenderValue,
-    sourceHtml,
-    setSourceHtml,
   } = useAppContext()
 
   const style = () => {
@@ -59,8 +43,6 @@ const PopUpMenu = (showMenu, handleMultipleTagChange, entities) => {
   }
   
   const handleRadioChange = (event) => {
-    console.log(anomValues.current.value[last_index.current])
-    console.log(tag.current)
     setValue(event.target.value)
   };
 
