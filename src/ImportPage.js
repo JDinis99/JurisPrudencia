@@ -53,8 +53,15 @@ const ImportPage = () => {
       final_res = final_res.replace("</div>", "\n</div>\n")
       final_res = final_res.replaceAll("href=", "")
 
+      localStorage.setItem("ANOM_FILE_NAME", file.name)
+      localStorage.setItem("ANOM_SOURCE_HTML", final_res)
+
+      localStorage.setItem("ANOM_VALUES", null)
+      localStorage.setItem("ANOM_ALL_ENTITIES", null)
+      localStorage.setItem("ANOM_TOKENS", null)
+
       setSourceHtml(final_res)
-    });
+  });
 
     setRedirect(true)
 

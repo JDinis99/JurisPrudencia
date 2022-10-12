@@ -18,6 +18,7 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
     setRows,
     renderValue,
     setRenderValue,
+    anomTokens,
   } = useAppContext()
 
   let anomRules = {
@@ -54,6 +55,38 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
     if (renderValue.anomValues) {
 
     }
+    
+    if (anomValues.current !== null) {
+
+      let res = ""
+      for (let v of anomValues.current.value) {
+        res += JSON.stringify(v) + "---"
+      }
+      let final_res = res.slice(0 , -3)
+
+      localStorage.setItem("ANOM_VALUES", final_res)
+    }
+
+    let token_res = ""
+    if (anomTokens.current !== null) {
+      for (let t of anomTokens.current) {
+        token_res += JSON.stringify(t) + "---"
+      }
+      let final_token_res = token_res.slice(0 , -3)
+
+      localStorage.setItem("ANOM_TOKENS", final_token_res)
+    }
+
+    let entities_res = ""
+    if (allEntities.current !== null) {
+      for (let e of allEntities.current) {
+        entities_res += JSON.stringify(e) + "---"
+      }
+      let final_entities_res = entities_res.slice(0 , -3)
+
+      localStorage.setItem("ANOM_ALL_ENTITIES", final_entities_res)
+    }
+
   }, [renderValue])
 
   function handleMergeTable(selected_list) {

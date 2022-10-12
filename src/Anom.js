@@ -18,7 +18,10 @@ var new_example_html = new_example_html_file.default;
 
 const Anom = () => {
   let tokenCounter = 0
-  let value = []
+
+  const value = useRef([])
+  const previous_value = useRef(false)
+  //value.current = []
 
   const {
     value_sidebar,
@@ -41,7 +44,9 @@ const Anom = () => {
     anomStyle,
     last_value,
     last_index_backup,
-    page
+    page,
+    file,
+    setFile
   } = useAppContext()
  
 
@@ -499,15 +504,18 @@ const Anom = () => {
       if (role === "E-MA") {
         role = "E-MAIL"
       }
-      value.push({
-        start: tokenCounter,
-        end: tokenCounter + split.length,
-        tag: role,
-        text: new_text,
-        id: anom_id.current
-      })
-      addToSidebar(new_text, role, [anom_id.current], null)
-      anom_id.current += 1
+
+      if (previous_value.current === false) {
+        value.current.push({
+          start: tokenCounter,
+          end: tokenCounter + split.length,
+          tag: role,
+          text: new_text,
+          id: anom_id.current
+        })
+        addToSidebar(new_text, role, [anom_id.current], null)
+        anom_id.current += 1
+      }
       let tmp_res = iterateHtml(new_text)
       res = res.concat(tmp_res)
     }
@@ -539,16 +547,63 @@ const Anom = () => {
 
   function readHtml () {
     // Create default for testing
+    //value.current = []
+    let final_values = []
+    
     if (sourceHtml !== null) {
       new_example_html = sourceHtml
     }
     else {
-      setSourceHtml(new_example_html)
+      const storedFileName = localStorage.getItem("ANOM_FILE_NAME");
+      const storedSourceHML = localStorage.getItem("ANOM_SOURCE_HTML");
+      
+
+      if (storedSourceHML !== null) {
+        setFile({name:storedFileName, complete:false})
+        setSourceHtml(storedSourceHML)
+        
+        const storedAnomValues = localStorage.getItem("ANOM_VALUES").split("---");
+        const storedAnomTokens= localStorage.getItem("ANOM_TOKENS").split("---");
+        const storedAllEntities = localStorage.getItem("ANOM_ALL_ENTITIES").split("---");
+        
+        for (let v of storedAnomValues) {
+          final_values.push(JSON.parse(v))
+        }
+  
+        let final_stored_tokens = []
+        for (let t of storedAnomTokens) {
+          final_stored_tokens.push(JSON.parse(t))
+        }
+  
+        let final_entities_tokens = []
+        for (let e of storedAllEntities) {
+          final_entities_tokens.push(JSON.parse(e))
+        }
+  
+        allEntities.current = final_entities_tokens
+        value_sidebar.current = final_entities_tokens
+        anomValues.current = {
+          value: storedAnomValues,
+          tag: "PES"
+        }
+        anomTokens.current = final_stored_tokens
+        value.current = final_values
+        setRenderValue({
+          anomTokens: true,
+          anomValues: true,
+          allEntities: true
+        })
+
+        previous_value.current = true
+        //return
+      }
+      else {
+        setSourceHtml(new_example_html)
+      }
     }
 
     let raw_text_temp = ""
-    value = []
-    value_sidebar.current = []
+    //value_sidebar.current = []
     
     // Join main relevant html into a single string
     let split = new_example_html.split("\n")
@@ -574,8 +629,9 @@ const Anom = () => {
 
     allEntities.current = value_sidebar.current
     anomTokens.current = final_tokens
+
     anomValues.current = {
-      value: value,
+      value: value.current,
       tag: "PES"
     }
     setRenderValue({

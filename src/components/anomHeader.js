@@ -31,6 +31,10 @@ const AnomHeader = (getText) => {
     loading,
     setLoading,
     setAnomStyle,
+    anomValues,
+    anomTokens,
+    allEntities,
+    value_sidebar
   } = useAppContext()
 
   const firstSuggest = useRef(true)
@@ -65,6 +69,9 @@ const AnomHeader = (getText) => {
       final_res = final_res.replace("</div>", "\n</div>\n")
       final_res = final_res.replaceAll("href=", "")
       final_res = final_res.replaceAll("PER", "PES")
+
+      localStorage.setItem("ANOM_SOURCE_HTML", final_res)
+
       setSourceHtml(final_res)
       setLoading(false)
     });
@@ -98,12 +105,15 @@ const AnomHeader = (getText) => {
   }
 
   let suggestDisable = false
-  if (firstSuggest.current == false) {
+  if (firstSuggest.current === false || file === null) {
+    suggestDisable = true
+  }
+  else if (file.complete !== undefined) {
     suggestDisable = true
   }
 
   let saveDisable = false
-  if (mode != "Preview") {
+  if (mode !== "Preview") {
     saveDisable = true
   }
 

@@ -11,7 +11,7 @@ import {
 const Context = createContext();
 
 export function AppContext({ children }) {
-  let value_sidebar = useRef(null)
+  let value_sidebar = useRef([])
   let raw_text = useRef(null)
   const [rows, setRows] = useState([])
   const allEntities = useRef(null)
