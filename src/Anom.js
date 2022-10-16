@@ -21,7 +21,6 @@ const Anom = () => {
 
   const value = useRef([])
   const previous_value = useRef(false)
-  //value.current = []
 
   const {
     value_sidebar,
@@ -680,7 +679,6 @@ const Anom = () => {
     return ReactDOMServer.renderToString(box())
   }
 
-  // NOTE ADD outside click handlers inside each component
   return (
     <div>
       <div className='FlexContainer'>

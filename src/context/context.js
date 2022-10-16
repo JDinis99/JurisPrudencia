@@ -12,36 +12,37 @@ const Context = createContext();
 
 export function AppContext({ children }) {
   let value_sidebar = useRef([])
-  let raw_text = useRef(null)
+
+  // Rows of table
   const [rows, setRows] = useState([])
+  // Selected row from table
+  let selected = useRef([])
+
+  // Contextual data
   const allEntities = useRef(null)
   const anomTokens = useRef(null)
   const anomValues = useRef(null)
+
+  // Index of the last chosen entitie though text manipulation
   const last_index = useRef(0)
   const last_index_backup = useRef(null)
   const last_value = useRef(null)
+
+  // Page selected
   const page = useRef(null)
+
   const anom_id = useRef(0)
   const trueSourceHtml = useRef(false)
+
+  // Current default tag (necessary for intial token annotator, it is currently ignored)
   const tag = useRef(null)
+
+  // Changable style for menus
   const [menuStyle, setMenuStyle] = useState({
     left: 0,
     top: 0,
     showMenu: false
   })
-  let selected = useRef([])
-  const [mode, setMode] = useState("Anom")
-  const [renderValue, setRenderValue] = useState({
-    anomTokens: null,
-    anomValues: null,
-    allEntities: null
-  })
-  const [file, setFile] = useState(null)
-  let [sourceHtml, setSourceHtml] = useState(null)
-  const [redirect, setRedirect] = useState()
-
-  const [loading, setLoading] = useState(false)
-
   const [popUpMenu, setPopUpMenu] = useState({
     showMenu: false,
     entities: {
@@ -53,8 +54,27 @@ export function AppContext({ children }) {
       "MAT":0
     }
   })
-
+  
+  // Force re-render on changed information
+  const [renderValue, setRenderValue] = useState({
+    anomTokens: null,
+    anomValues: null,
+    allEntities: null
+  })
+  
+  // Editor mode
+  const [mode, setMode] = useState("Anom")
+  // Type of anonimization
   const [anomStyle, setAnomStyle] = useState("Type")
+
+
+  const [file, setFile] = useState(null)
+  let [sourceHtml, setSourceHtml] = useState(null)
+  let raw_text = useRef(null)
+
+  const [redirect, setRedirect] = useState()
+  const [loading, setLoading] = useState(false)
+  
 
   const f_value = useMemo(() => ({
     value_sidebar,

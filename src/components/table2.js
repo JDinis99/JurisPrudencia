@@ -56,6 +56,7 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
 
     }
     
+    // Store auto-saves in cache
     if (anomValues.current !== null) {
 
       let res = ""

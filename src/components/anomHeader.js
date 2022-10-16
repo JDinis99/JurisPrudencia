@@ -6,15 +6,11 @@ import {FormControl, NativeSelect } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { Switch } from '@mui/material';
-import Typography from '@mui/material/Typography';
 
 //import { LineBreak, Document, Text } from "redocx";
 import HTMLtoDOCX from 'html-to-docx';
-import { Document, Packer } from 'docx';
 import { saveAs } from 'file-saver';
 import axios from 'axios';
-import {Routes, Route, useNavigate} from 'react-router-dom';
 
 import {
   useRef,
@@ -31,10 +27,6 @@ const AnomHeader = (getText) => {
     loading,
     setLoading,
     setAnomStyle,
-    anomValues,
-    anomTokens,
-    allEntities,
-    value_sidebar
   } = useAppContext()
 
   const firstSuggest = useRef(true)
