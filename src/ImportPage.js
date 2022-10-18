@@ -14,6 +14,7 @@ const ImportPage = () => {
   } = useAppContext()
 
   const hiddenFileInput = useRef(null);
+  let storedFileName = localStorage.getItem("ANOM_FILE_NAME")
 
   const handleClick = event => {
     hiddenFileInput.current.click();
@@ -67,16 +68,41 @@ const ImportPage = () => {
 
   }
 
+  const handleContinue = event => {
+    setRedirect(true)
+  };
+
+  console.log(storedFileName)
+
+
   return (
     <div className="ImportPage">
       {redirectComponent()}
 
-      <h1 style={{marginBottom:"50px"}}>Bem vindo ao anonimizador, importe um ficheiro docx para começar o processo</h1>
+      <h1 style={{marginBottom:"50px"}}>Importe um ficheiro docx para começar o processo</h1>
 
       <button onClick={handleClick}>
         Escolher Ficheiro
       </button>
       <input type="file" ref={hiddenFileInput} onChange={handleChange} style={{display: 'none'}} />
+
+      {
+        storedFileName === null ?
+        <div className='ImportSaved'>
+          Não tem nenhum ficheiro guardado
+        </div>
+        :
+        <>
+          <div className='ImportSaved'>
+            Tem o ficheiro {storedFileName} guardado. Clique aqui para continuar a editar 
+          </div>
+          <button onClick={handleContinue}>
+            Continuar a editar
+          </button>
+        </>
+
+      }
+
     </div>
   )
 }
