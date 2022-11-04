@@ -11,23 +11,14 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
   const {
     value_sidebar,
     allEntities,
-    anomTokens,
     anomValues,
     last_index,
     tag,
-    menuStyle,
-    setMenuStyle,
-    popUpMenu,
-    setPopUpMenu,
-    mode,
-    setMode,
     rows,
     setRows,
-    raw_text,
     renderValue,
     setRenderValue,
-    sourceHtml,
-    setSourceHtml,
+    anomTokens,
   } = useAppContext()
 
   let anomRules = {
@@ -64,6 +55,39 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
     if (renderValue.anomValues) {
 
     }
+    
+    // Store auto-saves in cache
+    if (anomValues.current !== null) {
+
+      let res = ""
+      for (let v of anomValues.current.value) {
+        res += JSON.stringify(v) + "---"
+      }
+      let final_res = res.slice(0 , -3)
+
+      localStorage.setItem("ANOM_VALUES", final_res)
+    }
+
+    let token_res = ""
+    if (anomTokens.current !== null) {
+      for (let t of anomTokens.current) {
+        token_res += JSON.stringify(t) + "---"
+      }
+      let final_token_res = token_res.slice(0 , -3)
+
+      localStorage.setItem("ANOM_TOKENS", final_token_res)
+    }
+
+    let entities_res = ""
+    if (allEntities.current !== null) {
+      for (let e of allEntities.current) {
+        entities_res += JSON.stringify(e) + "---"
+      }
+      let final_entities_res = entities_res.slice(0 , -3)
+
+      localStorage.setItem("ANOM_ALL_ENTITIES", final_entities_res)
+    }
+
   }, [renderValue])
 
   function handleMergeTable(selected_list) {
@@ -289,7 +313,7 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           >
           <FormControl fullWidth>
             <NativeSelect
-              defaultValue={cell.getValue()}
+              value={cell.getValue()}
               inputProps={{
                 name: 'type',
                 id: 'uncontrolled-native',
@@ -346,7 +370,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           const handleMerge = () => {
             let selected =[]
             table.getSelectedRowModel().flatRows.map((row) => {
-              console.log('merging ' + row.getValue('name'));
               selected.push(row.id)
             });
             handleMergeTable(selected)
@@ -357,7 +380,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           const handleSplit = () => {
             let selected =[]
             table.getSelectedRowModel().flatRows.map((row) => {
-              console.log('spliting ' + row.getValue('name'));
               selected.push(row.id)
             });
             handleSplitTable(selected)
@@ -369,7 +391,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           const handleRemove = () => {
             let selected =[]
             table.getSelectedRowModel().flatRows.map((row) => {
-              console.log('removing ' + row.getValue('name'));
               selected.push(row.id)
             });
             handleRemoveTable(selected)
@@ -382,7 +403,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
           let kwon_type = null
           let knon_flag = false
           for (let row of table.getSelectedRowModel().flatRows) {
-            console.log("row: ", row)
           //table.getSelectedRowModel().flatRows.map((row) => {
             // If it is the first type
             if (kwon_type == null) {
@@ -393,7 +413,6 @@ const TableComponent2 = (addToSidebar, removeFromSidebar, handleMultipleTagChang
               knon_flag = true
               break
             }
-            console.log("----------------------")
           };
 
           if (knon_flag == false && table.getSelectedRowModel().flatRows.length > 1) {

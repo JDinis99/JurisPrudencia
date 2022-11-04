@@ -6,28 +6,16 @@ import {FormControl, NativeSelect } from '@mui/material';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import ToggleButton from '@mui/material/ToggleButton';
 import ToggleButtonGroup from '@mui/material/ToggleButtonGroup';
-import { Switch } from '@mui/material';
-import Typography from '@mui/material/Typography';
 
 //import { LineBreak, Document, Text } from "redocx";
 import HTMLtoDOCX from 'html-to-docx';
-import { Document, Packer } from 'docx';
 import { saveAs } from 'file-saver';
 import axios from 'axios';
-import {Routes, Route, useNavigate} from 'react-router-dom';
 
 import {
-  createContext,
-  useContext,
-  useEffect,
-  useMemo,
   useRef,
-  useState,
-  useCallback,
 } from "react";
 
-
-var ReactDOMServer = require('react-dom/server');
 
 const AnomHeader = (getText) => {
 
@@ -35,11 +23,9 @@ const AnomHeader = (getText) => {
     mode,
     setMode,
     file,
-    sourceHtml,
     setSourceHtml,
     loading,
     setLoading,
-    anomStyle,
     setAnomStyle,
   } = useAppContext()
 
@@ -54,7 +40,6 @@ const AnomHeader = (getText) => {
     setAnomStyle(e.target.value);
   };
 
-  const navigate = useNavigate()
 
   async function handleNER() {
     let final_res = null
@@ -76,6 +61,9 @@ const AnomHeader = (getText) => {
       final_res = final_res.replace("</div>", "\n</div>\n")
       final_res = final_res.replaceAll("href=", "")
       final_res = final_res.replaceAll("PER", "PES")
+
+      localStorage.setItem("ANOM_SOURCE_HTML", final_res)
+
       setSourceHtml(final_res)
       setLoading(false)
     });
@@ -83,8 +71,6 @@ const AnomHeader = (getText) => {
   }
 
   const redirectHelp = async () => {
-    //navigate("/ajuda", {replace:false})
-
     var win = window.open("https://docs.google.com/document/d/1yfMYeehjUpf7xJiSYZAVUpdCd5UlQDswt7bOUONwi3E/edit#heading=h.cbjxa1ox4xfc'", '_blank');
     win.focus();
   }
@@ -102,16 +88,24 @@ const AnomHeader = (getText) => {
       pageNumber: true,
     });
 
-    saveAs(fileBuffer, 'html-to-docx.docx');
+    let filnename = "example.docx"
+    if (file !== null) {
+      filnename = file.name.split(".docx")[0] + "_final.docx"
+    }
+
+    saveAs(fileBuffer, filnename);
   }
 
   let suggestDisable = false
-  if (firstSuggest.current == false) {
+  if (firstSuggest.current === false || file === null) {
+    suggestDisable = true
+  }
+  else if (file.complete !== undefined) {
     suggestDisable = true
   }
 
   let saveDisable = false
-  if (mode != "Preview") {
+  if (mode !== "Preview") {
     saveDisable = true
   }
 

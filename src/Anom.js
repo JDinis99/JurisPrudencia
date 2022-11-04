@@ -5,14 +5,11 @@ import ReactDOMServer from 'react-dom/server'
 import TokenAnnotator from './tokenAnnotator/TokenAnnotator.tsx';
 import ActionMenu from './components/actionMenu';
 import PopUpMenu from './components/popUpMenu';
-import OutsideClickHandler from 'react-outside-click-handler';
 import TableComponent2 from './components/table2';
 import AnomHeader from './components/anomHeader';
 import parse from 'html-react-parser';
 
 import { useAppContext } from './context/context';
-import TAG_COLORS from './utils/tag_colors';
-
 
 // eslint-disable-next-line import/no-webpack-loader-syntax
 var new_example_html_file = require('raw-loader!./data/new_example_2.html');
@@ -21,7 +18,9 @@ var new_example_html = new_example_html_file.default;
 
 const Anom = () => {
   let tokenCounter = 0
-  let value = []
+
+  const value = useRef([])
+  const previous_value = useRef(false)
 
   const {
     value_sidebar,
@@ -35,24 +34,24 @@ const Anom = () => {
     popUpMenu,
     setPopUpMenu,
     mode,
-    setMode,
-    rows,
     raw_text,
-    renderValue,
     setRenderValue,
     sourceHtml,
     setSourceHtml,
     trueSourceHtml,
     anom_id,
     anomStyle,
-    setAnomStyle,
     last_value,
     last_index_backup,
+    page,
+    file,
+    setFile
   } = useAppContext()
  
 
   useEffect(() => {
     readHtml()
+    page.current = "anom"
   }, [sourceHtml])
 
   const handleNewEntitie = (value, left, top, text) => {
@@ -129,8 +128,6 @@ const Anom = () => {
 
     window.getSelection().empty()
 
-    console.log("BACKUP: ")
-    console.log(last_index_backup.current)
 
     if (last_index.current === -1) {
       let old_tag = anomValues.current.tag
@@ -233,8 +230,6 @@ const Anom = () => {
     let new_anom = null
     let new_tag  = tag.current
     let old_value = anomValues.current.value
-    console.log(last_index.current)
-    console.log(old_value[last_index.current])
     let old_text = old_value[last_index.current].text
     let old_tag = old_value[last_index.current].tag
     let new_value = []
@@ -431,19 +426,10 @@ const Anom = () => {
     for (let entitie of value_sidebar.current) {
       for (let token of entitie.tokens) {
         if (token.ids.includes(id)) {
-          // If it is an entitie with a single id or if we whish to change tag for all ids
           // Remove current id from sidebar
           removeFromSidebar(id, false)
           // And re-add it with new tag
           addToSidebar(text, new_tag, [id], entitie_id)
-          // if (token.ids.length === 1 || all === true) {
-          //   // Simply Change Tag
-          //   entitie.tag = new_tag
-          // }
-          // // If there are multiple ids and we only want to change 1
-          // else {
-          // }
-          // break
         }
       }
       entitie_id += 1
@@ -517,15 +503,18 @@ const Anom = () => {
       if (role === "E-MA") {
         role = "E-MAIL"
       }
-      value.push({
-        start: tokenCounter,
-        end: tokenCounter + split.length,
-        tag: role,
-        text: new_text,
-        id: anom_id.current
-      })
-      addToSidebar(new_text, role, [anom_id.current], null)
-      anom_id.current += 1
+
+      if (previous_value.current === false) {
+        value.current.push({
+          start: tokenCounter,
+          end: tokenCounter + split.length,
+          tag: role,
+          text: new_text,
+          id: anom_id.current
+        })
+        addToSidebar(new_text, role, [anom_id.current], null)
+        anom_id.current += 1
+      }
       let tmp_res = iterateHtml(new_text)
       res = res.concat(tmp_res)
     }
@@ -557,16 +546,63 @@ const Anom = () => {
 
   function readHtml () {
     // Create default for testing
+    //value.current = []
+    let final_values = []
+    
     if (sourceHtml !== null) {
       new_example_html = sourceHtml
     }
     else {
-      setSourceHtml(new_example_html)
+      const storedFileName = localStorage.getItem("ANOM_FILE_NAME");
+      const storedSourceHML = localStorage.getItem("ANOM_SOURCE_HTML");
+      
+
+      if (storedSourceHML !== null) {
+        setFile({name:storedFileName, complete:false})
+        setSourceHtml(storedSourceHML)
+        
+        const storedAnomValues = localStorage.getItem("ANOM_VALUES").split("---");
+        const storedAnomTokens= localStorage.getItem("ANOM_TOKENS").split("---");
+        const storedAllEntities = localStorage.getItem("ANOM_ALL_ENTITIES").split("---");
+        
+        for (let v of storedAnomValues) {
+          final_values.push(JSON.parse(v))
+        }
+  
+        let final_stored_tokens = []
+        for (let t of storedAnomTokens) {
+          final_stored_tokens.push(JSON.parse(t))
+        }
+  
+        let final_entities_tokens = []
+        for (let e of storedAllEntities) {
+          final_entities_tokens.push(JSON.parse(e))
+        }
+  
+        allEntities.current = final_entities_tokens
+        value_sidebar.current = final_entities_tokens
+        anomValues.current = {
+          value: storedAnomValues,
+          tag: "PES"
+        }
+        anomTokens.current = final_stored_tokens
+        value.current = final_values
+        setRenderValue({
+          anomTokens: true,
+          anomValues: true,
+          allEntities: true
+        })
+
+        previous_value.current = true
+        //return
+      }
+      else {
+        setSourceHtml(new_example_html)
+      }
     }
 
     let raw_text_temp = ""
-    value = []
-    value_sidebar.current = []
+    //value_sidebar.current = []
     
     // Join main relevant html into a single string
     let split = new_example_html.split("\n")
@@ -592,10 +628,9 @@ const Anom = () => {
 
     allEntities.current = value_sidebar.current
     anomTokens.current = final_tokens
+
     anomValues.current = {
-      value: value,
-      //value: [],
-      //value: [{start: 0, end:6, tag: "PES"}],
+      value: value.current,
       tag: "PES"
     }
     setRenderValue({
@@ -610,7 +645,6 @@ const Anom = () => {
       return <></>
     }
     if (mode === "Original") {
-      console.log(raw_text.current)
       return (
         <div className='Text'>
           {parse(raw_text.current)}
@@ -645,7 +679,6 @@ const Anom = () => {
     return ReactDOMServer.renderToString(box())
   }
 
-  // NOTE ADD outside click handlers inside each component
   return (
     <div>
       <div className='FlexContainer'>

@@ -96,6 +96,7 @@
 
 .EntitieText {
   grid-column: 1/2;
+  display: flex;
   display: grid;
   grid-template-columns: 30% 70%;
 }
@@ -144,4 +145,13 @@
   margin-left: 5px;
   padding-left: 5px;
   padding-right: 15px;
+}
+
+.HeaderFileName {
+  padding-left: 20px;
+}
+
+.ImportSaved {
+  padding-top: 35px;
+  padding-bottom: 15px;
 }

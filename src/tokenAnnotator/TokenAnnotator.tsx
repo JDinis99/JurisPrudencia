@@ -134,7 +134,6 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
 
     props.last_index.current = temp_index
 
-    //console.log(text)
     props.tag.current = "PER"
     
     props.onNewEntitie(getSpan({start, end, tokens: props.tokens.slice(start, end)}), p.left, p.top + window.scrollY, text)
@@ -149,7 +148,6 @@ const TokenAnnotator = <T extends Span>(props: TokenAnnotatorProps<T>) => {
     const p = r.getBoundingClientRect();
     // Find and remove the matching split.
     const splitIndex = props.value.findIndex(s => s.start === start && s.end === end)
-    console.log(splitIndex)
     if (splitIndex >= 0) {
       onEntitieChange(splitIndex, p.left, p.top + window.scrollY)
     }
