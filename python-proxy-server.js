@@ -19,7 +19,7 @@ const process = require('process');
 
 const PYTHON_COMMAND = process.env.PYTHON_COMMAND || path.join(__dirname, "env/bin/python");
 
-app.get("/types", (req, res) => {
+app.get("*/types", (req, res) => {
     let nerTypes = ["ORG", "LOC", "PES", "DAT"];
     let patterns = readFileSync('patterns.csv').toString().split("\n").slice(1);
     for( let linePattern of patterns ){
@@ -31,7 +31,7 @@ app.get("/types", (req, res) => {
 	return res.json(nerTypes);
 })
 
-app.post("/", upload.single('file'), (req, res) => {
+app.post("*/", upload.single('file'), (req, res) => {
     let subproc = spawn(PYTHON_COMMAND,["black-box-cli.py", req.file.path], {...process.env, PYTHONIOENCODING: 'utf-8', PYTHONLEGACYWINDOWSSTDIO: 'utf-8' }) // envs might not be needed outside windows world
     subproc.on("error", (err) => {
         console.log(err);
@@ -48,7 +48,7 @@ app.post("/", upload.single('file'), (req, res) => {
     })
 })
 
-app.post("/html", upload.single('file'), (req, res) => {
+app.post("*/html", upload.single('file'), (req, res) => {
     let subproc = spawn(PYTHON_COMMAND,["black-box-cli.py", req.file.path,"--html-only"], {...process.env, PYTHONIOENCODING: 'utf-8', PYTHONLEGACYWINDOWSSTDIO: 'utf-8' })
     subproc.on("error", (err) => {
         console.log(err);
