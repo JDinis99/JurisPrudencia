@@ -6,7 +6,7 @@ import Header from './components/header';
 
 function App() {
   return (
-    <Router>
+    <Router basename={process.env.PUBLIC_URL}>
       <div className="App">
         <div className="content">
           <Header/>
