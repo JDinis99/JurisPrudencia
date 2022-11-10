@@ -19,11 +19,9 @@ ENV PATH="/opt/app/env/bin:$PATH"
 COPY package.json package.json
 RUN npm install
 
-COPY . .
-
-RUN npm run build
-
 RUN apt-get update && apt-get install -y pandoc
+
+COPY . .
 
 EXPOSE 3000
 
