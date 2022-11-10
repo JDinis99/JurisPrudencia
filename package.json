@@ -37,13 +37,13 @@
   },
   "scripts": {
     "start": "react-app-rewired start",
-    "start-test": "PUBLIC_URL=http://localhost:3000/anon && react-app-rewired start",
+    "proxy": "node python-proxy-server.js",
     "build": "react-app-rewired build",
     "test": "react-app-rewired test",
     "eject": "react-scripts eject",
     "build-deploy": "react-app-rewired build && mv build anon"
   },
-  "homepage": "./",
+  "homepage": ".",
   "eslintConfig": {
     "extends": [
       "react-app",
@@ -61,5 +61,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  }
+  },
+  "proxy": "http://localhost:7998"
 }

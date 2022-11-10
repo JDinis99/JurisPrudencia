@@ -62,7 +62,9 @@ const ImportPage = () => {
       localStorage.setItem("ANOM_TOKENS", null)
 
       setSourceHtml(final_res)
-  });
+    }).catch(err => {
+      console.log(err);
+    });
 
     setRedirect(true)
 

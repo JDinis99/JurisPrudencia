@@ -5,7 +5,6 @@ const os = require('os');
 const multer = require('multer');
 const storage = multer.diskStorage({
     destination: (req, file, cb)=>{
-        console.log(os.tmpdir());
         cb(null, os.tmpdir());
     },
     filename: (req, file, cb) => {
@@ -20,8 +19,6 @@ const process = require('process');
 
 const PYTHON_COMMAND = process.env.PYTHON_COMMAND || path.join(__dirname, "env/bin/python");
 
-app.use(express.static('./build'))
-
 app.get("/types", (req, res) => {
     let nerTypes = ["ORG", "LOC", "PES", "DAT"];
     let patterns = readFileSync('patterns.csv').toString().split("\n").slice(1);
@@ -32,10 +29,6 @@ app.get("/types", (req, res) => {
         }
     }
 	return res.json(nerTypes);
-})
-
-app.get("*", (req, res) => {
-    res.sendFile('index.html', {root:path.join(__dirname,'build')});
 })
 
 app.post("/", upload.single('file'), (req, res) => {
@@ -72,4 +65,11 @@ app.post("/html", upload.single('file'), (req, res) => {
     })
 })
 
-app.listen(7999);
+let pkjson = require('./package.json');
+let url = pkjson.proxy;
+let port = 7998;
+if( url ){
+    port = new URL(url).port
+}
+
+app.listen(port);
