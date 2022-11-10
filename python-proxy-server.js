@@ -31,6 +31,23 @@ app.get("*/types", (req, res) => {
 	return res.json(nerTypes);
 })
 
+app.post("*/html", upload.single('file'), (req, res) => {
+    let subproc = spawn(PYTHON_COMMAND,["black-box-cli.py", req.file.path,"--html-only"], {...process.env, PYTHONIOENCODING: 'utf-8', PYTHONLEGACYWINDOWSSTDIO: 'utf-8' })
+    subproc.on("error", (err) => {
+        console.log(err);
+        res.status(500).write(err.toString());
+        res.end();
+    })
+    subproc.stdout.pipe(res);
+    subproc.stderr.on('data', (err) => {
+        process.stderr.write(`ERROR: spawn: ${PYTHON_COMMAND} black-box-cli.py ${req.file.path}: ${err.toString()}`)
+    });
+    subproc.on('close', (code) => {
+        console.log("spawn: Exited with",code)
+        rmSync(req.file.path);
+    })
+})
+
 app.post("*/", upload.single('file'), (req, res) => {
     let subproc = spawn(PYTHON_COMMAND,["black-box-cli.py", req.file.path], {...process.env, PYTHONIOENCODING: 'utf-8', PYTHONLEGACYWINDOWSSTDIO: 'utf-8' }) // envs might not be needed outside windows world
     subproc.on("error", (err) => {
@@ -48,22 +65,6 @@ app.post("*/", upload.single('file'), (req, res) => {
     })
 })
 
-app.post("*/html", upload.single('file'), (req, res) => {
-    let subproc = spawn(PYTHON_COMMAND,["black-box-cli.py", req.file.path,"--html-only"], {...process.env, PYTHONIOENCODING: 'utf-8', PYTHONLEGACYWINDOWSSTDIO: 'utf-8' })
-    subproc.on("error", (err) => {
-        console.log(err);
-        res.status(500).write(err.toString());
-        res.end();
-    })
-    subproc.stdout.pipe(res);
-    subproc.stderr.on('data', (err) => {
-        process.stderr.write(`ERROR: spawn: ${PYTHON_COMMAND} black-box-cli.py ${req.file.path}: ${err.toString()}`)
-    });
-    subproc.on('close', (code) => {
-        console.log("spawn: Exited with",code)
-        rmSync(req.file.path);
-    })
-})
 
 let pkjson = require('./package.json');
 let url = pkjson.proxy;
