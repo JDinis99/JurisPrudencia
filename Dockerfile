@@ -25,6 +25,6 @@ RUN npm run build
 
 RUN apt-get update && apt-get install -y pandoc
 
-EXPOSE 7999
+EXPOSE 3000
 
-ENTRYPOINT [ "node", "server.js" ]
+CMD [ "./entrypoint" ]

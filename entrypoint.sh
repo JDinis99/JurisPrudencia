@@ -1,3 +1,3 @@
-npm run proxy &
+!#/bin/bash
 
-npm start
+npm run proxy & npm start && fg
