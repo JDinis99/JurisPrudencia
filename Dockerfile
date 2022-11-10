@@ -25,4 +25,4 @@ COPY . .
 
 EXPOSE 3000
 
-CMD [ "./entrypoint" ]
+CMD [ "./entrypoint.sh" ]
