@@ -1,25 +1,29 @@
-FROM python:3.7 as builder
+FROM python:3.8
 
 WORKDIR /opt/app
+
+RUN apt-get update && apt-get install -y pandoc git-lfs
 
 RUN python -m venv env
-ENV PATH="/opt/app/env/bin:$PATH"
 
-RUN pip install --upgrade pip
-COPY requirements.txt requirements.txt
-RUN pip install -r requirements.txt
+COPY requirements.txt ./
 
-FROM node:lts
+RUN env/bin/pip install --no-cache-dir -r requirements.txt
 
-WORKDIR /opt/app
-COPY --from=builder /opt/app/env /opt/app/env
-RUN ln -s /usr/bin/python3 /usr/local/bin/python
-ENV PATH="/opt/app/env/bin:$PATH"
+ENV PYTHON_COMMAND=/opt/app/env/bin/python
+
+RUN git clone https://gitlab.com/diogoalmiro/iris-lfs-storage.git
+RUN cd iris-lfs-storage && git lfs pull
+RUN mv iris-lfs-storage/word2vec.model .
+RUN mv iris-lfs-storage/model-best/ .
+
+RUN curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
+
+RUN apt-get install nodejs -y 
 
 COPY package.json package.json
-RUN npm install
 
-RUN apt-get update && apt-get install -y pandoc
+RUN npm install
 
 COPY . .
 
