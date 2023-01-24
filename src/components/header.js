@@ -14,9 +14,9 @@ const Header = () => {
   return (
     <div className='PageHeader'>
 
-      <Link to="/">
+      <a href="./">
         <img src='./PT-logoLogo-STJ.png' style={{maxHeight:"70px", paddingRight:"20px"}} />
-      </Link>
+      </a>
 
       <h3 style={{fontWeight:"bold"}}>ANONIMIZADOR</h3>
 

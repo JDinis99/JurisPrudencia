@@ -102,3 +102,9 @@ dist
 
 # TernJS port file
 .tern-port
+
+# Build folder
+build/
+env/
+model-best/
+__pycache__/

@@ -27,7 +27,7 @@ const ImportPage = () => {
   const redirectComponent = () => {
     if (redirect === true) {
       return (
-        <Navigate push to="/anom"/>
+        <Navigate push to="./anom"/>
       )
     }
   }
@@ -40,7 +40,7 @@ const ImportPage = () => {
   async function handleSubmit(file) {
     let final_res = null
 
-    const url = 'https://pe.inesc-id.pt/python/html';
+    const url = './html';
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileName', file.name);
@@ -62,7 +62,9 @@ const ImportPage = () => {
       localStorage.setItem("ANOM_TOKENS", null)
 
       setSourceHtml(final_res)
-  });
+    }).catch(err => {
+      console.log(err);
+    });
 
     setRedirect(true)
 

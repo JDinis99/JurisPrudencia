@@ -44,7 +44,7 @@ const AnomHeader = (getText) => {
   async function handleNER() {
     let final_res = null
 
-    const url = 'https://pe.inesc-id.pt/python/';
+    const url = './';
     const formData = new FormData();
     formData.append('file', file);
     formData.append('fileName', file.name);

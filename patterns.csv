@@ -1,0 +1,7 @@
+"Pattern"	"Label"	"Description"
+"[A-Z0-9]{2}-[A-Z0-9]{2}-[A-Z0-9]{2}"	"MAT"	"Matriculas portuguesas 0A-0A-0A"
+"\d+(\-\w+)?\/(\w+\.)(\w+\.?)+"	"PRO"	"Processos com / (NN/...) opcionalmente apanha (NN-W/...) até ao próximo espaço"
+"\d{1,2}(-|\.|/)\d{1,2}(-|\.|/)\d{4}"	"DAT"	"Datas NN.NN.NNNN ou NN-NN-NNNN ou NN/NN/NNNN"
+"\d{4}-\d{3}"	"CEP"	"Código de endereçamento postal"
+"\S+@([\w-]+\.)+[\w-]{2,4}"	"E-MAIL"	"Endereços de correio eletrónico"
+"\+?(\d\ *){8,}\d"	"TEL"	"Telemóveis com pelo menos 9 digitos e indicativo opcional - ignora todos os espaços"
